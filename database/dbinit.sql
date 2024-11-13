@@ -1,3 +1,8 @@
+CREATE USER 'user'@'%' IDENTIFIED BY 'ftn123';
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION;
+CREATE USER 'user'@'localhost' IDENTIFIED BY 'ftn123';
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost' WITH GRANT OPTION;
+
 CREATE DATABASE IF NOT EXISTS social_network;
 USE social_network;
 
