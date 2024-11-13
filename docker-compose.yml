@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0                      # MySQL version 8.0  
+    restart: always   
+    environment:
+      MYSQL_ROOT_PASSWORD: "ftn123"           # Set root password (change as needed)
+      MYSQL_DATABASE: "social_network"        # Set default database
+    ports:
+      - "3307:3306"                        # Expose MySQL on port 3306
+    command: --init-file /docker-entrypoint-initdb.d/dbinit.sql
+    volumes:
+      - ./database/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql          # Persistent storage for MySQL data
+
+volumes:
+  db:
+    driver: local
