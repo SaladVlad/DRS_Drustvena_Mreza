@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
-function App() {
-  const [message, setMessage] = useState("");
+function App () {
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
-    fetch("http://engine:5000/api/hello")
+    fetch('http://localhost:5000/test/hello')
       .then(response => response.json())
       .then(data => setMessage(data.message))
-      .catch(error => console.error("Error fetching from API:", error));
-  }, []);
+      .catch(error => console.error('Error fetching from API:', error))
+  }, [])
 
   return (
-    <div className="App">
+    <div className='App'>
       <h1>React App with Flask Backend</h1>
       <p>{message}</p>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
