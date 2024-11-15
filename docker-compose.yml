@@ -1,0 +1,47 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"  # Set root password (change as needed)
+      MYSQL_DATABASE: "${MYSQL_DATABASE}" # Default database name 
+    ports:
+      - "3307:3306"  # Expose port 3306 on the host and container
+    volumes:
+      - mysql_data:/var/lib/mysql  # Persist MySQL data to a named volume
+      - ./database/facebook.sql:/docker-entrypoint-initdb.d/facebook.sql
+    networks:
+      - my_network  # Attach to custom network
+  flask-app:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    depends_on:
+      - db
+    networks:
+      - my_network
+
+  react-app:
+    build:
+      context: ./socialhub
+    ports:
+      - "3000:80"
+    networks:
+      - my_network
+    depends_on:
+      - flask-app
+
+volumes:
+  mysql_data:  # Define the named volume
+    driver: local  # Use the default driver for local volumes
+
+networks:
+  my_network:
+    driver: bridge  # Use bridge network driver
