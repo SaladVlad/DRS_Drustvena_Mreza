@@ -1,8 +1,15 @@
 from flask import Blueprint, jsonify
+from controllers.posts_controller import *
 
 #Blueprint 
-api_bp = Blueprint('api', __name__)
+test_bp = Blueprint('test', __name__)
+posts_bp = Blueprint('posts', __name__)
 
-@api_bp.route('/api/hello', methods=['GET'])
+@test_bp.route('/test/hello', methods=['GET'])
 def hello():
     return jsonify({"message": "Hello from Flask!"})
+
+
+@posts_bp.route('/posts', methods=['GET'])
+def get_posts():
+    return get_all_posts()
