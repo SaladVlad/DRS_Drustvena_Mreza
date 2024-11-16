@@ -3,13 +3,17 @@ services:
     image: mysql:8.0                      # MySQL version 8.0  
     restart: always   
     environment:
-      MYSQL_ROOT_PASSWORD: "ftn123"           # Set root password (change as needed)
-      MYSQL_DATABASE: "social_network"        # Set default database
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-ftn123}"  # Koristi promenljivu okruženja za fleksibilnost, sa podrazumevanom vrednošću
+      MYSQL_DATABASE: "${MYSQL_DATABASE:-social_network}"    # Parametriše bazu za lakšu izmenu
     ports:
       - "3307:3306"                        # Expose MySQL on port 3306
     command: --init-file /docker-entrypoint-initdb.d/dbinit.sql
     volumes:
-      - ./database/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql          # Persistent storage for MySQL data
+      - mysql_data:/var/lib/mysql          # Dodata trajnost za MySQL podatke
+      - ./database/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql # SQL fajl za inicijalizaciju baze
+    networks:
+      - app_network                        # Dodata mreža za bolje povezivanje
+
   engine:
     build: 
       context: ./engine
@@ -17,7 +21,14 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - mysql
+      - mysql                              # Osigurava da MySQL servis bude dostupan pre engine-a
+    environment:
+      MYSQL_HOST: mysql                   # Usklađeno sa nazivom MySQL servisa u mreži
+      MYSQL_DATABASE: "${MYSQL_DATABASE:-social_network}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-ftn123}"
+    networks:
+      - app_network
+
   ui:
     build:
       context: ./ui
@@ -25,7 +36,14 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      - engine  
+      - engine
+    networks:
+      - app_network
+
 volumes:
-  mysql:
+  mysql_data:                              # Definisan volumen za MySQL podatke
     driver: local
+
+networks:
+  app_network:                             # Centralizovana mreža za komunikaciju servisa
+    driver: bridge
