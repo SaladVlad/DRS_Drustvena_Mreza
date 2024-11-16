@@ -1,28 +1,35 @@
 services:
   mysql:
-    image: mysql:8.0                      # MySQL version 8.0  
-    restart: always   
+    image: mysql:8.0 # MySQL version 8.0
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 2s
+      timeout: 5s
+      retries: 3
     environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"  # Koristi promenljivu okruženja za fleksibilnost, sa podrazumevanom vrednošću
-      MYSQL_DATABASE: "${MYSQL_DATABASE}"    # Parametriše bazu za lakšu izmenu
+      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}" # Koristi promenljivu okruženja za fleksibilnost, sa podrazumevanom vrednošću
+      MYSQL_DATABASE: "${MYSQL_DATABASE}" # Parametriše bazu za lakšu izmenu
     ports:
-      - "3307:3306"                        # Expose MySQL on port 3306
+      - "3307:3306" # Expose MySQL on port 3306
     volumes:
-      - mysql_data:/var/lib/mysql          # Dodata trajnost za MySQL podatke
+      - mysql_data:/var/lib/mysql # Dodata trajnost za MySQL podatke
       - ./database/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql # SQL fajl za inicijalizaciju baze
     networks:
-      - app_network                        # Dodata mreža za bolje povezivanje
+      - app_network # Dodata mreža za bolje povezivanje
 
   engine:
-    build: 
+    build:
       context: ./engine
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
     depends_on:
-      - mysql                              # Osigurava da MySQL servis bude dostupan pre engine-a
+      mysql: # Osigurava da MySQL servis bude dostupan pre engine-a
+        condition: service_healthy
+    restart: always
     environment:
-      MYSQL_HOST: mysql                   # Usklađeno sa nazivom MySQL servisa u mreži
+      MYSQL_HOST: mysql # Usklađeno sa nazivom MySQL servisa u mreži
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
     networks:
@@ -40,9 +47,9 @@ services:
       - app_network
 
 volumes:
-  mysql_data:                              # Definisan volumen za MySQL podatke
+  mysql_data: # Definisan volumen za MySQL podatke
     driver: local
 
 networks:
-  app_network:                             # Centralizovana mreža za komunikaciju servisa
+  app_network: # Centralizovana mreža za komunikaciju servisa
     driver: bridge
