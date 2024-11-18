@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, Enum , ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
 from db import Base, Session
+from datetime import timezone
+import datetime
 
 class Friendship(Base):
     __tablename__ = 'friendship'
@@ -16,6 +18,14 @@ class Friendship(Base):
 def send_friend_request(user_id, friend_id):
     session = Session()
     try:
+        existing_request = session.query(Friendship).filter(
+            ((Friendship.user_id == user_id) & (Friendship.friend_id == friend_id)) |
+            ((Friendship.user_id == friend_id) & (Friendship.friend_id == user_id))
+        ).first()
+
+        if existing_request:
+            raise ValueError("Friendship or friend request already exists.")
+        
         new_request = Friendship(user_id = user_id, friend_id = friend_id, status = 'pending')
         session.add(new_request)
         session.commit()
@@ -31,6 +41,8 @@ def respond_to_friend_request(friendship_id, status): #accept/reject a request
         friendship = session.query(Friendship).filter_by(friendship_id=friendship_id).first()
         if friendship:
             friendship.status = status
+            if status in ['accepted', 'rejected']:
+                friendship.response_date = datetime.utcnow()
             session.commit()
     except Exception as e:
         session.rollback()
@@ -61,6 +73,23 @@ def get_pending_requests(user_id):
     finally:
         session.close()
 
+def get_mutual_friends(user_id, other_user_id):
+    session = Session()
+    try:
+        mutual_friend_ids = session.query(Friendship.friend_id).filter(
+            Friendship.status == 'accepted',
+            Friendship.user_id == user_id
+        ).intersect(
+            session.query(Friendship.friend_id).filter(
+                Friendship.status == 'accepted',
+                Friendship.user_id == other_user_id
+            )
+        ).all()
+
+        return [row[0] for row in mutual_friend_ids] # vraca listu id-ova zajednicih prijatelja
+    finally:
+        session.close()
+
 def delete_friendship(friendship_id):
     session = Session()
     try:
@@ -68,6 +97,19 @@ def delete_friendship(friendship_id):
         if friendship:
             session.delete(friendship)
             session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e
+    finally:
+        session.close()
+
+def delete_all_friendships(user_id):
+    session = Session()
+    try:
+        session.query(Friendship).filter(
+            (Friendship.user_id == user_id) | (Friendship.friend_id == user_id)
+        ).delete(synchronize_session=False)
+        session.commit()
     except Exception as e:
         session.rollback()
         raise e
