@@ -7,9 +7,8 @@ services:
       interval: 2s
       timeout: 5s
       retries: 3
-    environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}" # Koristi promenljivu okruženja za fleksibilnost, sa podrazumevanom vrednošću
-      MYSQL_DATABASE: "${MYSQL_DATABASE}" # Parametriše bazu za lakšu izmenu
+    env_file: #the enviromental variables are loaded from a .env file
+      - .env
     ports:
       - "3307:3306" # Expose MySQL on port 3306
     volumes:
@@ -28,10 +27,8 @@ services:
       mysql: # Osigurava da MySQL servis bude dostupan pre engine-a
         condition: service_healthy
     restart: always
-    environment:
-      MYSQL_HOST: mysql # Usklađeno sa nazivom MySQL servisa u mreži
-      MYSQL_DATABASE: "${MYSQL_DATABASE}"
-      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
+    env_file: #the enviromental variables are loaded from a .env file
+      - .env
     networks:
       - app_network
 
