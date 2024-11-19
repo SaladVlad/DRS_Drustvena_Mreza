@@ -1,8 +1,15 @@
 from .DAO.users_DAO import *
 from .DAO.posts_DAO import *
+from flask import jsonify
 
 def get_all_users():
-    read_users()
+    try:
+        users = read_users()
+        if users is None:
+            return jsonify({"error": "No users found"}), 404
+        return jsonify([{"user_id": user.user_id, "username": user.username} for user in users])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 def get_user_by_id(user_id):
     read_user(user_id)
