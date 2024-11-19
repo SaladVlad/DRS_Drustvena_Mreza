@@ -19,8 +19,10 @@ db = SQLAlchemy(app)
 
 # Registering blueprints after app and db are created to avoid cyclic imports
 from routes.post_routes import posts_bp
+from routes.admin_routes import admin_bp
 
 app.register_blueprint(posts_bp)
+app.register_blueprint(admin_bp)
 
 
 

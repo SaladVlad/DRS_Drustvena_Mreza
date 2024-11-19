@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import UsersComponentAdmin from './adminComponents/UsersComponentAdmin';
 
 function App () {
   const [message, setMessage] = useState('')
 
-  useEffect(() => {
-    fetch('http://localhost:5000/test/hello')
-      .then(response => response.json())
-      .then(data => setMessage(data.message))
-      .catch(error => console.error('Error fetching from API:', error))
-  }, [])
+
 
   return (
     <div className='App'>
-      <h1>React App with Flask Backend</h1>
-      <p>{message}</p>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<UsersComponentAdmin />} />
+          <Route path='*' element={<div>Page not found</div>} />
+        </Routes> 
+      </BrowserRouter>
     </div>
   )
 }
