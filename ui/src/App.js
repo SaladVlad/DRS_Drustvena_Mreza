@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import UsersComponentAdmin from './adminComponents/UsersComponentAdmin';
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+import LoginPage from './pages/login'
+import RegisterPage from './pages/register'
+import Dashboard from './pages/dashboard'
 
 function App () {
-  const [message, setMessage] = useState('')
-
-
+  //const [message, setMessage] = useState('')
 
   return (
-    <div className='App'>
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<UsersComponentAdmin />} />
-          <Route path='*' element={<div>Page not found</div>} />
-        </Routes> 
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      {/*Routes for the different pages. If it can be reached,
+     enter the route to it here*/}
+      <Routes>
+        <Route index element={<LoginPage />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/register' element={<RegisterPage />} />
+        <Route path='/home' element={<Dashboard />} />
+        <Route path='*' element={<div>Page not found</div>} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
