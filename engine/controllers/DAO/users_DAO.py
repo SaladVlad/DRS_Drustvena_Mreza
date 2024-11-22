@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP
 from db import Base, Session  # Uvozimo centralizovane definicije
+from sqlalchemy import exc
 
 class User(Base):
     __tablename__ = 'user'
@@ -17,27 +18,19 @@ class User(Base):
     is_blocked = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP, nullable=False)
 
-def create_user(username, email, password, first_name, last_name, address=None, city=None, state=None, phone_number=None, is_admin=False):
+def create_user(**kwargs):
     session = Session()  # Kreiranje sesije unutar funkcije, preporuceno da svaka fja ima svoju sesiju ka bazi
     try:
-        new_user = User(
-            username=username,
-            email=email,
-            password=password,
-            first_name=first_name,
-            last_name=last_name,
-            address=address,
-            city=city,
-            state=state,
-            phone_number=phone_number,
-            is_admin=is_admin,
-            is_blocked=False
-        )
+        new_user = User(**kwargs)
+        new_user.is_admin = False
+        new_user.is_blocked = False
         session.add(new_user)
         session.commit()
+    except exc.IntegrityError as e:
+            session.rollback()
     except Exception as e:
         session.rollback()
-        raise e
+        return None, "Duplicate key error: user with ID {} already exists".format(kwargs['user_id'])
     finally:
         session.close()
 
@@ -45,6 +38,8 @@ def read_user(user_id):
     session = Session()
     try:
         return session.query(User).filter_by(user_id=user_id).first()
+    except Exception as e:
+        return None
     finally:
         session.close()
 
@@ -52,44 +47,55 @@ def read_users():
     session = Session()
     try:
         return session.query(User).all()
+    except Exception as e:
+        return None
     finally:
         session.close()
 
-def update_user(user_id, **kwargs):
+def update_user(**kwargs):
     session = Session()
     try:
+        user_id = kwargs['user_id']
         user = read_user(user_id)
-        if user:
-            for key, value in kwargs.items():
-                if hasattr(user, key):
-                    setattr(user, key, value)
-            session.commit()
+        if user is None:
+            return None, "User not found"
+        for key, value in kwargs.items():
+            if key != 'user_id':
+                setattr(user, key, value)
+        session.commit()
+        return user, None
     except Exception as e:
         session.rollback()
         raise e
     finally:
         session.close()
+
 
 def delete_user(user_id):
     session = Session()
     try:
         user = read_user(user_id)
-        if user:
-            session.delete(user)
-            session.commit()
+        if user is None:
+            return None, "User not found"
+        session.delete(user)
+        session.commit()
+        return user, None
     except Exception as e:
         session.rollback()
         raise e
     finally:
         session.close()
 
+
 def block_user(user_id):
     session = Session()
     try:
         user = read_user(user_id)
-        if user:
-            user.is_blocked = True
-            session.commit()
+        if user in None:
+            return None, "User not found"
+        user.is_blocked = True
+        session.commit()
+        return user, None
     except Exception as e:
         session.rollback()
         raise e
@@ -100,9 +106,11 @@ def unblock_user(user_id):
     session = Session()
     try:
         user = read_user(user_id)
-        if user:
-            user.is_blocked = False
-            session.commit()
+        if user is None:
+            return None, "User not found"
+        user.is_blocked = False
+        session.commit()
+        return user, None
     except Exception as e:
         session.rollback()
         raise e
@@ -126,6 +134,8 @@ def read_blocked_users():
     try:
         blocked_users = session.query(User).filter(User.is_blocked == True).all()
         return blocked_users
+    except Exception as e:
+        return None
     finally:
         session.close()
     
