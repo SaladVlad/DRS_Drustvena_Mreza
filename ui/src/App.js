@@ -1,14 +1,12 @@
+import './App.css'
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.css'
 
 import LoginPage from './pages/login'
 import RegisterPage from './pages/register'
 import Dashboard from './pages/dashboard'
 
 function App () {
-  //const [message, setMessage] = useState('')
-
   return (
     <BrowserRouter>
       {/*Routes for the different pages. If it can be reached,
