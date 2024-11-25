@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from Configuration.config import app
+from configuration.config import app
 
 # Centralizovane definicije
 engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])

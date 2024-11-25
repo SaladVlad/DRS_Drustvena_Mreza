@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.css'
 
 import LoginPage from './pages/login'
 import RegisterPage from './pages/register'
@@ -14,7 +14,7 @@ function App () {
       {/*Routes for the different pages. If it can be reached,
      enter the route to it here*/}
       <Routes>
-        <Route index element={<LoginPage />} />
+        <Route exact path='/' element={<LoginPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/home' element={<Dashboard />} />
