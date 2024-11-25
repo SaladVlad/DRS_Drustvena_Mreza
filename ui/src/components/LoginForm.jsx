@@ -1,18 +1,24 @@
 import React, { useState } from 'react'
+import { login } from '../services/auth'
 
-const LoginForm = () => {
+const LoginForm = props => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = e => {
-    e.preventDefault()
-    console.log(`Username: ${username}, Password: ${password}`)
+  const handleLogin = event => {
+    event.preventDefault()
+    login(username, password)
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ margin: '0 auto', maxWidth: '300px' }}>
+    <form
+      onSubmit={handleLogin}
+      style={{ margin: '0 auto', maxWidth: '300px' }}
+    >
       <div className='form-group' style={{ marginBottom: '10px' }}>
-        <label htmlFor='username' style={{ marginRight: '10px' }}>Username:</label>
+        <label htmlFor='username' style={{ marginRight: '10px' }}>
+          Username:
+        </label>
         <input
           id='username'
           type='text'
@@ -23,7 +29,9 @@ const LoginForm = () => {
         />
       </div>
       <div className='form-group' style={{ marginBottom: '10px' }}>
-        <label htmlFor='password' style={{ marginRight: '10px' }}>Password:</label>
+        <label htmlFor='password' style={{ marginRight: '10px' }}>
+          Password:
+        </label>
         <input
           id='password'
           type='password'
@@ -43,4 +51,3 @@ const LoginForm = () => {
 }
 
 export default LoginForm
-

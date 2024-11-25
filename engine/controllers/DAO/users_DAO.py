@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP
 from db import Base, Session  # Uvozimo centralizovane definicije
 from sqlalchemy import exc
+from hashlib import sha256
 
 class User(Base):
     __tablename__ = 'user'
@@ -22,6 +23,7 @@ def create_user(**kwargs):
     session = Session()  # Kreiranje sesije unutar funkcije, preporuceno da svaka fja ima svoju sesiju ka bazi
     try:
         new_user = User(**kwargs)
+        new_user.password = sha256(new_user.password.encode()).hexdigest()
         new_user.is_admin = False
         new_user.is_blocked = False
         session.add(new_user)
@@ -46,9 +48,14 @@ def read_user(user_id):
 def read_users():
     session = Session()
     try:
-        return session.query(User).all()
+        users = session.query(User).all()
+        print(users)
+        if users is None or len(users) == 0:
+            return []
+        return users
     except Exception as e:
-        return None
+        print(e)
+        return []
     finally:
         session.close()
 

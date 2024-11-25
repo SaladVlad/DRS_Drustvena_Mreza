@@ -1,7 +1,9 @@
-CREATE USER 'user'@'%' IDENTIFIED BY 'ftn123';
+CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'ftn123';
 GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION;
-CREATE USER 'user'@'localhost' IDENTIFIED BY 'ftn123';
+FLUSH PRIVILEGES;
+CREATE USER IF NOT EXISTS 'user'@'localhost' IDENTIFIED BY 'ftn123';
 GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
 
 CREATE DATABASE IF NOT EXISTS social_network;
 USE social_network;
@@ -61,13 +63,15 @@ CREATE TABLE IF NOT EXISTS rejection_log (
 -- Dodavanje administratora
 INSERT INTO user (username, email, password, first_name, last_name, address, city, state, phone_number, is_admin) 
 VALUES 
-('admin', 'admin@example.com', 'hashed_password_123', 'Admin', 'Adminovic', 'Bulevar Evrope 24', 'Novi Sad', 'Srbija', '123456789', 1);
+('admin', 'admin@example.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Admin', 'Adminovic', 'Bulevar Evrope 24', 'Novi Sad', 'Srbija', '123456789', 1);
+-- lozinka za admina je admin123
 
 -- Dodavanje običnih korisnika
 INSERT INTO user (username, email, password, first_name, last_name, address, city, state, phone_number) 
 VALUES 
-('bojana123', 'bojana123@gmail.com', 'hashed_password_123', 'Bojana', 'Mihajlovic', 'Marsala Tita 124', 'Lajkovac', 'Srbija', '123123123'),
-('marko_m', 'marko@gmail.com', 'hashed_password_123', 'Marko', 'Markovic', 'Nemanjina 45', 'Beograd', 'Srbija', '987654321');
+('bojana123', 'bojana123@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Bojana', 'Mihajlovic', 'Marsala Tita 124', 'Lajkovac', 'Srbija', '123123123'),
+('marko_m', 'marko@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Marko', 'Markovic', 'Nemanjina 45', 'Beograd', 'Srbija', '987654321');
+--lozinka za ostale je lozinka123
 
 -- Dodavanje prijateljskih zahteva
 INSERT INTO friendship (user_id, friend_id, status) 
