@@ -8,14 +8,14 @@ export const login = async (username, password) => {
     })
     if (response.status !== 200) {
       console.error('error while logging in')
-      return false
+      return { status: 'ERROR', error: 'Unexpected response status' };
     } else {
       sessionStorage.setItem('token', response.data.token)
-      return true
+      return {status: 'OK', token: response.data.token};
     }
   } catch (error) {
-    console.error(error)
-    return false
+    console.error('Login error:', error);
+    return { status: 'ERROR', error: error.message || 'Login failed' };
   }
 }
 
