@@ -2,6 +2,7 @@ import React from 'react'
 import LoginForm from '../components/LoginForm'
 
 const LoginPage = () => {
+  
   return (
     <div
       className='d-flex justify-content-center align-items-center vh-100'
@@ -19,3 +20,4 @@ const LoginPage = () => {
 }
 
 export default LoginPage
+
