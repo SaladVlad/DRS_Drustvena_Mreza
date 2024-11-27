@@ -8,22 +8,22 @@ export const login = async (username, password) => {
     })
     if (response.status !== 200) {
       console.error('error while logging in')
-      return { status: 'ERROR', error: 'Unexpected response status' };
+      return { status: 'ERROR', error: 'Unexpected response status' }
     } else {
       sessionStorage.setItem('token', response.data.token)
-      return {status: 'OK', token: response.data.token};
+      return { status: 'OK', token: response.data.token }
     }
   } catch (error) {
-    console.error('Login error:', error);
-    return { status: 'ERROR', error: error.message || 'Login failed' };
+    console.error('Login error:', error)
+    return { status: 'ERROR', error: error.message || 'Login failed' }
   }
 }
 
 export const checkAdminStatus = async () => {
   const token = sessionStorage.getItem('token') // Replace with sessionStorage if applicable
-
+  console.log(token)
   try {
-    const response = await axios.get('http://localhost:3000/api/auth/isadmin', {
+    const response = await axios.get('http://localhost:5000/api/auth/isadmin', {
       headers: {
         Authorization: `Bearer ${token}` // Include the JWT token in the Authorization header
       }

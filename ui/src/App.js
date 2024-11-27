@@ -6,6 +6,7 @@ import LoginPage from './pages/login'
 import RegisterPage from './pages/register'
 import Dashboard from './pages/dashboard'
 
+
 function App () {
   return (
     <BrowserRouter>

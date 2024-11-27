@@ -3,34 +3,34 @@ import { login } from '../services/auth'
 import { useNavigate } from 'react-router-dom'
 
 const LoginForm = props => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
 
-  const handleLogin = async (event) => {
+  const handleLogin = async event => {
     event.preventDefault()
-    setError('');
+    setError('')
 
     try {
-      const response = await login(username, password);
-      if(response.status === 'OK') {
-        console.log('Login successful, navigating to /home...');
-        navigate('/home');
+      const response = await login(username, password)
+      if (response.status === 'OK') {
+        console.log('Login successful, navigating to /home...')
+        navigate('/home')
       } else {
-        setError(response.error || 'Login failed');
+        setError(response.error || 'Login failed')
       }
     } catch (error) {
-      setError('An error occurred while logging in');
-      console.log(error);
+      setError('An error occurred while logging in')
+      console.log(error)
     }
-  };
+  }
 
   return (
     <form
       onSubmit={handleLogin}
       style={{ margin: '0 auto', maxWidth: '300px' }}
-    > 
+    >
       <div className='form-group' style={{ marginBottom: '10px' }}>
         <label htmlFor='username' style={{ marginRight: '10px' }}>
           Username:

@@ -4,7 +4,8 @@ from hashlib import sha256
 
 def check_if_admin():
     claims = get_jwt()  # Retrieves all claims from the JWT
-    return claims.get("is_admin", False)  # Extract 'is_admin', default to False
+    is_admin = claims.get("is_admin", False)
+    return {"is_admin": is_admin}, 200
 
 def login_user(**kwargs):
     username = kwargs.get("username")
@@ -25,10 +26,10 @@ def login_user(**kwargs):
     
     # Create token with identity and additional claims
     additional_claims = {
-        "user_id": user.user_id,
+        "user_id": str(user.user_id),
         "username": user.username,
         "is_admin": user.is_admin
     }
-    access_token = create_access_token(identity=user.user_id, additional_claims=additional_claims)
+    access_token = create_access_token(identity=str(user.user_id), additional_claims=additional_claims)
 
     return {"status": "OK", "token": access_token}, 200
