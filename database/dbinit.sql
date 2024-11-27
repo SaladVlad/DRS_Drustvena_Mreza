@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS post (
     post_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     content TEXT,
-    image_url VARCHAR(255),
+    image MEDIUMBLOB, -- can store up to 16MB of data
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
