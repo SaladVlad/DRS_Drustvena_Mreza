@@ -21,18 +21,14 @@ export const login = async (username, password) => {
 
 export const checkAdminStatus = async () => {
   const token = sessionStorage.getItem('token') // Replace with sessionStorage if applicable
-  console.log(token)
   try {
     const response = await axios.get('http://localhost:5000/api/auth/isadmin', {
       headers: {
         Authorization: `Bearer ${token}` // Include the JWT token in the Authorization header
       }
     })
-    if (response.data.is_admin) {
-      console.log('User is an admin')
-    } else {
-      console.log('User is not an admin')
-    }
+    console.log('Admin status:', response.data.is_admin)
+    return response.data.is_admin
   } catch (error) {
     if (error.response) {
       // Server responded with a status other than 2xx
@@ -45,5 +41,6 @@ export const checkAdminStatus = async () => {
       // Error setting up the request
       console.error('Error setting up request:', error.message)
     }
+    return false
   }
 }
