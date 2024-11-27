@@ -9,6 +9,17 @@ export const fetchUsers = async () => {
   }
 }
 
+export const fetchUserById = async userId => {
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/api/users/${userId}`
+    )
+    return response.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const fetchBlockedUsers = async () => {
   try {
     const response = await axios.get(
