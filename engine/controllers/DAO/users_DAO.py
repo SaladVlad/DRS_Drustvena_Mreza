@@ -36,15 +36,27 @@ def create_user(**kwargs):
     finally:
         session.close()
 
+from flask import jsonify
+
 def read_user(user_id):
     session = Session()
     try:
         print(user_id)
-        return session.query(User).filter_by(user_id=user_id).first()
+        # Query the User model to find the user by their ID
+        user = session.query(User).filter_by(user_id=user_id).first()
+
+        if user:
+            # Convert user object to dictionary or use a to_dict method if you have one
+            user_dict = {column.name: getattr(user, column.name) for column in User.__table__.columns}
+            return user_dict
+        else:
+            return None  # No user found
     except Exception as e:
-        return None
+        print(f"Error: {e}")
+        return None  # Return None in case of an exception
     finally:
         session.close()
+
 
 def read_users():
     session = Session()
