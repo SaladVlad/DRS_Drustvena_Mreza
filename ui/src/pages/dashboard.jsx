@@ -26,13 +26,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <NavBar
-        items={[
-          { name: 'Home', to: '/home' },
-          { name: 'Login', to: '/login' },
-          { name: 'Register', to: '/register' }
-        ]}
-      />
+      <NavBar />
       {checkAdminStatus() ? (
         <div>
           <h2>ADMIN PANEL</h2>

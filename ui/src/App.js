@@ -4,8 +4,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import LoginPage from './pages/login'
 import RegisterPage from './pages/register'
+import FriendsPage from './pages/friends'
+import ProfilePage from './pages/profile'
 import Dashboard from './pages/dashboard'
-
 
 function App () {
   return (
@@ -17,6 +18,8 @@ function App () {
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/home' element={<Dashboard />} />
+        <Route path='/friends' element={<FriendsPage />} />
+        <Route path='/profile' element={<ProfilePage />} />
         <Route path='*' element={<div>Page not found</div>} />
       </Routes>
     </BrowserRouter>
