@@ -28,8 +28,7 @@ export const checkAdminStatus = async () => {
         Authorization: `Bearer ${token}` // Include the JWT token in the Authorization header
       }
     })
-
-    if (response.data.isAdmin) {
+    if (response.data.is_admin) {
       console.log('User is an admin')
     } else {
       console.log('User is not an admin')

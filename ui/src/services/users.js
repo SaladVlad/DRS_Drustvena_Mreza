@@ -1,5 +1,9 @@
 import axios from 'axios'
 
+const token = sessionStorage.getItem('token')
+
+axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
+
 export const fetchUsers = async () => {
   try {
     const response = await axios.get('http://localhost:5000/api/admin/allusers')
@@ -41,3 +45,4 @@ export const unblockUser = async userId => {
     console.error(error)
   }
 }
+
