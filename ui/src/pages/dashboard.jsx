@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import NavBar from '../components/NavBar'
 import { fetchUsers, fetchBlockedUsers, unblockUser } from '../services/users'
 import { checkAdminStatus } from '../services/auth'
+import PostCreationForm from './../components/PostCreationForm'
 
 const Dashboard = () => {
   const [users, setUsers] = useState([])
@@ -53,7 +54,20 @@ const Dashboard = () => {
               ))}
           </ul>
         </div>
-      ) : null}
+      ) : (
+        <div>
+          <PostCreationForm />
+          <h2>Feed</h2>
+          <ul>
+            {users &&
+              users.map(user => (
+                <li key={user.id}>
+                  ID: {user.id}, Username: {user.username}
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }
