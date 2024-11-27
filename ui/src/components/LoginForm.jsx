@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { login } from '../services/auth'
 import { useNavigate } from 'react-router-dom'
 
@@ -7,6 +7,12 @@ const LoginForm = props => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (sessionStorage.getItem('token')) {
+      navigate('/home')
+    }
+  }, [navigate])
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -57,6 +63,7 @@ const LoginForm = props => {
           className='form-control'
         />
       </div>
+      {error && <div className="alert alert-danger">{error}</div>}
       <div style={{ textAlign: 'center' }}>
         <button type='submit' className='btn btn-primary'>
           Login
@@ -67,3 +74,4 @@ const LoginForm = props => {
 }
 
 export default LoginForm
+

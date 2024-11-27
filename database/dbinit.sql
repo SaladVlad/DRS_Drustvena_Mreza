@@ -80,7 +80,7 @@ VALUES
 (3, 2, 'accepted');  -- Marko prihvata zahtev Bojane
 
 -- Dodavanje objava
-INSERT INTO post (user_id, content, image_url, status) 
+INSERT INTO post (user_id, content, image, status) 
 VALUES 
 (2, 'Lep dan za šetnju!', NULL, 'approved'), 
 (3, 'Uzivam u novoj knjizi.', NULL, 'pending');

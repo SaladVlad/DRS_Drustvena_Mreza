@@ -3,8 +3,8 @@ import { createPost } from '../services/posts' // assuming this function exists 
 
 const PostCreationForm = () => {
   const [formData, setFormData] = useState({
-    title: '',
-    body: '',
+    user_id: '',
+    content: '',
     image: null
   })
 
@@ -26,7 +26,12 @@ const PostCreationForm = () => {
   const handleSubmit = async e => {
     e.preventDefault()
     try {
-      await createPost(formData)
+      await createPost({
+        user_id: formData.user_id,
+        content: formData.content,
+        image: formData.image,
+        status: 'pending'
+      })
       console.log('Post created successfully')
       // Reset form or redirect as needed
     } catch (error) {
@@ -43,7 +48,7 @@ const PostCreationForm = () => {
             type='text'
             id='title'
             name='title'
-            value={formData.title}
+            value={formData.user_id}
             onChange={handleChange}
             placeholder='Enter title'
             className='form-control'
@@ -54,7 +59,7 @@ const PostCreationForm = () => {
           <textarea
             id='body'
             name='body'
-            value={formData.body}
+            value={formData.text}
             onChange={handleChange}
             placeholder='Enter body text'
             className='form-control'
@@ -70,11 +75,12 @@ const PostCreationForm = () => {
             className='form-control'
           />
         </div>
-        <button type='submit' className='btn btn-primary'>Submit</button>
+        <button type='submit' className='btn btn-primary'>
+          Submit
+        </button>
       </form>
     </div>
   )
 }
 
 export default PostCreationForm
-
