@@ -1,8 +1,22 @@
 import axios from 'axios'
+import {jwtDecode} from 'jwt-decode';
 
 const token = sessionStorage.getItem('token')
 
 axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
+
+const getUserIdFromToken = () => {
+  if(!token) return null;
+
+  try{
+    const decodedToken = jwtDecode(token);
+    return decodedToken.sub;
+  }
+  catch(error) {
+    console.error('Invalid token:', error);
+    return null;
+  }
+}
 
 export const fetchUsers = async () => {
   try {
@@ -13,16 +27,23 @@ export const fetchUsers = async () => {
   }
 }
 
-export const fetchUserById = async userId => {
+export const fetchUserById = async () => {
+  const userId = getUserIdFromToken(); // Extract the user ID
+  if (!userId) {
+    console.error('User ID not found in token');
+    return null; // Handle missing or invalid user ID
+  }
+
   try {
     const response = await axios.get(
-      `http://localhost:5000/api/users/${userId}`
-    )
-    return response.data
+      `http://localhost:5000/api/users/${userId}` // API call to fetch user details
+    );
+    return response.data; // Return the response data
   } catch (error) {
-    console.error(error)
+    console.error('Error fetching user by ID:', error); // Handle errors from the API call
+    throw error; // Re-throw the error for upstream handling
   }
-}
+};
 
 export const fetchBlockedUsers = async () => {
   try {

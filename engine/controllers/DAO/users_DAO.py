@@ -39,6 +39,7 @@ def create_user(**kwargs):
 def read_user(user_id):
     session = Session()
     try:
+        print(user_id)
         return session.query(User).filter_by(user_id=user_id).first()
     except Exception as e:
         return None
