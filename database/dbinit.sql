@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS user (
     phone_number VARCHAR(16),
     is_admin TINYINT DEFAULT 0,
     is_blocked TINYINT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    first_login TINYINT DEFAULT 1
 );
 
 -- Tabela za prijateljstva između korisnika
