@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react'
-
-import { fetchUsers } from '../services/users'
+import React, { useEffect, useState, useRef } from 'react'
+import { fetchUsers, fetchBlockedUsers, unblockUser } from '../services/users'
+import { createPopper } from '@popperjs/core'
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([])
+  const [blockedUsers, setBlockedUsers] = useState([])
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const buttonRef = useRef(null)
+  const listRef = useRef(null)
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -13,34 +17,86 @@ const AdminDashboard = () => {
       }
     }
 
+    const fetchAllBlockedUsers = async () => {
+      const blockedUsers = await fetchBlockedUsers()
+      if (blockedUsers) {
+        setBlockedUsers(blockedUsers)
+      }
+    }
+
     fetchAllUsers()
+    fetchAllBlockedUsers()
   }, [])
 
-  return (
-    <div>
-      <h2>ADMIN PANEL</h2>
-      <h2>ALL APP USERS</h2>
-      <ul>
-        {users &&
-          users.map(user => (
-            <li key={user.id}>
-              ID: {user.id}, Username: {user.username}
-            </li>
-          ))}
-      </ul>
+  useEffect(() => {
+    if (buttonRef.current && listRef.current) {
+      const popper = createPopper(buttonRef.current, listRef.current, {
+        placement: 'bottom',
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, 8]
+            }
+          }
+        ]
+      })
 
-      {/* <h2>ALL BLOCKED USERS</h2>
-      <ul>
-        {blockedUsers &&
-          blockedUsers.map(user => (
-            <li key={user.id}>
+      return () => {
+        popper.destroy()
+      }
+    }
+  }, [dropdownOpen])
+
+  const onUnblock = async userId => {
+    await unblockUser(userId)
+    setBlockedUsers(prev => prev.filter(user => user.id !== userId))
+  }
+
+  return (
+    <div className='container mt-5'>
+      <h2 className='text-center'>ADMIN PANEL</h2>
+      
+      <div className='my-4'>
+        <h3>ALL APP USERS</h3>
+        <ul className='list-group'>
+          {users.map(user => (
+            <li key={user.id} className='list-group-item'>
               ID: {user.id}, Username: {user.username}
-              <button onClick={() => onUnblock(user.id)}>Unblock</button>
             </li>
           ))}
-      </ul> */}
+        </ul>
+      </div>
+
+      <div className='my-4'>
+        <button
+          className='btn btn-secondary'
+          ref={buttonRef}
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+        >
+          Toggle Blocked Users
+        </button>
+        <ul
+          ref={listRef}
+          className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`}
+          style={{ display: dropdownOpen ? 'block' : 'none' }}
+        >
+          {blockedUsers.map(user => (
+            <li key={user.id} className='dropdown-item'>
+              ID: {user.id}, Username: {user.username}
+              <button
+                className='btn btn-link'
+                onClick={() => onUnblock(user.id)}
+              >
+                Unblock
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }
 
 export default AdminDashboard
+

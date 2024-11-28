@@ -1,48 +1,50 @@
 import React, { useState, useEffect } from 'react'
-import { getFriendsFromCurrentUser, removeFriend } from '../services/friends.js'
+import '../services/users'
+import { removeFriend } from '../services/friends'
+import { fetchUserById, getUserIdFromToken } from '../services/users'
 
-const FriendComponent = () => {
-  const [friends, setFriends] = useState([])
+const FriendComponent = ({ friendId }) => {
+  const [friend, setFriend] = useState(null)
+  const [userId, setUserId] = useState(null)
 
   useEffect(() => {
-    const fetchFriends = async () => {
-      const fetchedFriends = await getFriendsFromCurrentUser()
-      if (fetchedFriends) {
-        setFriends(fetchedFriends)
+    const fetchUserId = async () => {
+      const userId = await getUserIdFromToken()
+      if (userId) {
+        setUserId(userId)
       }
     }
-    fetchFriends()
-  }, [])
+    const fetchFriend = async () => {
+      const fetchedFriend = await fetchUserById(friendId)
+      if (fetchedFriend) {
+        setFriend(fetchedFriend)
+        console.log(friend)
+      }
+    }
+    fetchUserId()
+    fetchFriend()
+  }, [friendId])
 
-  const handleRemoveFriend = async friendId => {
-    const result = await removeFriend(friendId)
+  const handleRemoveFriend = async () => {
+    const result = await removeFriend(userId, friendId)
     if (result) {
-      setFriends(prevFriends =>
-        prevFriends.filter(friend => friend.id !== friendId)
-      )
+      setFriend(null)
     }
   }
 
   return (
     <div>
-      <h1>Friend Component</h1>
-      {/*if friends is empty, say the friends is empty */}
-      {friends.length === 0 ? (
-        <p>You don't have any friends.</p>
+      {friend ? (
+        <>
+          <p>Username: {friend.username}</p>
+          <p>Email: {friend.email}</p>
+          <button onClick={handleRemoveFriend}>Remove Friend</button>
+        </>
       ) : (
-        friends.map(friend => (
-          <div key={friend.id}>
-            <p>Username: {friend.username}</p>
-            <p>Email: {friend.email}</p>
-            <button onClick={() => handleRemoveFriend(friend.id)}>
-              Remove Friend
-            </button>
-          </div>
-        ))
+        <p>Friend doesn't exist.</p>
       )}
     </div>
   )
 }
 
 export default FriendComponent
-

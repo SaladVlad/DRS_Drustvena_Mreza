@@ -10,7 +10,7 @@ export const getUserIdFromToken = async () => {
 
   try {
     const decodedToken = jwtDecode(token)
-    console.log('Decoded token:', decodedToken)
+    //console.log('Decoded token:', decodedToken)
     return Number(decodedToken.sub)
   } catch (error) {
     console.error('Invalid token:', error)

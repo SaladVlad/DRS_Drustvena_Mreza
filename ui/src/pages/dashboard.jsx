@@ -1,38 +1,49 @@
 import React, { useEffect, useState } from 'react'
+import { Spinner } from 'react-bootstrap'
 import NavBar from '../components/NavBar'
 import { checkAdminStatus } from '../services/auth'
-import AdminDashboard from '../components/AdminDashboard'
 import UserDashboard from '../components/UserDashboard'
+import AdminDashboard from '../components/AdminDashboard' // Add the admin dashboard component
 
 const Dashboard = () => {
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(null) // Track admin status
 
   useEffect(() => {
-    // Check admin status and fetch data
+    // Simulate checking admin status
     const initializeDashboard = async () => {
-      const adminStatus = await checkAdminStatus()
-      setIsAdmin(adminStatus)
+      // Assuming `checkAdminStatus` is a function that fetches the admin status
+      const status = await checkAdminStatus() // This should return true/false
+      setIsAdmin(status)
+      setLoading(false)
     }
 
     initializeDashboard()
-  }, [])
+  }, []) // Empty dependency array means this runs once when component mounts
 
-  // const handleUnblock = async userId => {
-  //   const response = await unblockUser(userId)
-  //   if (response?.success) {
-  //     // Update the blockedUsers list by filtering out the unblocked user
-  //     setBlockedUsers(prevBlockedUsers =>
-  //       prevBlockedUsers.filter(user => user.id !== userId)
-  //     )
-  //   } else {
-  //     console.error('Failed to unblock the user')
-  //   }
-  // }
+  // Show loading spinner until admin status is fetched
+  if (loading) {
+    return (
+      <div
+        className='d-flex justify-content-center align-items-center'
+        style={{ minHeight: '100vh' }}
+      >
+        <Spinner animation='border' role='status'>
+          <span className='visually-hidden'>Loading...</span>
+        </Spinner>
+      </div>
+    )
+  }
 
   return (
     <div>
-      <NavBar />
-      {isAdmin ? <AdminDashboard /> : <UserDashboard />}
+      <NavBar /> {/* Always show NavBar */}
+      {/* Conditionally render the correct dashboard based on the admin status */}
+      {isAdmin ? (
+        <AdminDashboard /> // Show Admin Dashboard for admin users
+      ) : (
+        <UserDashboard /> // Show User Dashboard for non-admin users
+      )}
     </div>
   )
 }
