@@ -5,7 +5,7 @@ const token = sessionStorage.getItem('token')
 
 axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
 
-const getUserIdFromToken = async () => {
+export const getUserIdFromToken = async () => {
   if (!token) return null
 
   try {
@@ -27,7 +27,6 @@ export const fetchUsers = async () => {
     console.error(error)
   }
 }
-
 
 export const register = async user => {
   try {
