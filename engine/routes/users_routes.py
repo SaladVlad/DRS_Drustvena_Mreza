@@ -39,6 +39,22 @@ def find_by_username_and_email():
 
 
 @users_bp.route('/<int:user_id>', methods=['PUT'])
-def update_user(user_id):
+def update_user_endpoint(user_id):
     data = request.get_json()
-    return update(user_id, **data)
+
+    if not data:
+        return jsonify({"error": "Invalid payload"}), 400
+
+    # Remove read-only fields from payload
+    read_only_fields = {"created_at", "user_id"}
+    filtered_data = {key: value for key, value in data.items() if key not in read_only_fields}
+
+    # Update user
+    user, error = update_user(user_id, **filtered_data)
+
+    if error:
+        return jsonify({"error": error}), 404
+    return jsonify({
+    "message": "User updated successfully",
+    "user": {col.name: getattr(user, col.name) for col in User.__table__.columns}
+    }), 200

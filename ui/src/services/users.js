@@ -124,3 +124,21 @@ export const unblockUser = async userId => {
     console.error(error)
   }
 }
+export const updateUser = async (userId, updatedData) => {
+  try {
+    const response = await axios.put(
+      `http://localhost:5000/api/users/${userId}`,
+      updatedData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("User updated:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
+}

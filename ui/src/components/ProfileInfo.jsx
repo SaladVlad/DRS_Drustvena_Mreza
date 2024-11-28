@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { fetchUserById } from "../services/users";
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
+import { fetchUserById, updateUser } from "../services/users";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const ProfileInfo = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editing, setEditing] = useState(false); // Track if in edit mode
+  const [formData, setFormData] = useState({}); // Form state for edited data
 
   useEffect(() => {
     const getUserData = async () => {
@@ -13,6 +15,7 @@ const ProfileInfo = () => {
         const userData = await fetchUserById();
         if (userData) {
           setUser(userData);
+          setFormData(userData); // Initialize form with current user data
         } else {
           setError("User not found");
         }
@@ -23,8 +26,26 @@ const ProfileInfo = () => {
       }
     };
 
-    getUserData(); // Call the function to fetch data
-  }, []); // Empty dependency array ensures the effect runs once when the component mounts
+    getUserData();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSaveChanges = async () => {
+    // Exclude read-only fields from the payload
+    const { created_at, user_id, ...editableData } = formData;
+
+    try {
+      const updatedUser = await updateUser(user.user_id, editableData);
+      setUser(updatedUser); // Update user state with the saved changes
+      setEditing(false); // Exit edit mode
+    } catch (err) {
+      setError("Failed to update user information.");
+    }
+  };
 
   if (loading) {
     return (
@@ -61,41 +82,135 @@ const ProfileInfo = () => {
         <div className="card-body">
           <div className="row mb-3">
             <div className="col-md-6">
-              <p><strong>Username:</strong> {user.username}</p>
+              <strong>Username:</strong>
             </div>
             <div className="col-md-6">
-              <p><strong>Email:</strong> {user.email}</p>
+              {editing ? (
+                <input
+                  type="text"
+                  className="form-control"
+                  name="username"
+                  value={formData.username || ""}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <p>{user.username || "N/A"}</p>
+              )}
             </div>
           </div>
           <div className="row mb-3">
             <div className="col-md-6">
-              <p><strong>First Name:</strong> {user.first_name}</p>
+              <strong>Email:</strong>
             </div>
             <div className="col-md-6">
-              <p><strong>Last Name:</strong> {user.last_name}</p>
+              {editing ? (
+                <input
+                  type="email"
+                  className="form-control"
+                  name="email"
+                  value={formData.email || ""}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <p>{user.email || "N/A"}</p>
+              )}
             </div>
           </div>
           <div className="row mb-3">
             <div className="col-md-6">
-              <p><strong>Address:</strong> {user.address || "N/A"}</p>
+              <strong>First Name:</strong>
             </div>
             <div className="col-md-6">
-              <p><strong>City:</strong> {user.city || "N/A"}</p>
+              {editing ? (
+                <input
+                  type="text"
+                  className="form-control"
+                  name="first_name"
+                  value={formData.first_name || ""}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <p>{user.first_name || "N/A"}</p>
+              )}
             </div>
           </div>
           <div className="row mb-3">
             <div className="col-md-6">
-              <p><strong>State:</strong> {user.state || "N/A"}</p>
+              <strong>Last Name:</strong>
             </div>
             <div className="col-md-6">
-              <p><strong>Phone Number:</strong> {user.phone_number || "N/A"}</p>
+              {editing ? (
+                <input
+                  type="text"
+                  className="form-control"
+                  name="last_name"
+                  value={formData.last_name || ""}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <p>{user.last_name || "N/A"}</p>
+              )}
             </div>
           </div>
-          <div className="row">
-            <div className="col-md-12 text-center">
-              <p><strong>Created At:</strong> {new Date(user.created_at).toLocaleString()}</p>
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <strong>Phone:</strong>
+            </div>
+            <div className="col-md-6">
+              {editing ? (
+                <input
+                  type="text"
+                  className="form-control"
+                  name="phone"
+                  value={formData.phone || ""}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <p>{user.phone || "N/A"}</p>
+              )}
             </div>
           </div>
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <strong>Address:</strong>
+            </div>
+            <div className="col-md-6">
+              {editing ? (
+                <textarea
+                  className="form-control"
+                  name="address"
+                  value={formData.address || ""}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <p>{user.address || "N/A"}</p>
+              )}
+            </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <strong>Created At:</strong>
+            </div>
+            <div className="col-md-6">
+              <p>{new Date(user.created_at).toLocaleString() || "N/A"}</p>
+            </div>
+          </div>
+        </div>
+        <div className="card-footer text-center">
+          {editing ? (
+            <>
+              <button className="btn btn-success me-2" onClick={handleSaveChanges}>
+                Save Changes
+              </button>
+              <button className="btn btn-secondary" onClick={() => setEditing(false)}>
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button className="btn btn-primary" onClick={() => setEditing(true)}>
+              Edit Profile
+            </button>
+          )}
         </div>
       </div>
     </div>

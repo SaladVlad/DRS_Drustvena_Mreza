@@ -118,24 +118,31 @@ def read_blocked_users():
     finally:
         session.close()
 
-def update_user(**kwargs):
+def update_user(user_id, **kwargs):
     session = Session()
     try:
-        user_id = kwargs['user_id']
-        user = read_user(user_id)
-        if user is None:
+        # Fetch the user to update
+        user = session.query(User).filter_by(user_id=user_id).first()
+        if not user:
             return None, "User not found"
+
+        # Define read-only fields
+        read_only_fields = {"created_at", "user_id"}
+
+        # Update only allowed fields
         for key, value in kwargs.items():
-            if key != 'user_id':
+            if key not in read_only_fields and hasattr(user, key):
                 setattr(user, key, value)
+
+        # Commit changes
         session.commit()
         return user, None
     except Exception as e:
+        # Rollback on error
         session.rollback()
         raise e
     finally:
         session.close()
-
 
 def delete_user(user_id):
     session = Session()
