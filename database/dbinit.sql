@@ -1,3 +1,5 @@
+SHOW WARNINGS;
+
 CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'ftn123';
 GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
@@ -26,15 +28,16 @@ CREATE TABLE IF NOT EXISTS user (
     first_login TINYINT DEFAULT 1
 );
 
--- Tabela za prijateljstva između korisnika
 CREATE TABLE IF NOT EXISTS friendship (
-    friendship_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    friend_id INT NOT NULL,
+    user_id INT NOT NULL,  -- Id korisnika
+    friend_id INT NOT NULL,  -- Id sa kojima je taj korisnik prijatelj (uvek ce biti vise od user_id)
+    initiator_id INT NOT NULL,  -- Onaj koji je inicijator zahteva (kako bi se znalo ko moze da prihvati zahtev)
     status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
-    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(user_id),
-    FOREIGN KEY (friend_id) REFERENCES user(user_id)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, friend_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (friend_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    CHECK (user_id < friend_id) -- Provera da je user_id1 manji od user_id2
 );
 
 -- Tabela za objave
@@ -47,8 +50,6 @@ CREATE TABLE IF NOT EXISTS post (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
-
-
 
 -- Tabela za administrativno praćenje odbijenih objava i blokiranih korisnika
 CREATE TABLE IF NOT EXISTS rejection_log (
@@ -85,30 +86,19 @@ VALUES
 -- lozinka za ostale je lozinka123
 
 -- Dodavanje prijateljskih zahteva
-INSERT INTO friendship (user_id, friend_id, status) 
+-- Insert new data with initiator_id
+INSERT INTO friendship (user_id, friend_id, initiator_id, status, created_at) 
 VALUES 
-(2, 3, 'pending'),   -- Bojana šalje zahtev Marku
-(3, 2, 'accepted'),  -- Marko prihvata zahtev Bojane
-(1, 2, 'accepted'),
-(1, 3, 'pending'),
-(2, 1, 'accepted'),
-(2, 4, 'accepted'),
-(3, 1, 'pending'),
-(3, 5, 'accepted'),
-(4, 2, 'accepted'),
-(4, 6, 'pending'),
-(5, 3, 'accepted'),
-(5, 7, 'accepted'),
-(6, 4, 'pending'),
-(6, 8, 'accepted'),
-(7, 5, 'accepted'),
-(7, 9, 'accepted'),
-(8, 6, 'accepted'),
-(8, 10, 'pending'),
-(9, 7, 'accepted'),
-(9, 8, 'pending'),
-(10, 9, 'accepted'),
-(10, 8, 'pending');
+(2, 3, 2, 'pending', CURRENT_TIMESTAMP),   -- Bojana šalje zahtev Marku
+(1, 2, 1, 'accepted', CURRENT_TIMESTAMP),  -- Jovan je inicijator prijateljstva sa Bojanom
+(2, 4, 2, 'accepted', CURRENT_TIMESTAMP),  -- Bojana inicirala sa Marijom
+(3, 5, 3, 'accepted', CURRENT_TIMESTAMP),  -- Marko inicirao sa Ivanom
+(4, 6, 4, 'pending', CURRENT_TIMESTAMP),   -- Marija šalje zahtev Ani
+(5, 7, 5, 'accepted', CURRENT_TIMESTAMP),  -- Ivan inicirao sa drugim Markom
+(6, 8, 6, 'accepted', CURRENT_TIMESTAMP),  -- Ana inicirala sa Draganom
+(7, 9, 9, 'accepted', CURRENT_TIMESTAMP),  -- Petar inicirao sa Ivom
+(8, 10, 8, 'pending', CURRENT_TIMESTAMP);  -- Dragana šalje zahtev Petru
+
 
 -- Dodavanje objava
 INSERT INTO post (user_id, content, image, status) 
@@ -135,3 +125,5 @@ VALUES
 (8, 'Naučio sam nove akorde na gitari, sada sviram omiljenu pesmu!', NULL, 'approved'),
 (9, 'Počeo sam da trčim, prvi put nakon duže pauze!', NULL, 'approved'),
 (10, 'Proveo sam vikend sa porodicom, prelepo vreme!', NULL, 'approved');
+
+COMMIT;

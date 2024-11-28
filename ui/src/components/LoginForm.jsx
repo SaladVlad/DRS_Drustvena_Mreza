@@ -24,7 +24,7 @@ const LoginForm = props => {
         console.log('Login successful, navigating to /home...')
         navigate('/home')
       } else {
-        setError(response.error || 'Login failed')
+        setError('User not found! Please check your credentials')
       }
     } catch (error) {
       setError('An error occurred while logging in')
@@ -63,7 +63,7 @@ const LoginForm = props => {
           className='form-control'
         />
       </div>
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <div className='alert alert-danger'>{error}</div>}
       <div style={{ textAlign: 'center' }}>
         <button type='submit' className='btn btn-primary'>
           Login
@@ -74,4 +74,3 @@ const LoginForm = props => {
 }
 
 export default LoginForm
-

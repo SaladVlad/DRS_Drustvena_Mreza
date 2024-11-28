@@ -31,9 +31,6 @@ export const checkAdminStatus = async () => {
     return response.data.is_admin
   } catch (error) {
     if (error.response) {
-      // Server responded with a status other than 2xx
-      console.error('Error status:', error.response.status)
-      console.error('Error message:', error.response.data.message)
     } else if (error.request) {
       // No response received
       console.error('No response from server:', error.request)
