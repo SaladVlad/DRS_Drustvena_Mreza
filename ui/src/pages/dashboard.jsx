@@ -2,23 +2,38 @@ import React, { useEffect, useState } from 'react'
 import NavBar from '../components/NavBar'
 import { fetchUsers, fetchBlockedUsers, unblockUser } from '../services/users'
 import { checkAdminStatus } from '../services/auth'
-import PostCreationForm from './../components/PostCreationForm'
+import AdminDashboard from '../components/AdminDashboard'
+import UserDashboard from '../components/UserDashboard'
 
 const Dashboard = () => {
   const [users, setUsers] = useState([])
   const [blockedUsers, setBlockedUsers] = useState([])
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
-    fetchUsers().then(data => setUsers(data))
-    fetchBlockedUsers().then(data => setBlockedUsers(data))
+    // Check admin status and fetch data
+    const initializeDashboard = async () => {
+      const adminStatus = await checkAdminStatus()
+      setIsAdmin(adminStatus)
+
+      const fetchedUsers = await fetchUsers()
+      setUsers(fetchedUsers)
+
+      if (adminStatus) {
+        const fetchedBlockedUsers = await fetchBlockedUsers()
+        setBlockedUsers(fetchedBlockedUsers)
+      }
+    }
+
+    initializeDashboard()
   }, [])
 
-  const handleUnblock = async userId => {
+  const handleUnblock = async (userId) => {
     const response = await unblockUser(userId)
     if (response?.success) {
       // Update the blockedUsers list by filtering out the unblocked user
-      setBlockedUsers(prevBlockedUsers =>
-        prevBlockedUsers.filter(user => user.id !== userId)
+      setBlockedUsers((prevBlockedUsers) =>
+        prevBlockedUsers.filter((user) => user.id !== userId)
       )
     } else {
       console.error('Failed to unblock the user')
@@ -28,45 +43,14 @@ const Dashboard = () => {
   return (
     <div>
       <NavBar />
-      {checkAdminStatus() ? (
-        <div>
-          <h2>ADMIN PANEL</h2>
-          <h2>ALL APP USERS</h2>
-          <ul>
-            {users &&
-              users.map(user => (
-                <li key={user.id}>
-                  ID: {user.id}, Username: {user.username}
-                </li>
-              ))}
-          </ul>
-
-          <h2>ALL BLOCKED USERS</h2>
-          <ul>
-            {blockedUsers &&
-              blockedUsers.map(user => (
-                <li key={user.id}>
-                  ID: {user.id}, Username: {user.username}
-                  <button onClick={() => handleUnblock(user.id)}>
-                    Unblock
-                  </button>
-                </li>
-              ))}
-          </ul>
-        </div>
+      {isAdmin ? (
+        <AdminDashboard
+          users={users}
+          blockedUsers={blockedUsers}
+          onUnblock={handleUnblock}
+        />
       ) : (
-        <div>
-          <PostCreationForm />
-          <h2>Feed</h2>
-          <ul>
-            {users &&
-              users.map(user => (
-                <li key={user.id}>
-                  ID: {user.id}, Username: {user.username}
-                </li>
-              ))}
-          </ul>
-        </div>
+        <UserDashboard users={users} />
       )}
     </div>
   )
