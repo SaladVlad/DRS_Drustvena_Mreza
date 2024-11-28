@@ -1,9 +1,10 @@
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP
 from db import Base, Session  # Uvozimo centralizovane definicije
 from sqlalchemy import exc
+import pytz
 from hashlib import sha256
 from flask import jsonify
-import datetime
+from datetime import datetime
 
 class User(Base):
     __tablename__ = 'user'
@@ -20,6 +21,8 @@ class User(Base):
     is_admin = Column(Boolean, default=False)
     is_blocked = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP, nullable=False)
+    first_login = Column(Boolean, default=True)
+
 
 def create_user(username, email, password, first_name, last_name, address, city, state, phone_number):
     session = Session()
@@ -34,7 +37,7 @@ def create_user(username, email, password, first_name, last_name, address, city,
             city=city,
             state=state,
             phone_number=phone_number,
-            created_at=datetime.utcnow()
+            created_at=datetime.now(pytz.utc)
         )
         session.add(new_user)
         session.commit()
@@ -90,8 +93,11 @@ def find_user_by_username_or_email(username=None, email=None):
         query = session.query(User)
         if username:
             query = query.filter_by(username=username)
+            print(f"Filtering by username: {username}")
         if email:
             query = query.filter_by(email=email)
+            print(f"Filtering by email: {email}")
+        print(f"Query: {query}")
 
         user = query.first()
 
@@ -99,7 +105,7 @@ def find_user_by_username_or_email(username=None, email=None):
             user_dict = {column.name: getattr(user, column.name) for column in User.__table__.columns}
             return user_dict
         else:
-            return None  # No user found
+            return None
     finally:
         session.close()
 def read_blocked_users():

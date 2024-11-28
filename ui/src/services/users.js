@@ -10,6 +10,7 @@ const getUserIdFromToken = async () => {
 
   try {
     const decodedToken = jwtDecode(token)
+    console.log('Decoded token:', decodedToken)
     return Number(decodedToken.sub)
   } catch (error) {
     console.error('Invalid token:', error)
@@ -20,6 +21,7 @@ const getUserIdFromToken = async () => {
 export const fetchUsers = async () => {
   try {
     const response = await axios.get('http://localhost:5000/api/admin/allusers')
+    console.log('Fetched users:', response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -28,12 +30,12 @@ export const fetchUsers = async () => {
 
 export const register = async user => {
   try {
-    console.log('user', user)
+    console.log('Registering user:', user)
     const existingUser = await fetchUserByUsernameOrEmail(
       user.username,
       user.email
     )
-    console.log(existingUser)
+    console.log('Existing user:', existingUser)
     if (existingUser) {
       console.error('User with username and email already registered')
       return
@@ -43,6 +45,7 @@ export const register = async user => {
         'Content-Type': 'application/json' // Only necessary header for JSON payload
       }
     })
+    console.log('Registered user:', response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -63,6 +66,7 @@ export const fetchUserById = async (user_id = null) => {
     const response = await axios.get(
       `http://localhost:5000/api/users/${user_id}` // API call to fetch user details
     )
+    console.log('Fetched user by ID:', response.data)
     return response.data // Return the response data
   } catch (error) {
     console.error('Error fetching user by ID:', error) // Handle errors from the API call
@@ -78,15 +82,22 @@ export const fetchUserByUsernameOrEmail = async (
     const response = await axios.get(
       'http://localhost:5000/api/users/findbyusernameandemail',
       {
-        params: { username, email }, // Use query parameters
+        params: { username, email },
         headers: {
           'Content-Type': 'application/json' // This is sufficient for most cases
         }
       }
     )
+    console.log('Fetched user by username and email:', response.data)
     return response.data
   } catch (error) {
-    console.error(error)
+    // Check for a 404 error and suppress logging for not found errors
+    if (error.response && error.response.status === 404) {
+      console.log('User not found, 404 response')
+      return null // Return null when user is not found
+    } else {
+      console.error('Error fetching user by username and email:', error)
+    }
   }
 }
 
@@ -95,6 +106,7 @@ export const fetchBlockedUsers = async () => {
     const response = await axios.get(
       'http://localhost:5000/api/admin/blockedusers'
     )
+    console.log('Fetched blocked users:', response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -106,6 +118,7 @@ export const unblockUser = async userId => {
     const response = await axios.post(
       `http://localhost:5000/api/admin/unblock/${userId}`
     )
+    console.log('Unblocked user:', response.data)
     return response.data
   } catch (error) {
     console.error(error)
