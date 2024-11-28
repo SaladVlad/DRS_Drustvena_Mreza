@@ -10,7 +10,9 @@ import Dashboard from './pages/dashboard'
 
 function App () {
   return (
-    <BrowserRouter future={{ v7_startTransition: true }}>
+    <BrowserRouter
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       {/*Routes for the different pages. If it can be reached,
      enter the route to it here*/}
       <Routes>

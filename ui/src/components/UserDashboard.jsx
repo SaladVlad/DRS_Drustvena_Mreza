@@ -23,7 +23,7 @@ const UserDashboard = () => {
       <PostCreationForm />
       <h2>Feed</h2>
       <ul>
-        {posts && posts.map(post => <Post key={post.user_id} post={post} />)}
+        {posts && posts.map(post => <Post key={post.post_id} post={post} />)}
       </ul>
     </div>
   )
