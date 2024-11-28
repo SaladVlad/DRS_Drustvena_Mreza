@@ -2,6 +2,9 @@ from sqlalchemy import create_engine, Column, Integer, String, Text, Enum, TIMES
 from db import Base, Session, engine
 from datetime import datetime
 from sqlalchemy import exc
+from .friendships_DAO import *
+import pytz
+
 class Post(Base):
     __tablename__ = 'post'
     post_id = Column(Integer, primary_key=True)
@@ -9,7 +12,7 @@ class Post(Base):
     content = Column(Text, nullable=False)
     image = Column(String(255), nullable=True)
     status = Column(Enum('pending', 'approved', 'rejected'), default='pending')
-    created_at = Column(TIMESTAMP, nullable=False, default=datetime.utcnow)
+    created_at = Column(TIMESTAMP, nullable=False, default=lambda: datetime.now(pytz.utc))
 
 # Create all tables in the engine
 Base.metadata.create_all(engine)
@@ -58,9 +61,28 @@ def read_post(post_id):
 
 def read_posts_by_user(user_id):
     try:
-        return session.query(Post).filter_by(user_id=user_id).all()
+        session = Session()  # create session
+        posts = session.query(Post).filter_by(user_id=user_id).all()
+        session.close()  # close session
+        return posts  # return posts or empty list if no posts
     except Exception as e:
-        return None
+        print(f"Error: {e}")
+        return []  # return empty list in case of error
+    
+def get_posts_from_friends(user_id):
+    friend_ids = get_friends(user_id)
+    if not friend_ids:
+        return []
+
+    session = Session()
+    try:
+        posts = session.query(Post).filter(Post.user_id.in_(friend_ids)).all()
+        return posts
+    except Exception as e:
+        print(e)
+        return []
+    finally:
+        session.close()
 
 def update_post(**kwargs):
     try:
