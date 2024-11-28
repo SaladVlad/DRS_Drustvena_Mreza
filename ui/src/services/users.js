@@ -21,7 +21,7 @@ export const getUserIdFromToken = async () => {
 export const fetchUsers = async () => {
   try {
     const response = await axios.get('http://localhost:5000/api/admin/allusers')
-    console.log('Fetched users:', response.data)
+    //console.log('Fetched users:', response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -66,7 +66,7 @@ export const fetchUserById = async (user_id = null) => {
     const response = await axios.get(
       `http://localhost:5000/api/users/${user_id}` // API call to fetch user details
     )
-    console.log('Fetched user by ID:', response.data)
+    //console.log('Fetched user by ID:', response.data)
     return response.data // Return the response data
   } catch (error) {
     console.error('Error fetching user by ID:', error) // Handle errors from the API call
@@ -131,14 +131,14 @@ export const updateUser = async (userId, updatedData) => {
       updatedData,
       {
         headers: {
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'application/json'
+        }
       }
-    );
-    console.log("User updated:", response.data);
-    return response.data;
+    )
+    console.log('User updated:', response.data)
+    return response.data
   } catch (error) {
-    console.error("Error updating user:", error);
-    throw error;
+    console.error('Error updating user:', error)
+    throw error
   }
 }

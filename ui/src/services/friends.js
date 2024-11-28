@@ -12,7 +12,7 @@ export const getFriendsFromCurrentUser = async () => {
       `http://localhost:5000/api/friends/user_id=${user_id}`
     )
     console.log('Fetched friends:', response.data.friends)
-    return response.data
+    return response.data.friends
   } catch (error) {
     console.error(error)
     return null

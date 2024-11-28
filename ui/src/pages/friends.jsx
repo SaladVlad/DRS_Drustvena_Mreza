@@ -1,5 +1,6 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { popper } from '@popperjs/core'
 import NavBar from '../components/NavBar'
 import FriendComponent from './../components/FriendComponent'
 import { getFriendsFromCurrentUser } from '../services/friends'
@@ -11,19 +12,29 @@ const Friends = () => {
     const fetchFriends = async () => {
       const friendsData = await getFriendsFromCurrentUser()
       if (Array.isArray(friendsData)) {
-        setFriends(friendsData)
+        setFriends(friendsData) // Set the array of friend IDs
       }
     }
     fetchFriends()
   }, [])
 
   return (
-    <div>
+    <div className='container'>
       <NavBar />
-      {console.log(friends)}
-      {friends.map(friend => (
-        <FriendComponent key={friend.user_id} friendId={friend.user_id} />
-      ))}
+      <h2 className='text-center'>My Friends</h2>
+      <div className='row'>
+        {friends.length === 0 ? (
+          <div className='col-md-12 text-center'>
+            <p>No friends found</p>
+          </div>
+        ) : (
+          friends.map(friendId => (
+            <div className='col-md-4' key={friendId}>
+              <FriendComponent friendId={friendId} />
+            </div>
+          ))
+        )}
+      </div>
     </div>
   )
 }
