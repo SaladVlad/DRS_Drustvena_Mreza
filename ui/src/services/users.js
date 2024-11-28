@@ -26,6 +26,20 @@ export const fetchUsers = async () => {
   }
 }
 
+export const register = async user => {
+  try {
+    if (await fetchUserById(user.user_id)) {
+      console.error('User already registered')
+      return
+    }
+
+    const response = await axios.post('http://localhost:5000/api/users', user)
+    return response.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const fetchUserById = async () => {
   const userId = await getUserIdFromToken() // Extract the user ID
   if (!userId) {
