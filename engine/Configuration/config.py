@@ -17,7 +17,7 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECTRET_KEY')
 
 jwt = JWTManager(app)
 
-CORS(app,supports_credentials=True)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
 db = SQLAlchemy(app)
 

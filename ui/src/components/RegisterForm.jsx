@@ -15,12 +15,12 @@ const RegisterForm = () => {
   const handleSubmit = e => {
     e.preventDefault()
     register({
-      name,
-      surname,
+      first_name: name,
+      last_name: surname,
       address,
       city,
-      country,
-      phoneNumber,
+      state: country,
+      phone_number: phoneNumber,
       email,
       password,
       username

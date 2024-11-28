@@ -28,33 +28,65 @@ export const fetchUsers = async () => {
 
 export const register = async user => {
   try {
-    if (await fetchUserById(user.user_id)) {
-      console.error('User already registered')
+    console.log('user', user)
+    const existingUser = await fetchUserByUsernameOrEmail(
+      user.username,
+      user.email
+    )
+    console.log(existingUser)
+    if (existingUser) {
+      console.error('User with username and email already registered')
       return
     }
-
-    const response = await axios.post('http://localhost:5000/api/users', user)
+    const response = await axios.post('http://localhost:5000/api/users', user, {
+      headers: {
+        'Content-Type': 'application/json' // Only necessary header for JSON payload
+      }
+    })
     return response.data
   } catch (error) {
     console.error(error)
   }
 }
 
-export const fetchUserById = async () => {
-  const userId = await getUserIdFromToken() // Extract the user ID
-  if (!userId) {
+export const fetchUserById = async (user_id = null) => {
+  if (!user_id) {
+    user_id = await getUserIdFromToken() // Extract the user ID
+  }
+
+  if (!user_id) {
     console.error('User ID not found in token')
     return null // Handle missing or invalid user ID
   }
 
   try {
     const response = await axios.get(
-      `http://localhost:5000/api/users/${userId}` // API call to fetch user details
+      `http://localhost:5000/api/users/${user_id}` // API call to fetch user details
     )
     return response.data // Return the response data
   } catch (error) {
     console.error('Error fetching user by ID:', error) // Handle errors from the API call
     throw error // Re-throw the error for upstream handling
+  }
+}
+
+export const fetchUserByUsernameOrEmail = async (
+  username = null,
+  email = null
+) => {
+  try {
+    const response = await axios.get(
+      'http://localhost:5000/api/users/findbyusernameandemail',
+      {
+        params: { username, email }, // Use query parameters
+        headers: {
+          'Content-Type': 'application/json' // This is sufficient for most cases
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error(error)
   }
 }
 
