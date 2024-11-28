@@ -28,6 +28,7 @@ export const fetchUsers = async () => {
   }
 }
 
+
 export const register = async user => {
   try {
     console.log('Registering user:', user)
