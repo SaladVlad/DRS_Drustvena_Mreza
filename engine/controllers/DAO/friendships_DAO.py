@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 from db import Base, Session
 from datetime import timezone
 import datetime
-
 class Friendship(Base):
     __tablename__ = 'friendship'
     friendship_id = Column(Integer, primary_key=True, autoincrement=True)
@@ -54,11 +53,20 @@ def get_friends(user_id):
     session = Session()
     try:
         friendships = session.query(Friendship).filter(
-        ((Friendship.user_id == user_id) | (Friendship.friend_id == user_id)), (Friendship.status == 'accepted')).all()
-        return friendships
+            (Friendship.user_id == user_id) | (Friendship.friend_id == user_id)
+        ).filter(Friendship.status == 'accepted').all()
+
+        friend_ids = set()
+        for friendship in friendships:
+            if friendship.user_id != user_id:
+                friend_ids.add(friendship.user_id)
+            else:
+                friend_ids.add(friendship.friend_id)
+
+        return friend_ids
     except Exception as e:
-        session.rollback()
-        raise e
+        print(e)
+        return set()
     finally:
         session.close()
 
