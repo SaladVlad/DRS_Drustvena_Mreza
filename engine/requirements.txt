@@ -5,3 +5,4 @@ flask-jwt-extended
 pymysql
 cryptography
 python-dotenv
+pytz
