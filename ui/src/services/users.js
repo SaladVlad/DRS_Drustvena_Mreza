@@ -5,7 +5,7 @@ const token = sessionStorage.getItem('token')
 
 axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
 
-const getUserIdFromToken = () => {
+const getUserIdFromToken = async () => {
   if (!token) return null
 
   try {
@@ -27,7 +27,7 @@ export const fetchUsers = async () => {
 }
 
 export const fetchUserById = async () => {
-  const userId = getUserIdFromToken() // Extract the user ID
+  const userId = await getUserIdFromToken() // Extract the user ID
   if (!userId) {
     console.error('User ID not found in token')
     return null // Handle missing or invalid user ID
