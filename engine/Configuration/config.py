@@ -17,7 +17,7 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECTRET_KEY')
 
 jwt = JWTManager(app)
 
-CORS(app, supports_credentials=True)
+CORS(app)
 
 db = SQLAlchemy(app)
 
@@ -25,11 +25,12 @@ db = SQLAlchemy(app)
 from routes.post_routes import posts_bp
 from routes.admin_routes import admin_bp
 from routes.auth_routes import auth_bp
+from routes.users_routes import users_bp
 
 app.register_blueprint(posts_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
-
+app.register_blueprint(users_bp)
 
 
 

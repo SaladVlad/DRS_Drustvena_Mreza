@@ -12,6 +12,8 @@ def login():
     return login_user(**data)
 
 @auth_bp.route('/isadmin', methods=['GET'])
-@jwt_required
+@jwt_required()
 def check_if_admin():
+    print("checking if admin")
     return ifAdmin()
+

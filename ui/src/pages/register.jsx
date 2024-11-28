@@ -9,9 +9,6 @@ const RegisterPage = () => {
       <div className='w-25 bg-white rounded p-3 m-auto'>
         <h1 className='text-center'>Register</h1>
         <RegisterForm />
-        <p>
-          Already have an account? <a href='/login'>Login</a>
-        </p>
       </div>
     </div>
   )

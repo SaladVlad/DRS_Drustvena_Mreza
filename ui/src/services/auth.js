@@ -8,32 +8,27 @@ export const login = async (username, password) => {
     })
     if (response.status !== 200) {
       console.error('error while logging in')
-      return false
+      return { status: 'ERROR', error: 'Unexpected response status' }
     } else {
       sessionStorage.setItem('token', response.data.token)
-      return true
+      return { status: 'OK', token: response.data.token }
     }
   } catch (error) {
-    console.error(error)
-    return false
+    console.error('Login error:', error)
+    return { status: 'ERROR', error: error.message || 'Login failed' }
   }
 }
 
 export const checkAdminStatus = async () => {
   const token = sessionStorage.getItem('token') // Replace with sessionStorage if applicable
-
   try {
-    const response = await axios.get('http://localhost:3000/api/auth/isadmin', {
+    const response = await axios.get('http://localhost:5000/api/auth/isadmin', {
       headers: {
         Authorization: `Bearer ${token}` // Include the JWT token in the Authorization header
       }
     })
-
-    if (response.data.isAdmin) {
-      console.log('User is an admin')
-    } else {
-      console.log('User is not an admin')
-    }
+    console.log('Admin status:', response.data.is_admin)
+    return response.data.is_admin
   } catch (error) {
     if (error.response) {
       // Server responded with a status other than 2xx
@@ -46,5 +41,6 @@ export const checkAdminStatus = async () => {
       // Error setting up the request
       console.error('Error setting up request:', error.message)
     }
+    return false
   }
 }

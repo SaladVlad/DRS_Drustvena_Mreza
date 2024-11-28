@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS user (
     phone_number VARCHAR(16),
     is_admin TINYINT DEFAULT 0,
     is_blocked TINYINT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    first_login TINYINT DEFAULT 1
 );
 
 -- Tabela za prijateljstva između korisnika
@@ -41,7 +42,7 @@ CREATE TABLE IF NOT EXISTS post (
     post_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     content TEXT,
-    image_url VARCHAR(255),
+    image MEDIUMBLOB, -- can store up to 16MB of data
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
@@ -71,7 +72,7 @@ INSERT INTO user (username, email, password, first_name, last_name, address, cit
 VALUES 
 ('bojana123', 'bojana123@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Bojana', 'Mihajlovic', 'Marsala Tita 124', 'Lajkovac', 'Srbija', '123123123'),
 ('marko_m', 'marko@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Marko', 'Markovic', 'Nemanjina 45', 'Beograd', 'Srbija', '987654321');
---lozinka za ostale je lozinka123
+-- lozinka za ostale je lozinka123
 
 -- Dodavanje prijateljskih zahteva
 INSERT INTO friendship (user_id, friend_id, status) 
@@ -80,7 +81,7 @@ VALUES
 (3, 2, 'accepted');  -- Marko prihvata zahtev Bojane
 
 -- Dodavanje objava
-INSERT INTO post (user_id, content, image_url, status) 
+INSERT INTO post (user_id, content, image, status) 
 VALUES 
 (2, 'Lep dan za šetnju!', NULL, 'approved'), 
 (3, 'Uzivam u novoj knjizi.', NULL, 'pending');
