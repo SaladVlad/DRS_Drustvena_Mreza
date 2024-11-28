@@ -6,8 +6,8 @@ const Post = props => {
   return (
     <Card className='mb-3'>
       <Card.Body>
-        <Card.Title>Post by {post.user_id}</Card.Title>
-        <Card.Text>{post.text}</Card.Text>
+        <Card.Title>Post by User with ID: {post.user_id}</Card.Title>
+        <Card.Text>{post.content}</Card.Text>
       </Card.Body>
       {post.image && <Card.Img variant='bottom' src={imageURL} />}
     </Card>

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import PostCreationForm from '../components/PostCreationForm'
 import { fetchUserFeed } from '../services/posts'
+import Post from './Post'
 
 const UserDashboard = () => {
   const [posts, setPosts] = useState([])
@@ -22,18 +23,7 @@ const UserDashboard = () => {
       <PostCreationForm />
       <h2>Feed</h2>
       <ul>
-        {posts &&
-          posts.map(post => (
-            <li key={post.post_id}>
-              User ID: {post.user_id}, Text: {post.text}, Image:
-              {post.image ? (
-                <img
-                  src={`data:image/jpeg;base64,${post.image}`}
-                  alt='post image'
-                />
-              ) : null}
-            </li>
-          ))}
+        {posts && posts.map(post => <Post key={post.user_id} post={post} />)}
       </ul>
     </div>
   )
