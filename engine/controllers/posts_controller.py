@@ -6,7 +6,7 @@ def get_all_posts():
         posts = read_posts()
         if posts is None:
             return jsonify({"error": "No posts found"}), 404
-        return jsonify([{"post_id": post.post_id, "user_id": post.user_id, "content": post.content, "image_url": post.image_url, "status": post.status, "created_at": post.created_at} for post in posts])
+        return jsonify([{"post_id": post.post_id, "user_id": post.user_id, "content": post.content, "image_url": post.image, "status": post.status, "created_at": post.created_at} for post in posts]), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -15,7 +15,7 @@ def get_pending_posts():
         pending_posts = read_pending_posts()
         if pending_posts is None:
             return jsonify({"error": "No pending posts found"}), 404
-        return jsonify([{"post_id": post.post_id, "user_id": post.user_id, "content": post.content, "image_url": post.image_url, "status": post.status, "created_at": post.created_at} for post in pending_posts])
+        return jsonify([{"post_id": post.post_id, "user_id": post.user_id, "content": post.content, "image_url": post.image, "status": post.status, "created_at": post.created_at} for post in pending_posts])
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

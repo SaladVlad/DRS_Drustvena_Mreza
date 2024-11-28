@@ -71,7 +71,7 @@ INSERT INTO user (username, email, password, first_name, last_name, address, cit
 VALUES 
 ('bojana123', 'bojana123@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Bojana', 'Mihajlovic', 'Marsala Tita 124', 'Lajkovac', 'Srbija', '123123123'),
 ('marko_m', 'marko@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Marko', 'Markovic', 'Nemanjina 45', 'Beograd', 'Srbija', '987654321');
---lozinka za ostale je lozinka123
+-- lozinka za ostale je lozinka123
 
 -- Dodavanje prijateljskih zahteva
 INSERT INTO friendship (user_id, friend_id, status) 

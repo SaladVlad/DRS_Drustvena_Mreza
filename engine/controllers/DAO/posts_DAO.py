@@ -7,7 +7,7 @@ class Post(Base):
     post_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, nullable=False)
     content = Column(Text, nullable=False)
-    image_url = Column(String(255), nullable=True)
+    image = Column(String(255), nullable=True)
     status = Column(Enum('pending', 'approved', 'rejected'), default='pending')
     created_at = Column(TIMESTAMP, nullable=False, default=datetime.utcnow)
 
@@ -31,10 +31,18 @@ def create(**kwargs):
         return None, str(e)
 
 def read_posts():
+    session = Session()
     try:
-        return session.query(Post).all()
+        posts = session.query(Post).all()
+        print(posts)
+        if posts is None or len(posts) == 0:
+            return None
+        return posts
     except Exception as e:
+        print(e)
         return None
+    finally:
+        session.close()
 
 def read_pending_posts():
     try:
