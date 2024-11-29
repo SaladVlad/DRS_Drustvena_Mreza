@@ -136,6 +136,7 @@ def update_user(user_id, **kwargs):
 
         # Commit changes
         session.commit()
+        print(user.first_name, user.last_name)
         return user, None
     except Exception as e:
         # Rollback on error

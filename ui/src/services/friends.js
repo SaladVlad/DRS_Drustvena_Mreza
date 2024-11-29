@@ -73,6 +73,7 @@ export const respondToFriendRequest = async (friend_id, status) => {
   }
 }
 
+
 export const getPendingRequests = async () => {
   try {
     const user_id = await getUserIdFromToken()

@@ -1,14 +1,23 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
+import { getToken } from './auth'
 
-const token = sessionStorage.getItem('token')
+var token = null
 
 axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
 
 export const getUserIdFromToken = async () => {
-  if (!token) return null
+  if (!token) {
+    try {
+      token = await getToken()
+    } catch (error) {
+      console.error('Error getting token:', error)
+      return null
+    }
+  }
 
   try {
+    token = sessionStorage.getItem('token') //refresh the token
     const decodedToken = jwtDecode(token)
     //console.log('Decoded token:', decodedToken)
     return Number(decodedToken.sub)
@@ -136,7 +145,7 @@ export const updateUser = async (userId, updatedData) => {
       }
     )
     console.log('User updated:', response.data)
-    return response.data
+    return response.data.user
   } catch (error) {
     console.error('Error updating user:', error)
     throw error

@@ -1,5 +1,24 @@
 import axios from 'axios'
 
+export const setToken = async token => {
+  try {
+    sessionStorage.setItem('token', token)
+  } catch (error) {
+    console.error('Error setting token:', error)
+  }
+}
+
+export const getToken = async () => {
+  const token = sessionStorage.getItem('token')
+
+  if (!token) {
+    console.error('No token found. Redirecting to login...')
+    window.location.href = '/login'
+    return null
+  }
+  return token
+}
+
 export const login = async (username, password) => {
   try {
     const response = await axios.post('http://localhost:5000/api/auth/login', {
@@ -10,7 +29,7 @@ export const login = async (username, password) => {
       console.error('error while logging in')
       return { status: 'ERROR', error: 'Unexpected response status' }
     } else {
-      sessionStorage.setItem('token', response.data.token)
+      await setToken(response.data.token)
       return { status: 'OK', token: response.data.token }
     }
   } catch (error) {
@@ -20,7 +39,14 @@ export const login = async (username, password) => {
 }
 
 export const checkAdminStatus = async () => {
-  const token = sessionStorage.getItem('token') // Replace with sessionStorage if applicable
+  const token = sessionStorage.getItem('token')
+
+  if (!token) {
+    console.log('No token present, redirecting to login...')
+    window.location.href = '/login' // Redirect to login page
+    return false
+  }
+
   try {
     const response = await axios.get('http://localhost:5000/api/auth/isadmin', {
       headers: {
@@ -30,12 +56,13 @@ export const checkAdminStatus = async () => {
     console.log('Admin status:', response.data.is_admin)
     return response.data.is_admin
   } catch (error) {
-    if (error.response) {
+    if (error.response && error.response.status === 401) {
+      console.error('Unauthorized: Redirecting to login...')
+      sessionStorage.removeItem('token')
+      window.location.href = '/login' // Redirect to login if 401 Unauthorized
     } else if (error.request) {
-      // No response received
       console.error('No response from server:', error.request)
     } else {
-      // Error setting up the request
       console.error('Error setting up request:', error.message)
     }
     return false

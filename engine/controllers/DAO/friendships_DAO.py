@@ -73,8 +73,14 @@ def respond_to_friend_request(user_id, friend_id, status):  # Accept or reject a
 
         friendship = session.query(Friendship).filter_by(user_id=user_id, friend_id=friend_id).first()
         if friendship:
-            friendship.status = status
-            session.commit()
+
+            if friendship.status == 'rejected':
+                session.delete(friendship) #remove the friendship if rejected
+                session.commit()
+                return
+            else:
+                friendship.status = status
+                session.commit()
     except Exception as e:
         session.rollback()
         print(e)

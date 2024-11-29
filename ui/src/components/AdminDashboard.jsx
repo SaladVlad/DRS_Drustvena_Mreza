@@ -56,13 +56,13 @@ const AdminDashboard = () => {
   return (
     <div className='container mt-5'>
       <h2 className='text-center'>ADMIN PANEL</h2>
-      
+
       <div className='my-4'>
         <h3>ALL APP USERS</h3>
         <ul className='list-group'>
           {users.map(user => (
-            <li key={user.id} className='list-group-item'>
-              ID: {user.id}, Username: {user.username}
+            <li key={user.user_id} className='list-group-item'>
+              ID: {user.user_id}, Username: {user.username}
             </li>
           ))}
         </ul>
@@ -99,4 +99,3 @@ const AdminDashboard = () => {
 }
 
 export default AdminDashboard
-

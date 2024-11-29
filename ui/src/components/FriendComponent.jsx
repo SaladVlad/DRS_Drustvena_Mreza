@@ -1,82 +1,86 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Button } from 'react-bootstrap'
-import { removeFriend } from '../services/friends'
-import { fetchUserById, getUserIdFromToken } from '../services/users'
-import { createPopper } from '@popperjs/core'
+import { Card, Button, Spinner } from 'react-bootstrap'
+import { removeFriend, respondToFriendRequest } from '../services/friends'
+import { fetchUserById } from '../services/users'
 
-const FriendComponent = ({ friendId }) => {
+const FriendComponent = ({ friendId, status, onFriendsChange }) => {
   const [friend, setFriend] = useState(null)
-  const [userId, setUserId] = useState(null)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const buttonRef = React.useRef(null)
-  const listRef = React.useRef(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchUserId = async () => {
-      const userId = await getUserIdFromToken()
-      if (userId) {
-        setUserId(userId)
-      }
-    }
     const fetchFriend = async () => {
+      setLoading(true)
       const fetchedFriend = await fetchUserById(friendId)
       if (fetchedFriend) {
         setFriend(prevState => {
           //console.log(fetchedFriend) // Log the updated friend
           return fetchedFriend
         })
+        setLoading(false)
       }
     }
-    fetchUserId()
     fetchFriend()
   }, [friendId])
-
-  useEffect(() => {
-    if (buttonRef.current && listRef.current) {
-      const popper = createPopper(buttonRef.current, listRef.current, {
-        placement: 'bottom',
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 8]
-            }
-          }
-        ]
-      })
-
-      return () => {
-        popper.destroy()
-      }
-    }
-  }, [dropdownOpen])
 
   const handleRemoveFriend = async () => {
     const result = await removeFriend(friendId)
     if (result) {
-      setFriend(null)
+      onFriendsChange()
     }
   }
 
-  const toggleDropdown = () => setDropdownOpen(prev => !prev)
+  const handleAcceptFriend = async () => {
+    const result = await respondToFriendRequest(friendId, 'accepted')
+    if (result) {
+      onFriendsChange()
+    }
+  }
+
+  const handleRejectFriend = async () => {
+    const result = await respondToFriendRequest(friendId, 'rejected')
+    if (result) {
+      onFriendsChange()
+    }
+  }
 
   return (
     <Card>
       <Card.Body>
-        {friend ? (
+        {loading ? (
+          <div className='d-flex justify-content-center'>
+            <Spinner animation='border' />
+          </div>
+        ) : (
           <>
             <Card.Title>Username: {friend.username}</Card.Title>
             <Card.Text>Email: {friend.email}</Card.Text>
-            <Button
-              onClick={handleRemoveFriend}
-              className='mb-3 btn-danger'
-              size='sm'
-            >
-              Remove Friend
-            </Button>
+            {status === 'accepted' ? (
+              <Button
+                onClick={handleRemoveFriend}
+                className='mb-3 btn-danger'
+                size='sm'
+              >
+                Remove Friend
+              </Button>
+            ) : (
+              <>
+                <Button
+                  onClick={handleAcceptFriend}
+                  className='mb-3 btn-success'
+                  size='sm'
+                >
+                  Accept
+                </Button>
+                <Button
+                  onClick={handleRejectFriend}
+                  className='mb-3 btn-danger'
+                  size='sm'
+                >
+                  Reject
+                </Button>
+              </>
+            )}
           </>
-        ) : (
-          <p>Friend doesn't exist.</p>
         )}
       </Card.Body>
     </Card>

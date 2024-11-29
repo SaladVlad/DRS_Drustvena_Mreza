@@ -3,23 +3,36 @@ import { Spinner } from 'react-bootstrap'
 import NavBar from '../components/NavBar'
 import { checkAdminStatus } from '../services/auth'
 import UserDashboard from '../components/UserDashboard'
-import AdminDashboard from '../components/AdminDashboard' // Add the admin dashboard component
+import AdminDashboard from '../components/AdminDashboard'
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(null) // Track admin status
 
   useEffect(() => {
-    // Simulate checking admin status
     const initializeDashboard = async () => {
-      // Assuming `checkAdminStatus` is a function that fetches the admin status
-      const status = await checkAdminStatus() // This should return true/false
-      setIsAdmin(status)
-      setLoading(false)
+      const token = sessionStorage.getItem('token')
+
+      // Redirect to login if no token
+      if (!token) {
+        console.log('No token found. Redirecting to login...')
+        window.location.href = '/login'
+        return
+      }
+
+      try {
+        // Check admin status after confirming the token exists
+        const status = await checkAdminStatus()
+        setIsAdmin(status)
+      } catch (error) {
+        console.error('Error during admin check:', error)
+      } finally {
+        setLoading(false) // Stop loading after the check
+      }
     }
 
     initializeDashboard()
-  }, []) // Empty dependency array means this runs once when component mounts
+  }, [])
 
   // Show loading spinner until admin status is fetched
   if (loading) {
