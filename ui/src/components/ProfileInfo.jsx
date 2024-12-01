@@ -190,6 +190,42 @@ const ProfileInfo = () => {
           </div>
           <div className='row mb-3'>
             <div className='col-md-6'>
+              <strong>City:</strong>
+            </div>
+            <div className='col-md-6'>
+              {editing ? (
+                <input
+                  type='text'
+                  className='form-control'
+                  name='city'
+                  value={formData.city || ''}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <p>{user.city || 'N/A'}</p>
+              )}
+            </div>
+          </div>
+          <div className='row mb-3'>
+            <div className='col-md-6'>
+              <strong>State:</strong>
+            </div>
+            <div className='col-md-6'>
+              {editing ? (
+                <input
+                  type='text'
+                  className='form-control'
+                  name='state'
+                  value={formData.state || ''}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <p>{user.state || 'N/A'}</p>
+              )}
+            </div>
+          </div>
+          <div className='row mb-3'>
+            <div className='col-md-6'>
               <strong>Created At:</strong>
             </div>
             <div className='col-md-6'>
