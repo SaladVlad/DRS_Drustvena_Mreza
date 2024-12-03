@@ -151,3 +151,19 @@ export const updateUser = async (userId, updatedData) => {
     throw error
   }
 }
+export const changePassword = async (userId, oldPassword, newPassword) => {
+  try {
+    const response = await axios.post(
+      `http://localhost:5000/api/users/${userId}/change-password`,
+      { oldPassword, newPassword },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 from controllers.users_controller import *
-
+import hashlib
+import hmac
+import os
 #Blueprint 
 users_bp = Blueprint('users', __name__,url_prefix='/api/users')
 
@@ -58,3 +60,37 @@ def update_user_endpoint(user_id):
     "message": "User updated successfully",
     "user": {col.name: getattr(user, col.name) for col in User.__table__.columns}
     }), 200
+
+@users_bp.route('/<int:user_id>/change-password', methods=['POST'])
+def change_password(user_id):
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid payload"}), 400
+
+    old_password = data.get('oldPassword')
+    new_password = data.get('newPassword')
+
+    if not old_password or not new_password:
+        return jsonify({"error": "Both old and new passwords are required."}), 400
+
+    session = Session()
+    try:
+        user = session.query(User).filter_by(user_id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found."}), 404
+
+        # Verify old password
+        if not check_password_hash(user.password, old_password):
+            return jsonify({"error": "Old password is incorrect."}), 400
+
+        # Update password
+        user.password = generate_password_hash(new_password)
+        session.commit()
+        return jsonify({"message": "Password changed successfully."}), 200
+    except Exception as e:
+        session.rollback()
+        print(f"Error changing password: {e}")
+        return jsonify({"error": "Internal server error."}), 500
+    finally:
+        session.close()

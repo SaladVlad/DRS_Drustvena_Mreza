@@ -1,52 +1,73 @@
-import React, { useState, useEffect } from 'react'
-import { fetchUserById, updateUser } from '../services/users'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import React, { useState, useEffect } from 'react';
+import { fetchUserById, updateUser, changePassword } from '../services/users'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ProfileInfo = () => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [editing, setEditing] = useState(false) // Track if in edit mode
-  const [formData, setFormData] = useState({}) // Form state for edited data
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [passwordData, setPasswordData] = useState({
+    oldPassword: '',
+    newPassword: '',
+  });
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const userData = await fetchUserById()
+        const userData = await fetchUserById();
         if (userData) {
-          setUser(userData)
-          setFormData(userData) // Initialize form with current user data
+          setUser(userData);
+          setFormData(userData);
         } else {
-          setError('User not found')
+          setError('User not found');
         }
       } catch (error) {
-        setError('Failed to fetch user data')
+        setError('Failed to fetch user data');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    getUserData()
-  }, [])
+    getUserData();
+  }, []);
 
-  const handleInputChange = e => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData({ ...passwordData, [name]: value });
+  };
 
   const handleSaveChanges = async () => {
-    // Exclude read-only fields from the payload
-    const { created_at, user_id, ...editableData } = formData
+    const { created_at, user_id, ...editableData } = formData;
 
     try {
-      await updateUser(user.user_id, editableData).then(response =>
-        setUser(response)
-      )
-      setEditing(false) // Exit edit mode
+      const updatedUser = await updateUser(user.user_id, editableData);
+      setUser(updatedUser);
+      setEditing(false);
     } catch (err) {
-      setError('Failed to update user information.')
+      setError('Failed to update user information.');
     }
-  }
+  };
+
+  const handleChangePassword = async () => {
+    setPasswordError('');
+    setPasswordSuccess('');
+    try {
+      await changePassword(user.user_id, passwordData.oldPassword, passwordData.newPassword);
+      setPasswordSuccess('Password changed successfully.');
+      setPasswordData({ oldPassword: '', newPassword: '' });
+    } catch (err) {
+      setPasswordError(err.response?.data?.error || 'Failed to change password.');
+    }
+  };
 
   if (loading) {
     return (
@@ -55,7 +76,7 @@ const ProfileInfo = () => {
           <span className='visually-hidden'>Loading...</span>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -63,7 +84,7 @@ const ProfileInfo = () => {
       <div className='alert alert-danger text-center mt-3' role='alert'>
         {error}
       </div>
-    )
+    );
   }
 
   if (!user) {
@@ -71,7 +92,7 @@ const ProfileInfo = () => {
       <div className='alert alert-warning text-center mt-3' role='alert'>
         No user found.
       </div>
-    )
+    );
   }
 
   return (
@@ -257,6 +278,38 @@ const ProfileInfo = () => {
               Edit Profile
             </button>
           )}
+        </div>
+      </div>
+      <div className='card shadow-lg mt-4'>
+        <div className='card-header bg-secondary text-white text-center'>
+          <h2>Change Password</h2>
+        </div>
+        <div className='card-body'>
+          {passwordError && <div className='alert alert-danger'>{passwordError}</div>}
+          {passwordSuccess && <div className='alert alert-success'>{passwordSuccess}</div>}
+          <div className='mb-3'>
+            <label className='form-label'>Old Password</label>
+            <input
+              type='password'
+              className='form-control'
+              name='oldPassword'
+              value={passwordData.oldPassword}
+              onChange={handlePasswordChange}
+            />
+          </div>
+          <div className='mb-3'>
+            <label className='form-label'>New Password</label>
+            <input
+              type='password'
+              className='form-control'
+              name='newPassword'
+              value={passwordData.newPassword}
+              onChange={handlePasswordChange}
+            />
+          </div>
+          <button className='btn btn-warning' onClick={handleChangePassword}>
+            Change Password
+          </button>
         </div>
       </div>
     </div>

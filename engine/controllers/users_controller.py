@@ -58,4 +58,9 @@ def update(user_id, username, email, password, first_name, last_name, address, c
             return {"error": f"{key} cannot be null"}, 400
     update_user(user_id, update_user_kwargs)
 
+def generate_password_hash(password):
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
+def check_password_hash(stored_password, provided_password):
+    hashed_provided_password = hashlib.sha256(provided_password.encode('utf-8')).hexdigest()
+    return stored_password == hashed_provided_password
