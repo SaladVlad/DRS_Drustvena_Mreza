@@ -64,9 +64,10 @@ def get_posts():
 def get_posts_by_user(user_id):
     session = Session()
     try:
-        post = session.query(Post).filter_by(user_id=user_id).all()
-        post.image_data = convert_to_base64(post.image_data)
-        return {"posts": [{c.name: getattr(post, c.name) for c in post.__table__.columns} for post in post]}, None
+        posts = session.query(Post).filter_by(user_id=user_id).all()
+        for post in posts:
+            post.image_data = convert_to_base64(post.image_data)
+        return {"posts": [{c.name: getattr(post, c.name) for c in post.__table__.columns} for post in posts]}, None
     except Exception as e:
         session.rollback()
         return None, str(e)

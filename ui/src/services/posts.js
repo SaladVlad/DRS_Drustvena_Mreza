@@ -44,9 +44,9 @@ export const fetchUserFeed = async () => {
 
 export const fetchUserPosts = async () => {
   try {
-    //const user_id = await getUserIdFromToken()
-    const response = await axios.get(`http://localhost:5000/api/posts/`)
-    return response.data
+    const user_id = await getUserIdFromToken()
+    const response = await axios.get(`http://localhost:5000/api/posts?user_id=${user_id}`)
+    return response.data.posts
   } catch (error) {
     console.error(error)
   }
