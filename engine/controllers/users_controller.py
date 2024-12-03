@@ -1,3 +1,4 @@
+import hashlib
 from .DAO.users_DAO import *
 
 def get_all_users():
