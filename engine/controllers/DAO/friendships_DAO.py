@@ -23,19 +23,39 @@ class Friendship(Base):
 def get_friends(user_id):
     session = Session()
     try:
+
+        user_id = int(user_id)
+
+        # Query to get all accepted friendships involving the user
         friendships = session.query(Friendship).filter(
             ((Friendship.user_id == user_id) | (Friendship.friend_id == user_id)) &
             (Friendship.status == 'accepted')
         ).all()
 
-        friend_ids = {
-            friendship.friend_id if friendship.user_id == user_id else friendship.user_id
-            for friendship in friendships
-        }
-        print(friend_ids)
+        # Debugging: Print out the friendships to see what is returned
+        print(f"Friendships for user {user_id}: {friendships}")
+
+        if not friendships:
+            print(f"No friendships found for user {user_id}.")
+            return set()
+
+        friend_ids = set()
+
+        for friendship in friendships:
+            
+            # Ensure we're comparing the correct user_id to add the corresponding friend_id
+            if friendship.user_id == user_id:
+                print(f"Adding friend_id = {friendship.friend_id} to the set")
+                friend_ids.add(friendship.friend_id)  # Add the friend_id if the user is the current user
+            elif friendship.friend_id == user_id:
+                print(f"Adding user_id = {friendship.user_id} to the set")
+                friend_ids.add(friendship.user_id)  # Add the user_id if the friend_id is the current user
+
+        # Print the final set of friend IDs
+        print(f"Friend IDs for user {user_id}: {friend_ids}")  # This is the final result
         return friend_ids
     except Exception as e:
-        print(e)
+        print(f"Error: {e}")
         return set()
     finally:
         session.close()

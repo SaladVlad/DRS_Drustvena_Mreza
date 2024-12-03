@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useEffect, useState } from 'react'
 import PostCreationForm from '../components/PostCreationForm'
-import { fetchUserFeed } from '../services/posts'
+import { fetchAllPosts, fetchUserFeed } from '../services/posts'
 import Post from './Post'
 
 const UserDashboard = () => {
@@ -11,6 +11,7 @@ const UserDashboard = () => {
     const fetchAllPosts = async () => {
       const fetchedPosts = await fetchUserFeed()
       if (fetchedPosts) {
+        console.log(fetchedPosts)
         setPosts(fetchedPosts)
       }
     }
@@ -20,7 +21,7 @@ const UserDashboard = () => {
 
   return (
     <div>
-      <PostCreationForm />
+      <PostCreationForm onPostsChange={fetchAllPosts} />
       <h2>Feed</h2>
       <ul>
         {posts && posts.map(post => <Post key={post.post_id} post={post} />)}

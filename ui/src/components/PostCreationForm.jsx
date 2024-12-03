@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { createPost } from '../services/posts' // assuming this function exists in your services
 
-const PostCreationForm = () => {
+const PostCreationForm = ({ onPostsChange }) => {
   const [formData, setFormData] = useState({
     user_id: '',
     content: '',
@@ -25,15 +25,29 @@ const PostCreationForm = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
+
+    const formDataToSend = new FormData()
+    formDataToSend.append('user_id', formData.user_id)
+    formDataToSend.append('content', formData.content)
+
+    // If an image is selected, append it to FormData
+    if (formData.image) {
+      formDataToSend.append('image', formData.image) // Use 'image' key to match backend
+    }
+
+    // Debug: Log the FormData before sending
+    console.log([...formDataToSend])
+
     try {
-      await createPost({
-        user_id: formData.user_id,
-        content: formData.content,
-        image: formData.image,
-        status: 'pending'
-      })
+      // Send the form data to the backend
+      await createPost(formDataToSend).then(() => onPostsChange())
       console.log('Post created successfully')
       // Reset form or redirect as needed
+      setFormData({
+        user_id: '',
+        content: '',
+        image: null
+      })
     } catch (error) {
       console.error('Error creating post:', error)
     }
@@ -43,25 +57,25 @@ const PostCreationForm = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <div className='form-group'>
-          <label htmlFor='title'>Title</label>
+          <label htmlFor='user_id'>User ID</label>
           <input
             type='text'
-            id='title'
-            name='title'
+            id='user_id'
+            name='user_id'
             value={formData.user_id}
             onChange={handleChange}
-            placeholder='Enter title'
+            placeholder='Enter User ID'
             className='form-control'
           />
         </div>
         <div className='form-group'>
-          <label htmlFor='body'>Body</label>
+          <label htmlFor='content'>Content</label>
           <textarea
-            id='body'
-            name='body'
-            value={formData.text}
+            id='content'
+            name='content'
+            value={formData.content}
             onChange={handleChange}
-            placeholder='Enter body text'
+            placeholder='Enter content'
             className='form-control'
           />
         </div>

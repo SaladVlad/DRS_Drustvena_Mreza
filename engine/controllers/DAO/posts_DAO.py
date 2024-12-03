@@ -22,7 +22,7 @@ class Post(Base):
 Base.metadata.create_all(engine)
 
 # Create a session to the database
-session = Session()
+
 
 def convert_to_base64(image_data):
     if image_data is None:
@@ -31,6 +31,8 @@ def convert_to_base64(image_data):
 
 
 def create_post(**kwargs):
+    session = Session()
+
     try:
         new_post = Post(**kwargs)
         print(new_post)
@@ -49,6 +51,7 @@ def create_post(**kwargs):
         return None, str(e)
 
 def get_posts():
+    session = Session()
     try:
         posts = session.query(Post).all()
         for post in posts:
@@ -59,6 +62,7 @@ def get_posts():
         return None, str(e)
 
 def get_posts_by_user(user_id):
+    session = Session()
     try:
         post = session.query(Post).filter_by(user_id=user_id).all()
         post.image_data = convert_to_base64(post.image_data)
@@ -68,6 +72,7 @@ def get_posts_by_user(user_id):
         return None, str(e)
 
 def get_pending_posts():
+    session = Session()
     try:
         posts = session.query(Post).filter_by(status='pending').all()
         for post in posts:
@@ -78,6 +83,7 @@ def get_pending_posts():
         return None, str(e)
 
 def get_post_by_id(post_id):
+    session = Session()
     try:
         post = session.query(Post).filter_by(post_id=post_id).first()
         post.image_data = convert_to_base64(post.image_data)
@@ -87,8 +93,10 @@ def get_post_by_id(post_id):
         return None, str(e)
 
 def get_posts_from_friends(friend_ids):
+    session = Session()
     try:
         posts = session.query(Post).filter(Post.user_id.in_(friend_ids)).order_by(Post.created_at.desc()).all()
+        
         for post in posts:
             post.image_data = convert_to_base64(post.image_data)
         return {"posts": [{c.name: getattr(post, c.name) for c in post.__table__.columns} for post in posts]}, None
@@ -97,6 +105,7 @@ def get_posts_from_friends(friend_ids):
         return None, str(e)
 
 def update_post( post_id, **kwargs):
+    session = Session()
     try:
         post = session.query(Post).filter_by(post_id=post_id).first()
         if not post:
@@ -112,6 +121,7 @@ def update_post( post_id, **kwargs):
         return None, str(e)
 
 def delete_post(post_id):
+    session = Session()
     try:
         post = session.query(Post).filter_by(post_id=post_id).first()
         if not post:

@@ -12,12 +12,20 @@ export const fetchAllPosts = async () => {
   }
 }
 
-export const createPost = async post => {
+export const createPost = async formData => {
   try {
-    const response = await axios.post('http://localhost:5000/api/posts', post)
+    const response = await axios.post(
+      'http://localhost:5000/api/posts',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data' // Required for file uploads
+        }
+      }
+    )
     return response.data
   } catch (error) {
-    console.error(error)
+    throw new Error('Error creating post: ' + error.message)
   }
 }
 
@@ -28,7 +36,7 @@ export const fetchUserFeed = async () => {
     const response = await axios.get(
       `http://localhost:5000/api/posts/friends?user_id=${user_id}`
     )
-    return response.data
+    return response.data.posts
   } catch (error) {
     console.error(error)
   }
@@ -36,9 +44,8 @@ export const fetchUserFeed = async () => {
 
 export const fetchUserPosts = async () => {
   try {
-    const user_id = await getUserIdFromToken()
-    const response = await axios.get(
-      `http://localhost:5000/api/posts/`)
+    //const user_id = await getUserIdFromToken()
+    const response = await axios.get(`http://localhost:5000/api/posts/`)
     return response.data
   } catch (error) {
     console.error(error)

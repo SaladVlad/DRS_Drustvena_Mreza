@@ -1,6 +1,7 @@
 # Controller: posts_controller.py
 from flask import jsonify, request
 from .DAO.posts_DAO import *
+from .DAO.friendships_DAO import *
 
 def handle_response(data, error, success_status=200, failure_status=400):
     if error:
@@ -22,10 +23,16 @@ def get_pending_posts_controller():
     posts, error = get_pending_posts()
     return handle_response(posts, error)
 
+def get_posts_from_friends_controller(user_id):
+    friend_ids = get_friends(user_id)
+    print(friend_ids)
+    posts, error = get_posts_from_friends(friend_ids)
+    return handle_response(posts, error)
+
 def create_post_controller():
     try:
         data = request.form.to_dict()
-        image_file = request.files.get("image_data")
+        image_file = request.files.get("image")
         if image_file:
             data.update({
                 "image_name": image_file.filename,
