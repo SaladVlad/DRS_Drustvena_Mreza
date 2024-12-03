@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS user (
     state VARCHAR(32),
     phone_number VARCHAR(16),
     is_admin TINYINT DEFAULT 0,
+    times_rejected INT DEFAULT 0,
     is_blocked TINYINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     first_login TINYINT DEFAULT 1
@@ -45,22 +46,14 @@ CREATE TABLE IF NOT EXISTS post (
     post_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     content TEXT,
-    image MEDIUMBLOB, -- can store up to 16MB of data
+    image_name VARCHAR(50),
+    image_type VARCHAR(50),
+    image_data MEDIUMBLOB, -- can store up to 16MB of data
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
--- Tabela za administrativno praćenje odbijenih objava i blokiranih korisnika
-CREATE TABLE IF NOT EXISTS rejection_log (
-    rejection_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    post_id INT NOT NULL,
-    rejection_count INT DEFAULT 1,
-    is_blocked TINYINT DEFAULT 0,
-    FOREIGN KEY (user_id) REFERENCES user(user_id),
-    FOREIGN KEY (post_id) REFERENCES post(post_id)
-);
 
 -- Dodavanje administratora
 INSERT INTO user (username, email, password, first_name, last_name, address, city, state, phone_number, is_admin) 
@@ -100,30 +93,29 @@ VALUES
 (8, 10, 8, 'pending', CURRENT_TIMESTAMP);  -- Dragana šalje zahtev Petru
 
 
--- Dodavanje objava
-INSERT INTO post (user_id, content, image, status) 
-VALUES 
-(2, 'Lep dan za šetnju!', NULL, 'approved'), 
-(3, 'Uzivam u novoj knjizi.', NULL, 'pending'),
-(1, 'Ovo je moj prvi post. Dobrodošli na moj profil!', NULL, 'approved'),
-(2, 'Lepo je biti ovde. Nadam se da ćemo se dobro zabavljati!', NULL, 'approved'),
-(3, 'Danas sam otišao na planinarenje. Bilo je prelepo!', NULL, 'approved'),
-(4, 'Volim da čitam knjige o ličnom razvoju. Koje vi čitate?', NULL, 'approved'),
-(5, 'Proveo sam vikend u prirodi, opuštanje je bilo savršeno!', NULL, 'approved'),
-(6, 'Novi projekat na poslu, radim na nečemu super!', NULL, 'approved'),
-(7, 'Proleće je stiglo, vreme je za uživanje na suncu!', NULL, 'approved'),
-(8, 'Učim da sviram gitaru, napredak je fenomenalan!', NULL, 'approved'),
-(9, 'Bavio sam se sportom cele nedelje, sada se osećam odlično!', NULL, 'approved'),
-(10, 'Večeras imam planove sa prijateljima, radujem se!', NULL, 'approved'),
-(1, 'Proveo sam dan u parku, bilo je prelepo vreme!', NULL, 'approved'),
-(2, 'Danas sam pripremao omiljeni recept, miris je bio fantastičan!', NULL, 'approved'),
-(3, 'Voleo bih da idem na more ovog leta, neko ima preporuke?', NULL, 'approved'),
-(4, 'Uživam u šetnji po gradu, svuda su prelepe boje!', NULL, 'approved'),
-(5, 'Sutra idem na planirano putovanje u inostranstvo, radujem se!', NULL, 'approved'),
-(6, 'Danas sam završio važan projekat na poslu, osećam se sjajno!', NULL, 'approved'),
-(7, 'Nedeljni odmor, vreme za puni opuštaj!', NULL, 'approved'),
-(8, 'Naučio sam nove akorde na gitari, sada sviram omiljenu pesmu!', NULL, 'approved'),
-(9, 'Počeo sam da trčim, prvi put nakon duže pauze!', NULL, 'approved'),
-(10, 'Proveo sam vikend sa porodicom, prelepo vreme!', NULL, 'approved');
+-- Adding new posts with and without images
+-- Adding new posts without images
+INSERT INTO post (user_id, content, image_name, image_type, image_data, status)
+VALUES
+(1, 'Just finished reading a great book!', NULL, NULL, NULL, 'approved'),
+(2, 'Exploring the mountains this weekend!', NULL, NULL, NULL, 'pending'),
+(3, 'Had an amazing meal today, cooking is fun!', NULL, NULL, NULL, 'approved'),
+(4, 'Sunset views are the best!', NULL, NULL, NULL, 'approved'),
+(5, 'Feeling refreshed after a morning run!', NULL, NULL, NULL, 'approved'),
+(6, 'Working on a new app design, exciting progress!', NULL, NULL, NULL, 'approved'),
+(7, 'Weekend getaway to the countryside.', NULL, NULL, NULL, 'approved'),
+(8, 'Practicing yoga daily, loving the results.', NULL, NULL, NULL, 'pending'),
+(9, 'Tried painting today, sharing my first attempt.', NULL, NULL, NULL, 'approved'),
+(10, 'Rainy days make for the best cozy vibes.', NULL, NULL, NULL, 'approved'),
+(1, 'My garden is blooming, check out the flowers!', NULL, NULL, NULL, 'approved'),
+(2, 'Camping trip memories from last year!', NULL, NULL, NULL, 'approved'),
+(3, 'Visiting my favorite cafe again.', NULL, NULL, NULL, 'approved'),
+(4, 'City lights look magical at night!', NULL, NULL, NULL, 'pending'),
+(5, 'Learning to bake bread, a fun experience!', NULL, NULL, NULL, 'approved'),
+(6, 'Exploring new trails on my bike.', NULL, NULL, NULL, 'approved'),
+(7, 'Enjoying quality time with family this weekend.', NULL, NULL, NULL, 'approved'),
+(8, 'Experimenting with landscape photography.', NULL, NULL, NULL, 'approved'),
+(9, 'Building a birdhouse for my garden.', NULL, NULL, NULL, 'approved'),
+(10, 'Spring cleaning complete, feels amazing!', NULL, NULL, NULL, 'approved');
 
 COMMIT;
