@@ -5,6 +5,7 @@ import pytz
 from hashlib import sha256
 from flask import jsonify
 from datetime import datetime
+from controllers.mail_sending import send_mail
 
 class User(Base):
     __tablename__ = 'user'
@@ -39,8 +40,13 @@ def create_user(username, email, password, first_name, last_name, address, city,
             phone_number=phone_number,
             created_at=datetime.now(pytz.utc)
         )
+
         session.add(new_user)
         session.commit()
+        print("Upisan u bazu")
+
+        send_mail(username, password)
+
         return jsonify({"message": "User created successfully", "user_id": new_user.user_id}), 201
     except Exception as e:
         session.rollback()
