@@ -1,128 +1,125 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, Enum, TIMESTAMP
+from sqlalchemy import create_engine, Column, Integer, String, Text, Enum, TIMESTAMP, LargeBinary
 from db import Base, Session, engine
 from datetime import datetime
+from flask import jsonify
 from sqlalchemy import exc
+import base64
 from .friendships_DAO import *
 import pytz
 
 class Post(Base):
     __tablename__ = 'post'
-    post_id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=False)
+    
+    post_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('user.user_id'), nullable=False)  # Add ForeignKey to reference user table
     content = Column(Text, nullable=False)
-    image = Column(String(255), nullable=True)
-    status = Column(Enum('pending', 'approved', 'rejected'), default='pending')
+    image_name = Column(String(50), nullable=True)  # Stores the name of the image
+    image_type = Column(String(50), nullable=True)  # Stores the MIME type of the image
+    image_data = Column(LargeBinary, nullable=True)  # Stores the binary data of the image
+    status = Column(Enum('pending', 'approved', 'rejected', name='post_status_enum'), default='pending', nullable=False)
     created_at = Column(TIMESTAMP, nullable=False, default=lambda: datetime.now(pytz.utc))
-
 # Create all tables in the engine
 Base.metadata.create_all(engine)
 
 # Create a session to the database
 session = Session()
 
-def create(**kwargs):
+def convert_to_base64(image_data):
+    if image_data is None:
+        return None
+    return base64.b64encode(image_data).decode() 
+
+
+def create_post(**kwargs):
     try:
         new_post = Post(**kwargs)
+        print(new_post)
         session.add(new_post)
         session.commit()
-        return new_post, None
-    except exc.IntegrityError as e:
+
+        new_post.image_data = convert_to_base64(new_post.image_data)
+        post_dict = {c.name: getattr(new_post, c.name) for c in new_post.__table__.columns}
+        #convert the raw image_data in new_post to base64
+        return {"post": post_dict}, None
+    except exc.IntegrityError:
         session.rollback()
-        return None, "Duplicate key error: post with ID {} already exists".format(kwargs['post_id'])
+        return None, "Integrity error: Unable to create post."
     except Exception as e:
         session.rollback()
         return None, str(e)
 
-def read_posts():
-    session = Session()
+def get_posts():
     try:
         posts = session.query(Post).all()
-        print(posts)
-        if posts is None or len(posts) == 0:
-            return None
-        return posts
-    except Exception as e:
-        print(e)
-        return None
-    finally:
-        session.close()
-
-def read_pending_posts():
-    try:
-        return session.query(Post).filter_by(status='pending').all()
-    except Exception as e:
-        return None
-
-def read_post(post_id):
-    try:
-        return session.query(Post).filter_by(post_id=post_id).first()
-    except Exception as e:
-        return None
-
-def read_posts_by_user(user_id):
-    try:
-        session = Session()  # create session
-        posts = session.query(Post).filter_by(user_id=user_id).all()
-        session.close()  # close session
-        return posts  # return posts or empty list if no posts
-    except Exception as e:
-        print(f"Error: {e}")
-        return []  # return empty list in case of error
-    
-def get_posts_from_friends(user_id):
-    friend_ids = get_friends(user_id)
-    if not friend_ids:
-        return []
-
-    session = Session()
-    try:
-        posts = session.query(Post).filter(Post.user_id.in_(friend_ids)).all()
-        return posts
-    except Exception as e:
-        print(e)
-        return []
-    finally:
-        session.close()
-
-def update_post(**kwargs):
-    try:
-        post_id = kwargs['post_id']
-        post = read_post(post_id)
-        if post is None:
-            return None, "Post not found"
-        for key, value in kwargs.items():
-            if key != 'post_id':
-                setattr(post, key, value)
-        session.commit()
-        return post, None
+        for post in posts:
+            post.image_data = convert_to_base64(post.image_data)
+        return {"posts": [{c.name: getattr(post, c.name) for c in post.__table__.columns} for post in posts]}, None
     except Exception as e:
         session.rollback()
         return None, str(e)
 
-def update_post_status(**kwargs):
+def get_posts_by_user(user_id):
     try:
-        post_id = kwargs['post_id']
-        post = read_post(post_id)
-        if post is None:
-            return None, "Post not found"
-        for key, value in kwargs.items():
-            if key != 'post_id':
-                setattr(post, key, value)
-        session.commit()
-        return post, None
+        post = session.query(Post).filter_by(user_id=user_id).all()
+        post.image_data = convert_to_base64(post.image_data)
+        return {"posts": [{c.name: getattr(post, c.name) for c in post.__table__.columns} for post in post]}, None
     except Exception as e:
         session.rollback()
         return None, str(e)
 
-def delete_post(**kwargs):
+def get_pending_posts():
     try:
-        post_id = kwargs['post_id']
-        post = read_post(post_id)
-        if post is None:
+        posts = session.query(Post).filter_by(status='pending').all()
+        for post in posts:
+            post.image_data = convert_to_base64(post.image_data)
+        return {"posts": [{c.name: getattr(post, c.name) for c in post.__table__.columns} for post in posts]}, None
+    except Exception as e:
+        session.rollback()
+        return None, str(e)
+
+def get_post_by_id(post_id):
+    try:
+        post = session.query(Post).filter_by(post_id=post_id).first()
+        post.image_data = convert_to_base64(post.image_data)
+        return {"post": {c.name: getattr(post, c.name) for c in post.__table__.columns}}, None
+    except Exception as e:
+        session.rollback()
+        return None, str(e)
+
+def get_posts_from_friends(friend_ids):
+    try:
+        posts = session.query(Post).filter(Post.user_id.in_(friend_ids)).order_by(Post.created_at.desc()).all()
+        for post in posts:
+            post.image_data = convert_to_base64(post.image_data)
+        return {"posts": [{c.name: getattr(post, c.name) for c in post.__table__.columns} for post in posts]}, None
+    except Exception as e:
+        session.rollback()
+        return None, str(e)
+
+def update_post( post_id, **kwargs):
+    try:
+        post = session.query(Post).filter_by(post_id=post_id).first()
+        if not post:
+            return None, "Post not found"
+        for key, value in kwargs.items():
+            if hasattr(post, key):
+                setattr(post, key, value)
+        session.commit()
+        post.image_data = convert_to_base64(post.image_data)
+        return {"post": {c.name: getattr(post, c.name) for c in post.__table__.columns}}, None
+    except Exception as e:
+        session.rollback()
+        return None, str(e)
+
+def delete_post(post_id):
+    try:
+        post = session.query(Post).filter_by(post_id=post_id).first()
+        if not post:
             return None, "Post not found"
         session.delete(post)
         session.commit()
-        return post, None
+        post.image_data = convert_to_base64(post.image_data)
+        return {"post": {c.name: getattr(post, c.name) for c in post.__table__.columns}}, None
     except Exception as e:
         session.rollback()
         return None, str(e)
