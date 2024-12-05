@@ -9,7 +9,7 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
 export const fetchAllPosts = async () => {
   try {
-    const response = await axios.get(`${process.env.ENGINE_URL}/api/posts`)
+    const response = await axios.get(`${process.env.REACT_APP_ENGINE_URL}/api/posts`)
     return response.data
   } catch (error) {
     console.error(error)
@@ -19,7 +19,7 @@ export const fetchAllPosts = async () => {
 export const createPost = async formData => {
   try {
     const response = await axios.post(
-      `${process.env.ENGINE_URL}/api/posts`,
+      `${process.env.REACT_APP_ENGINE_URL}/api/posts`,
       formData,
       {
         headers: {
@@ -37,7 +37,7 @@ export const fetchUserFeed = async () => {
   try {
     const user_id = await getUserIdFromToken()
     const response = await axios.get(
-      `${process.env.ENGINE_URL}/api/posts/friends?user_id=${user_id}`
+      `${process.env.REACT_APP_ENGINE_URL}/api/posts/friends?user_id=${user_id}`
     )
     return response.data.posts
   } catch (error) {
@@ -48,7 +48,7 @@ export const fetchUserFeed = async () => {
 export const fetchUserPosts = async () => {
   try {
     const user_id = await getUserIdFromToken()
-    const response = await axios.get(`${process.env.ENGINE_URL}/api/posts?user_id=${user_id}`)
+    const response = await axios.get(`${process.env.REACT_APP_ENGINE_URL}/api/posts?user_id=${user_id}`)
     return response.data.posts
   } catch (error) {
     console.error(error)

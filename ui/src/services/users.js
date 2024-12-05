@@ -32,7 +32,7 @@ export const getUserIdFromToken = async () => {
 
 export const fetchUsers = async () => {
   try {
-    const response = await axios.get(`${process.env.ENGINE_URL}/api/admin/allusers`)
+    const response = await axios.get(`${process.env.REACT_APP_ENGINE_URL}/api/admin/allusers`)
     //console.log('Fetched users:', response.data)
     return response.data
   } catch (error) {
@@ -53,7 +53,7 @@ export const register = async user => {
       return
     }
     const response = await axios.post(
-      `${process.env.ENGINE_URL}/api/users`,
+      `${process.env.REACT_APP_ENGINE_URL}/api/users`,
       user,
       {
         headers: {
@@ -80,7 +80,7 @@ export const fetchUserById = async (user_id = null) => {
 
   try {
     const response = await axios.get(
-      `${process.env.ENGINE_URL}/api/users/${user_id}` // API call to fetch user details
+      `${process.env.REACT_APP_ENGINE_URL}/api/users/${user_id}` // API call to fetch user details
     )
     //console.log('Fetched user by ID:', response.data)
     return response.data // Return the response data
@@ -96,7 +96,7 @@ export const fetchUserByUsernameOrEmail = async (
 ) => {
   try {
     const response = await axios.get(
-      `${process.env.ENGINE_URL}/api/users/findbyusernameandemail`,
+      `${process.env.REACT_APP_ENGINE_URL}/api/users/findbyusernameandemail`,
       {
         params: { username, email },
         headers: {
@@ -120,7 +120,7 @@ export const fetchUserByUsernameOrEmail = async (
 export const fetchBlockedUsers = async () => {
   try {
     const response = await axios.get(
-      `${process.env.ENGINE_URL}/api/admin/blockedusers`
+      `${process.env.REACT_APP_ENGINE_URL}/api/admin/blockedusers`
     )
     console.log('Fetched blocked users:', response.data)
     return response.data
@@ -132,7 +132,7 @@ export const fetchBlockedUsers = async () => {
 export const unblockUser = async userId => {
   try {
     const response = await axios.post(
-      `${process.env.ENGINE_URL}/api/admin/unblock/${userId}`
+      `${process.env.REACT_APP_ENGINE_URL}/api/admin/unblock/${userId}`
     )
     console.log('Unblocked user:', response.data)
     return response.data
@@ -143,7 +143,7 @@ export const unblockUser = async userId => {
 export const updateUser = async (userId, updatedData) => {
   try {
     const response = await axios.put(
-      `${process.env.ENGINE_URL}/api/users/${userId}`,
+      `${process.env.REACT_APP_ENGINE_URL}/api/users/${userId}`,
       updatedData,
       {
         headers: {
@@ -161,7 +161,7 @@ export const updateUser = async (userId, updatedData) => {
 export const changePassword = async (userId, oldPassword, newPassword) => {
   try {
     const response = await axios.post(
-      `${process.env.ENGINE_URL}/api/users/${userId}/change-password`,
+      `${process.env.REACT_APP_ENGINE_URL}/api/users/${userId}/change-password`,
       { oldPassword, newPassword },
       {
         headers: {

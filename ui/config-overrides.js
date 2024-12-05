@@ -8,7 +8,8 @@ module.exports = function override (config) {
     crypto: require.resolve('crypto-browserify'),
     process: require.resolve('process/browser.js'),
     stream: require.resolve('stream-browserify'),
-    buffer: require.resolve('buffer/')
+    buffer: require.resolve('buffer/'),
+    vm: require.resolve('vm-browserify')
   }
 
   config.plugins = (config.plugins || []).concat([
