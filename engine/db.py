@@ -4,6 +4,6 @@ from sqlalchemy.orm import sessionmaker
 from configuration.config import app
 
 # Centralizovane definicije
-engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'],pool_size=20, max_overflow=0)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()

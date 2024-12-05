@@ -1,7 +1,11 @@
 from configuration.config import app, db
+from db import Base,engine
+
+def init_db():
+    Base.metadata.create_all(engine)
+    print("Database initialized")
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",debug=True, port=5000) # Run the app
-    with app.app_context():
-        db.create_all() # Create all database tables if they don't exist
+    init_db()
+    app.run() # Run the app
     

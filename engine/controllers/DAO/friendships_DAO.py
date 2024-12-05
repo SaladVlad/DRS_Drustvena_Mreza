@@ -1,9 +1,12 @@
 from sqlalchemy import Column, Integer, Enum , ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
 from db import Base, Session
+from sqlalchemy.dialects.postgresql import ENUM
 from datetime import datetime
 import pytz
 from .users_DAO import User
+
+friendship_status_enum = ENUM('pending', 'accepted', 'rejected', name='friendship_status_enum', create_type=True,metadata=Base.metadata)
 
 class Friendship(Base):
     __tablename__ = 'friendship'
@@ -11,9 +14,8 @@ class Friendship(Base):
     user_id = Column(Integer, ForeignKey('user.user_id'), primary_key=True, nullable=False)  # Primary key part 1
     friend_id = Column(Integer, ForeignKey('user.user_id'), primary_key=True, nullable=False)  # Primary key part 2
     initiator_id = Column(Integer, ForeignKey('user.user_id'), nullable=False)  # ID of the request initiator
-    status = Column(Enum('pending', 'accepted', 'rejected'), default='pending', nullable=False)  # Friendship status
-    created_at = Column(TIMESTAMP, default=datetime.now(pytz.utc), nullable=False)  # Timestamp of creation
-
+    status = Column(friendship_status_enum, default='pending', nullable=False)  # Friendship status
+    created_at = Column(TIMESTAMP, nullable=False, default=lambda: datetime.now(pytz.utc))
     # Relationships
     requester = relationship("User", foreign_keys=[initiator_id])
     user = relationship("User", foreign_keys=[user_id])

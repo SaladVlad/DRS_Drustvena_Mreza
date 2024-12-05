@@ -1,28 +1,27 @@
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP
-from db import Base, Session  # Uvozimo centralizovane definicije
-from sqlalchemy import exc
-import pytz
+from db import Base, Session
 from hashlib import sha256
 from flask import jsonify
 from datetime import datetime
 from controllers.mail_sending import send_mail
+import pytz
 
 class User(Base):
     __tablename__ = 'user'
     user_id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String(32), unique=True, nullable=False)
     email = Column(String(64), unique=True, nullable=False)
-    password = Column(String(64), nullable=False)
+    password = Column(String(128), nullable=False)  # Adjusted for bcrypt/argon2 hash
     first_name = Column(String(32), nullable=False)
     last_name = Column(String(32), nullable=False)
-    address = Column(String(64))
-    city = Column(String(32))
-    state = Column(String(32))
-    phone_number = Column(String(16))
-    is_admin = Column(Boolean, default=False)
-    is_blocked = Column(Boolean, default=False)
-    created_at = Column(TIMESTAMP, nullable=False)
-    first_login = Column(Boolean, default=True)
+    address = Column(String(128))  # Adjusted for longer addresses
+    city = Column(String(64))  # Adjusted for longer city names
+    state = Column(String(64))
+    phone_number = Column(String(32))  # Adjusted for international phone numbers
+    is_admin = Column(Boolean, default=False, server_default="false")
+    is_blocked = Column(Boolean, default=False, server_default="false")
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=datetime.utcnow)
+    first_login = Column(Boolean, default=True, server_default="true")
 
 
 def create_user(username, email, password, first_name, last_name, address, city, state, phone_number):

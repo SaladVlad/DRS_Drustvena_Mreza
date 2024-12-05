@@ -1,11 +1,14 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, Enum, TIMESTAMP, LargeBinary
-from db import Base, Session, engine
+from sqlalchemy import Column, Integer, String, Text, Enum, TIMESTAMP, LargeBinary
+from db import Base, Session
 from datetime import datetime
-from flask import jsonify
 from sqlalchemy import exc
 import base64
+from sqlalchemy.dialects.postgresql import ENUM
 from .friendships_DAO import *
 import pytz
+
+
+post_status_enum = ENUM('pending', 'approved', 'rejected', name='post_status_enum', create_type=True,metadata=Base.metadata)
 
 class Post(Base):
     __tablename__ = 'post'
@@ -16,12 +19,8 @@ class Post(Base):
     image_name = Column(String(50), nullable=True)  # Stores the name of the image
     image_type = Column(String(50), nullable=True)  # Stores the MIME type of the image
     image_data = Column(LargeBinary, nullable=True)  # Stores the binary data of the image
-    status = Column(Enum('pending', 'approved', 'rejected', name='post_status_enum'), default='pending', nullable=False)
+    status = Column(post_status_enum, default='pending', nullable=False)
     created_at = Column(TIMESTAMP, nullable=False, default=lambda: datetime.now(pytz.utc))
-# Create all tables in the engine
-Base.metadata.create_all(engine)
-
-# Create a session to the database
 
 
 def convert_to_base64(image_data):
