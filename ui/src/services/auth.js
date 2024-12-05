@@ -24,10 +24,14 @@ export const getToken = async () => {
 
 export const login = async (username, password) => {
   try {
-    const response = await axios.post(`${process.env.ENGINE_URL}/api/auth/login`, {
-      username,
-      password
-    })
+    console.log('Engine URL:', process.env.ENGINE_URL)
+    const response = await axios.post(
+      `${process.env.ENGINE_URL}/api/auth/login`,
+      {
+        username,
+        password
+      }
+    )
     if (response.status !== 200) {
       console.error('error while logging in')
       return { status: 'ERROR', error: 'Unexpected response status' }
@@ -51,11 +55,14 @@ export const checkAdminStatus = async () => {
   }
 
   try {
-    const response = await axios.get(`${process.env.ENGINE_URL}/api/auth/isadmin`, {
-      headers: {
-        Authorization: `Bearer ${token}` // Include the JWT token in the Authorization header
+    const response = await axios.get(
+      `${process.env.ENGINE_URL}/api/auth/isadmin`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}` // Include the JWT token in the Authorization header
+        }
       }
-    })
+    )
     console.log('Admin status:', response.data.is_admin)
     return response.data.is_admin
   } catch (error) {
@@ -71,4 +78,3 @@ export const checkAdminStatus = async () => {
     return false
   }
 }
-
