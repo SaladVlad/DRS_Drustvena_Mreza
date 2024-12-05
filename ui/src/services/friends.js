@@ -1,5 +1,10 @@
 import { getUserIdFromToken } from './users'
 import axios from 'axios'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+process.env.ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:5000'
 
 export const getFriendsFromCurrentUser = async () => {
   try {
@@ -9,7 +14,7 @@ export const getFriendsFromCurrentUser = async () => {
       return null
     }
     const response = await axios.get(
-      `http://localhost:5000/api/friends/user_id=${user_id}`
+      `${process.env.ENGINE_URL}/api/friends/user_id=${user_id}`
     )
     console.log('Fetched friends:', response.data.friends)
     return response.data.friends
@@ -27,7 +32,7 @@ export const addFriend = async friend_id => {
       return null
     }
     const response = await axios.post(
-      `http://localhost:5000/api/friends/user_id=${user_id}&friend_id=${friend_id}`
+      `${process.env.ENGINE_URL}/api/friends/user_id=${user_id}&friend_id=${friend_id}`
     )
     console.log('Added friend:', response.data)
     return response.data
@@ -45,7 +50,7 @@ export const removeFriend = async friend_id => {
       return null
     }
     const response = await axios.delete(
-      `http://localhost:5000/api/friends/user_id=${user_id}&friend_id=${friend_id}`
+      `${process.env.ENGINE_URL}/api/friends/user_id=${user_id}&friend_id=${friend_id}`
     )
     console.log('Removed friend:', response.data)
     return response.data
@@ -63,7 +68,7 @@ export const respondToFriendRequest = async (friend_id, status) => {
       return null
     }
     const response = await axios.post(
-      `http://localhost:5000/api/friends/user_id=${user_id}&friend_id=${friend_id}&status=${status}`
+      `${process.env.ENGINE_URL}/api/friends/user_id=${user_id}&friend_id=${friend_id}&status=${status}`
     )
     console.log('Responded to friend request:', response.data)
     return response.data
@@ -82,7 +87,7 @@ export const getPendingRequests = async () => {
       return null
     }
     const response = await axios.get(
-      `http://localhost:5000/api/friends/pending/user_id=${user_id}`
+      `${process.env.ENGINE_URL}/api/friends/pending/user_id=${user_id}`
     )
     console.log('Fetched pending requests:', response.data)
     return response.data
@@ -91,3 +96,4 @@ export const getPendingRequests = async () => {
     return null
   }
 }
+

@@ -1,4 +1,7 @@
 import axios from 'axios'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const setToken = async token => {
   try {
@@ -21,7 +24,7 @@ export const getToken = async () => {
 
 export const login = async (username, password) => {
   try {
-    const response = await axios.post('http://localhost:5000/api/auth/login', {
+    const response = await axios.post(`${process.env.ENGINE_URL}/api/auth/login`, {
       username,
       password
     })
@@ -48,7 +51,7 @@ export const checkAdminStatus = async () => {
   }
 
   try {
-    const response = await axios.get('http://localhost:5000/api/auth/isadmin', {
+    const response = await axios.get(`${process.env.ENGINE_URL}/api/auth/isadmin`, {
       headers: {
         Authorization: `Bearer ${token}` // Include the JWT token in the Authorization header
       }
@@ -68,3 +71,4 @@ export const checkAdminStatus = async () => {
     return false
   }
 }
+
