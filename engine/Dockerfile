@@ -11,6 +11,9 @@ RUN pip install --no-cache-dir -r requirements.txt && pip list
 # Now copy the rest of the app code
 COPY . .
 
+# List the contents of /app to ensure all files are copied
+RUN ls -R /app
+
 WORKDIR /app
 
 ENV PYTHONPATH /app
