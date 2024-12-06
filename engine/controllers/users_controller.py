@@ -65,3 +65,13 @@ def generate_password_hash(password):
 def check_password_hash(stored_password, provided_password):
     hashed_provided_password = hashlib.sha256(provided_password.encode('utf-8')).hexdigest()
     return stored_password == hashed_provided_password
+
+def search_users_controller(query):
+    if not query:
+        return jsonify({"error": "Query parameter is required"}), 400
+
+    users = search_users(query)
+    if not users:
+        return jsonify({"message": "No users found"}), 404
+
+    return jsonify({"users": users}), 200

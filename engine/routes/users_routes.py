@@ -94,3 +94,8 @@ def change_password(user_id):
         return jsonify({"error": "Internal server error."}), 500
     finally:
         session.close()
+
+@users_bp.route('/search', methods=['GET'])
+def search_users_route():
+    query = request.args.get("query")
+    return search_users_controller(query)

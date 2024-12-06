@@ -198,5 +198,28 @@ def unblock_user(user_id):
         session.close()
 
     
-
-
+def search_users(query):
+    """
+    Search users by username, email, first_name, or last_name
+    """
+    session = Session()
+    try:
+        users = (
+            session.query(User)
+            .filter(
+                (User.username.ilike(f"%{query}%"))
+                | (User.email.ilike(f"%{query}%"))
+                | (User.first_name.ilike(f"%{query}%"))
+                | (User.last_name.ilike(f"%{query}%"))
+            )
+            .all()
+        )
+        return [
+            {column.name: getattr(user, column.name) for column in User.__table__.columns}
+            for user in users
+        ]
+    except Exception as e:
+        print(f"Error during search: {e}")
+        return []
+    finally:
+        session.close()
