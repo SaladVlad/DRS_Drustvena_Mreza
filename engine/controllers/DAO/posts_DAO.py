@@ -42,6 +42,18 @@ def create_post(**kwargs):
         new_post.image_data = convert_to_base64(new_post.image_data)
         post_dict = {c.name: getattr(new_post, c.name) for c in new_post.__table__.columns}
         #convert the raw image_data in new_post to base64
+        """
+        post_socket_dict = {
+            "post_id": new_post.post_id,
+            "user_id": new_post.user_id,
+            "content": new_post.content
+        }
+        # Emit the new post to all connected clients
+        
+        print("Saljem kroz socket")
+        socketio.emit('new_post_pending', post_dict)
+        print("Poslao kroz socket")
+        """
         return {"post": post_dict}, None
     except exc.IntegrityError:
         session.rollback()
@@ -73,9 +85,11 @@ def get_posts_by_user(user_id):
         return None, str(e)
 
 def get_pending_posts():
+    print("Usao u funkicju za pristup bazi da pokupim postove")
     session = Session()
     try:
         posts = session.query(Post).filter_by(status='pending').all()
+        print("postovi pokupljeni")
         for post in posts:
             post.image_data = convert_to_base64(post.image_data)
         return {"posts": [{c.name: getattr(post, c.name) for c in post.__table__.columns} for post in posts]}, None

@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager
 import os
+from flask_socketio import SocketIO
 
 # Load environment variables from .env file
 load_dotenv()
@@ -18,6 +19,8 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECTRET_KEY')
 jwt = JWTManager(app)
 
 CORS(app)
+
+socketio = SocketIO(app, cors_allowed_origins="*")  #za websockets
 
 db = SQLAlchemy(app)
 

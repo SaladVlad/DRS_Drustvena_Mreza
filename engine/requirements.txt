@@ -3,6 +3,7 @@ flask-cors
 flask-sqlalchemy
 flask-jwt-extended
 flask-mail
+flask_socketio
 pymysql
 cryptography
 python-dotenv

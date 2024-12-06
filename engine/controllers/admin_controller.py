@@ -68,7 +68,7 @@ def unblock(user_id):
 
 def get_all_pending_posts():
     try:
-        posts, error = read_pending_posts()
+        posts, error = get_pending_posts()
         if posts is None:
             return jsonify({"error": "error"}), 404
         return jsonify([{"post_id": post.post_id, "user_id": post.user_id, "status": post.status} for post in posts])
@@ -77,7 +77,7 @@ def get_all_pending_posts():
 
 def update_post_status_admin(**kwargs):
     try:
-        post, error = update_post_status(**kwargs)
+        post, error = update_post(**kwargs)
         if post is None:
             return jsonify({"error": error}), 400
         return jsonify({"post_id": post.post_id, "user_id": post.user_id, "content": post.content, "image_url": post.image_url, "status": post.status, "created_at": post.created_at})

@@ -67,7 +67,8 @@ const NavBar = () => {
   const items = isAdmin
     ? [
         { name: 'Dashboard', to: '/home' },
-        { name: 'Register new user', to: '/register' }
+        { name: 'Register new user', to: '/register' },
+        { name: 'Requests for posting', to: '/postrequests' }
       ]
     : [
         { name: 'Dashboard', to: '/home' },
