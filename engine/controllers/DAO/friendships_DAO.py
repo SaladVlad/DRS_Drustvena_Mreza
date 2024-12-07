@@ -73,7 +73,7 @@ def send_friend_request(user_id, friend_id):
 
         if existing_request:
             raise ValueError("Friendship request already exists")
-        
+
         new_request = Friendship(user_id=user_id, friend_id=friend_id, initiator_id=user_id, status='pending')
         session.add(new_request)
         session.commit()
@@ -113,12 +113,12 @@ def get_pending_requests(user_id):
     session = Session()
     try:
         pending_requests = session.query(Friendship).filter(
-            (Friendship.user_id == user_id) & (Friendship.status == 'pending')
+            (Friendship.friend_id == user_id) & (Friendship.status == 'pending')
         ).all()
         
         requesters = [{
-            'user_id': friendship.user_id,
-            'friend_id': friendship.friend_id,
+            'friend_id': friendship.user_id,
+            'user_id': friendship.friend_id,
             'initiator_id': friendship.initiator_id
         } for friendship in pending_requests]
         
