@@ -198,22 +198,26 @@ def unblock_user(user_id):
         session.close()
 
     
-def search_users(query):
-    """
-    Search users by username, email, first_name, or last_name
-    """
+def search_users(query=None, address=None, city=None, state=None):
     session = Session()
     try:
-        users = (
-            session.query(User)
-            .filter(
+        filters = []
+        if query:
+            filters.append(
                 (User.username.ilike(f"%{query}%"))
                 | (User.email.ilike(f"%{query}%"))
                 | (User.first_name.ilike(f"%{query}%"))
                 | (User.last_name.ilike(f"%{query}%"))
+                | (User.phone_number.ilike(f"%{query}%"))
             )
-            .all()
-        )
+        if address:
+            filters.append(User.address.ilike(f"%{address}%"))
+        if city:
+            filters.append(User.city == city)
+        if state:
+            filters.append(User.state == state)
+
+        users = session.query(User).filter(*filters).all()
         return [
             {column.name: getattr(user, column.name) for column in User.__table__.columns}
             for user in users

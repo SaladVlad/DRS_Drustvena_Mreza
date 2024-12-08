@@ -4,8 +4,13 @@ import { getUserIdFromToken } from '../services/users'; // Import the helper fun
 
 const UserSearch = ({ onSelectUser }) => {
   const [query, setQuery] = useState('');
+  const [address, setAddress] = useState('');
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [cities, setCities] = useState([]);
+  const [states, setStates] = useState([]);
   const [friendIds, setFriendIds] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null); // State to hold current user ID
 
@@ -21,16 +26,11 @@ const UserSearch = ({ onSelectUser }) => {
 
   // Handle user search
   const handleSearch = async () => {
-    if (!query.trim()) {
-      setError('Search query cannot be empty.');
-      return;
-    }
-
     try {
-      const response = await axios.get(`http://localhost:5000/api/users/search`, {
-        params: { query },
+      const response = await axios.get('http://localhost:5000/api/users/search', {
+        params: { query, address, city, state },
       });
-      setResults(response.data.users);
+      setResults(response.data.users || []);
       setError(null);
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred during search.');
@@ -64,6 +64,18 @@ const UserSearch = ({ onSelectUser }) => {
 
     initializeUser();
   }, []);
+  useEffect(() => {
+    const fetchCitiesAndStates = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users/locations');
+        setCities(response.data.cities || []);
+        setStates(response.data.states || []);
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
+    };
+    fetchCitiesAndStates();
+  }, []);
 
   return (
     <div className="mb-4">
@@ -71,14 +83,51 @@ const UserSearch = ({ onSelectUser }) => {
         <input
           type="text"
           className="form-control"
-          placeholder="Search users..."
+          placeholder="Search by username, email, etc."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button className="btn btn-primary" onClick={handleSearch}>
-          Search
-        </button>
       </div>
+      <div className="input-group mb-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search by address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
+      </div>
+      <div className="input-group mb-3">
+        <select
+          className="form-select"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+        >
+          <option value="">All Cities</option>
+          {cities.map((city) => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="input-group mb-3">
+        <select
+          className="form-select"
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+        >
+          <option value="">All States</option>
+          {states.map((state) => (
+            <option key={state} value={state}>
+              {state}
+            </option>
+          ))}
+        </select>
+      </div>
+      <button className="btn btn-primary" onClick={handleSearch}>
+        Search
+      </button>
       {error && <p className="text-danger">{error}</p>}
       <ul className="list-group">
         {results.map((user) => (

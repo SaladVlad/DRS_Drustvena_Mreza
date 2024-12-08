@@ -98,4 +98,19 @@ def change_password(user_id):
 @users_bp.route('/search', methods=['GET'])
 def search_users_route():
     query = request.args.get("query")
-    return search_users_controller(query)
+    address = request.args.get("address")
+    city = request.args.get("city")
+    state = request.args.get("state")
+    return search_users_controller(query=query, address=address, city=city, state=state)
+
+@users_bp.route('/locations', methods=['GET'])
+def get_locations():
+    session = Session()
+    try:
+        cities = [row[0] for row in session.query(User.city).distinct().all()]
+        states = [row[0] for row in session.query(User.state).distinct().all()]
+        return jsonify({"cities": cities, "states": states}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        session.close()
