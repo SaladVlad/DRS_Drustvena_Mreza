@@ -101,7 +101,8 @@ def search_users_route():
     address = request.args.get("address")
     city = request.args.get("city")
     state = request.args.get("state")
-    return search_users_controller(query=query, address=address, city=city, state=state)
+    user_id = request.args.get("currentUserId")
+    return search_users_controller(query=query, address=address, city=city, state=state, user_id=user_id)
 
 @users_bp.route('/locations', methods=['GET'])
 def get_locations():

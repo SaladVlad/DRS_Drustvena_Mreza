@@ -66,11 +66,11 @@ def check_password_hash(stored_password, provided_password):
     hashed_provided_password = hashlib.sha256(provided_password.encode('utf-8')).hexdigest()
     return stored_password == hashed_provided_password
 
-def search_users_controller(query=None, address=None, city=None, state=None):
+def search_users_controller(query=None, address=None, city=None, state=None,user_id=None):
     if not query and not address and not city and not state:
         return jsonify({"error": "At least one search parameter is required"}), 400
 
-    users = search_users(query=query, address=address, city=city, state=state)
+    users = search_users(query=query, address=address, city=city, state=state, user_id=user_id)
     if not users:
         return jsonify({"message": "No users found"}), 404
 

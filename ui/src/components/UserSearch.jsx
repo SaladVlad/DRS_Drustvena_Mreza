@@ -28,7 +28,7 @@ const UserSearch = ({ onSelectUser }) => {
   const handleSearch = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/users/search', {
-        params: { query, address, city, state },
+        params: { query, address, city, state, currentUserId},
       });
       setResults(response.data.users || []);
       setError(null);

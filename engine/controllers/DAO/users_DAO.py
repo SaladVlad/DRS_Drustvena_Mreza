@@ -198,7 +198,7 @@ def unblock_user(user_id):
         session.close()
 
     
-def search_users(query=None, address=None, city=None, state=None):
+def search_users(query=None, address=None, city=None, state=None,user_id=None):
     session = Session()
     try:
         filters = []
@@ -216,6 +216,8 @@ def search_users(query=None, address=None, city=None, state=None):
             filters.append(User.city == city)
         if state:
             filters.append(User.state == state)
+        if user_id:
+            filters.append(User.user_id != user_id)
 
         users = session.query(User).filter(*filters).all()
         return [
