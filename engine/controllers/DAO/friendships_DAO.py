@@ -20,40 +20,42 @@ class Friendship(Base):
     friend = relationship("User", foreign_keys=[friend_id])
 
 
-def get_friends(user_id):
+def get_friends(user_id, include_status=False):
     session = Session()
     try:
-
         user_id = int(user_id)
 
-        # Query to get all accepted friendships involving the user
+        # Query to get all friendships involving the user
         friendships = session.query(Friendship).filter(
-            ((Friendship.user_id == user_id) | (Friendship.friend_id == user_id)) &
-            (Friendship.status == 'accepted')
+            ((Friendship.user_id == user_id) | (Friendship.friend_id == user_id))
         ).all()
-
-        # Debugging: Print out the friendships to see what is returned
-        print(f"Friendships for user {user_id}: {friendships}")
 
         if not friendships:
             print(f"No friendships found for user {user_id}.")
             return set()
 
-        friend_ids = set()
+        friends = []
 
         for friendship in friendships:
-            
-            # Ensure we're comparing the correct user_id to add the corresponding friend_id
-            if friendship.user_id == user_id:
-                print(f"Adding friend_id = {friendship.friend_id} to the set")
-                friend_ids.add(friendship.friend_id)  # Add the friend_id if the user is the current user
-            elif friendship.friend_id == user_id:
-                print(f"Adding user_id = {friendship.user_id} to the set")
-                friend_ids.add(friendship.user_id)  # Add the user_id if the friend_id is the current user
+            if friendship.status == 'accepted':
+                # Add the friend with details if include_status=True
+                if friendship.user_id == user_id:
+                    friends.append({'friend_id': friendship.friend_id, 'status': friendship.status})
+                elif friendship.friend_id == user_id:
+                    friends.append({'friend_id': friendship.user_id, 'status': friendship.status})
+            elif include_status and friendship.status == 'pending':
+                # Include pending requests only if include_status=True
+                if friendship.user_id == user_id:
+                    friends.append({'friend_id': friendship.friend_id, 'status': friendship.status})
+                elif friendship.friend_id == user_id:
+                    friends.append({'friend_id': friendship.user_id, 'status': friendship.status})
 
-        # Print the final set of friend IDs
-        print(f"Friend IDs for user {user_id}: {friend_ids}")  # This is the final result
-        return friend_ids
+        # If include_status=False, return only the accepted friend IDs
+        if not include_status:
+            return {friend['friend_id'] for friend in friends if friend['status'] == 'accepted'}
+
+        return friends  # Return detailed information with status if include_status=True
+
     except Exception as e:
         print(f"Error: {e}")
         return set()

@@ -11,7 +11,9 @@ friends_bp = Blueprint('friends', __name__, url_prefix='/api/friends')
 def get_friends(user_id):
     if not user_id:
         return jsonify({"error": "User ID is required"}), 400
-    return get_friends_list(user_id)
+
+    include_status = request.args.get('include_status', 'false').lower() == 'true'
+    return get_friends_list(user_id, include_status=include_status)
 
 @friends_bp.route('/user_id=<int:user_id>&friend_id=<int:friend_id>', methods=['POST'])
 #@jwt_required()

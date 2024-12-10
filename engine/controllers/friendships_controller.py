@@ -1,11 +1,17 @@
 from flask import Blueprint, request, jsonify
 from .DAO.friendships_DAO import *
 
-def get_friends_list(user_id):
+def get_friends_list(user_id, include_status=False):
     try:
-        friends = get_friends(user_id)
-        friends_data = [user_id for user_id in friends]
-        return jsonify({"friends": friends_data}), 200
+        friends = get_friends(user_id, include_status=include_status)
+
+        if include_status:
+            # Return detailed data with status
+            return jsonify({"friends": friends}), 200
+        else:
+            # Return only the list of friend IDs
+            friends_data = [friend['friend_id'] for friend in friends] if isinstance(friends, list) else list(friends)
+            return jsonify({"friends": friends_data}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     

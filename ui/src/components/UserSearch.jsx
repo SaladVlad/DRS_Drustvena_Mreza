@@ -11,16 +11,26 @@ const UserSearch = ({ onSelectUser }) => {
   const [state, setState] = useState('');
   const [cities, setCities] = useState([]);
   const [states, setStates] = useState([]);
-  const [friendIds, setFriendIds] = useState([]);
+  const [friendIds, setFriendIds] = useState([]); // IDs of accepted friends
+  const [pendingIds, setPendingIds] = useState([]); // IDs of pending requests
   const [currentUserId, setCurrentUserId] = useState(null); // State to hold current user ID
 
-  // Fetch the current user's friends
-  const fetchFriends = async (userId) => {
+  // Fetch the current user's friends and pending requests
+  const fetchFriendsAndPending = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/friends/user_id=${userId}`);
-      setFriendIds(response.data.friends || []);
+      const response = await axios.get(`http://localhost:5000/api/friends/user_id=${userId}`, {
+        params: { include_status: true },
+      });
+      const friends = response.data.friends || [];
+      
+      // Separate accepted friends and pending requests
+      const acceptedFriends = friends.filter((f) => f.status === 'accepted').map((f) => f.friend_id);
+      const pendingRequests = friends.filter((f) => f.status === 'pending').map((f) => f.friend_id);
+  
+      setFriendIds(acceptedFriends); // Set accepted friends
+      setPendingIds(pendingRequests); // Set pending requests
     } catch (error) {
-      console.error('Error fetching friends:', error);
+      console.error('Error fetching friends or pending requests:', error);
     }
   };
 
@@ -28,10 +38,15 @@ const UserSearch = ({ onSelectUser }) => {
   const handleSearch = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/users/search', {
-        params: { query, address, city, state, currentUserId},
+        params: { query, address, city, state, currentUserId },
       });
       setResults(response.data.users || []);
       setError(null);
+
+      // Refresh friends and pending requests
+      if (currentUserId) {
+        await fetchFriendsAndPending(currentUserId);
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred during search.');
       setResults([]);
@@ -45,7 +60,9 @@ const UserSearch = ({ onSelectUser }) => {
         `http://localhost:5000/api/friends/user_id=${currentUserId}&friend_id=${friendId}`
       );
       console.log('Friend request sent:', response.data);
-      setFriendIds((prev) => [...prev, friendId]); 
+
+      // Add to pending requests
+      setPendingIds((prev) => [...prev, friendId]);
     } catch (error) {
       console.error('Error sending friend request:', error);
     }
@@ -56,14 +73,15 @@ const UserSearch = ({ onSelectUser }) => {
       const userId = await getUserIdFromToken(); // Get the current user ID from the token
       if (userId) {
         setCurrentUserId(userId);
-        await fetchFriends(userId); // Fetch friends for the current user
+        await fetchFriendsAndPending(userId); // Fetch friends and pending requests with statuses
       } else {
         console.error('Failed to retrieve current user ID');
       }
     };
-
+  
     initializeUser();
   }, []);
+
   useEffect(() => {
     const fetchCitiesAndStates = async () => {
       try {
@@ -130,29 +148,33 @@ const UserSearch = ({ onSelectUser }) => {
       </button>
       {error && <p className="text-danger">{error}</p>}
       <ul className="list-group">
-        {results.map((user) => (
-          <li
-            key={user.user_id}
-            className="list-group-item d-flex justify-content-between align-items-center"
-          >
-            <span>
-              <strong>{user.username}</strong> - {user.email} - {user.first_name} - {user.last_name} - {user.city}
-            </span>
-            {friendIds.includes(user.user_id) ? (
-              <button className="btn btn-sm btn-success" disabled>
-                Friends
-              </button>
-            ) : (
-              <button
-                className="btn btn-sm btn-primary"
-                onClick={() => handleAddFriend(user.user_id)}
-              >
-                Add Friend
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
+  {results.map((user) => (
+    <li
+      key={user.user_id}
+      className="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <span>
+        <strong>{user.username}</strong> - {user.email} - {user.first_name} - {user.last_name} - {user.city}
+      </span>
+      {friendIds.includes(user.user_id) ? (
+        <button className="btn btn-sm btn-success" disabled>
+          Friends
+        </button>
+      ) : pendingIds.includes(user.user_id) ? (
+        <button className="btn btn-sm btn-warning" disabled>
+          Pending
+        </button>
+      ) : (
+        <button
+          className="btn btn-sm btn-primary"
+          onClick={() => handleAddFriend(user.user_id)}
+        >
+          Add Friend
+        </button>
+      )}
+    </li>
+  ))}
+</ul>
     </div>
   );
 };
