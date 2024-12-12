@@ -74,9 +74,9 @@ const Friends = () => {
               </li>
             ) : (
               pendingFriends.map(pendingFriend => (
-                <li className='list-group-item' key={pendingFriend.friend_id}>
+                <li className='list-group-item' key={pendingFriend.initiator_id}>
                   <FriendComponent
-                    friendId={pendingFriend.friend_id}
+                    friendId={pendingFriend.initiator_id}
                     status={'pending'}
                     onFriendsChange={onFriendsChange}
                   />

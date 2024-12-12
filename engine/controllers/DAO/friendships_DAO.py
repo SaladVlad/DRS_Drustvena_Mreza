@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, Enum , ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
+from sqlalchemy import or_
 from db import Base, Session
 from datetime import datetime
 import pytz
@@ -65,6 +66,7 @@ def get_friends(user_id, include_status=False):
 def send_friend_request(user_id, friend_id):
     session = Session()
     try:
+        initiator_id = user_id
         # Ensure user_id is always the smaller ID
         if user_id > friend_id:
             user_id, friend_id = friend_id, user_id
@@ -76,7 +78,7 @@ def send_friend_request(user_id, friend_id):
         if existing_request:
             raise ValueError("Friendship request already exists")
 
-        new_request = Friendship(user_id=user_id, friend_id=friend_id, initiator_id=user_id, status='pending')
+        new_request = Friendship(user_id=user_id, friend_id=friend_id, initiator_id=initiator_id, status='pending')
         session.add(new_request)
         session.commit()
     except Exception as e:
@@ -115,15 +117,22 @@ def get_pending_requests(user_id):
     session = Session()
     try:
         pending_requests = session.query(Friendship).filter(
-            (Friendship.friend_id == user_id) & (Friendship.status == 'pending')
+            (Friendship.status == 'pending') & 
+            (Friendship.initiator_id != user_id) & 
+            or_(
+                Friendship.user_id == user_id,
+                Friendship.friend_id == user_id
+            )
         ).all()
         
         requesters = [{
-            'friend_id': friendship.user_id,
-            'user_id': friendship.friend_id,
-            'initiator_id': friendship.initiator_id
+            'user_id': friendship.user_id,
+            'friend_id': friendship.friend_id,
+            'initiator_id': friendship.initiator_id,
+            'receiver_id': friendship.friend_id if friendship.initiator_id == friendship.user_id else friendship.user_id
         } for friendship in pending_requests]
-        
+        print("OVO JE DEBUG")
+        print(requesters)
         return requesters
     except Exception as e:
         print(e)
