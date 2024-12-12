@@ -1,153 +1,73 @@
 import smtplib
 from email.mime.text import MIMEText
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-"""
-    email_sender = "dusantomicroki@gmail.com"
-    email_password = "qwqluufqdfdzlrmx"  # Koristite generisanu App Password
-    email_receiver = "t9userdrs@gmail.com"
-    """ 
+# Main email sender credentials
+email_sender = os.getenv("MAIL_SENDER")
+email_password = os.getenv("MAIL_SENDER_KEY")
 
-"""
-        GOOGLE ACC za dedicated user mail na koji stizu sve  notifikacije:
-        username: t9userdrs@gmail.com
-        password: t9userdrs123
-        app password key: vugdwgfptdcsfdtb
+admin_mail = os.getenv("ADMIN_MAIL")
 
-        GOOGLE ACC za dedicated admin mail na koji stizu sve  notifikacije:
-        username: t9adrs@gmail.com
-        password: t9admindrs123
-        app password key: vbnrhybdmzozrcxe
-
-"""
-
-def send_mail_when_registered(username, password):
-    email_sender = "t9adrs@gmail.com"
-    email_password = "vbnrhybdmzozrcxe"  # Koristite generisanu App Password
-    email_receiver = "t9userdrs@gmail.com"
-    
-    # Poruka
-    msg = MIMEText(f"Hello new user!\nThis is your username: {username} and password: {password}\nThank you for using our app")
-    msg['Subject'] = f"[ACC CREATED] - {username}"
+def send_mail(subject, body, receiver_email):
+    """
+    Sends an email with the specified subject and body to the receiver_email.
+    """
+    msg = MIMEText(body)
+    msg['Subject'] = subject
     msg['From'] = email_sender
-    msg['To'] = email_receiver
+    msg['To'] = receiver_email
 
-    # Slanje emaila
     try:
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
             server.starttls()
             server.login(email_sender, email_password)
-            server.sendmail(email_sender, email_receiver, msg.as_string())
-            print("Email sent successfully!")
+            server.sendmail(email_sender, receiver_email, msg.as_string())
+            print(f"Email sent successfully to {receiver_email}!")
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        print(f"Failed to send email to {receiver_email}: {e}")
+
+# Specific use cases
+def send_mail_when_registered(username, password, receiver_email):
+    subject = f"[ACC CREATED] - {username}"
+    body = (f"Hello new user!\n"
+            f"This is your username: {username} and password: {password}\n"
+            f"Thank you for using our app.")
+    send_mail(subject, body, receiver_email)
 
 def send_mail_when_new_post(username):
-    email_sender = "t9userdrs@gmail.com"
-    email_password = "vugdwgfptdcsfdtb"  # Koristite generisanu App Password
-    email_receiver = "t9adrs@gmail.com" 
+    subject = f"[PENDING POST] - {username}"
+    body = (f"Hello dear admin!\n"
+            f"User with username {username} has created a new post.")
+    send_mail(subject, body, admin_mail)
 
+def send_mail_when_post_approved(username, post_content, receiver_email):
+    subject = f"[POST APPROVED] - {username}"
+    body = (f"Hello dear {username}!\n"
+            f"Your post with content: {post_content} has been approved.\n"
+            f"Thank you for using our app.")
+    send_mail(subject, body, receiver_email)
 
-    # Poruka
-    msg = MIMEText(f"Hello dear admin!\nUser with username {username} has created a new post.")
-    msg['Subject'] = f"[PENDING POST] - {username}"
-    msg['From'] = email_sender
-    msg['To'] = email_receiver
+def send_mail_when_post_rejected(username, post_content, receiver_email):
+    subject = f"[POST REJECTED] - {username}"
+    body = (f"Hello dear {username}!\n"
+            f"Your post with content: {post_content} has been rejected.\n"
+            f"Thank you for using our app.")
+    send_mail(subject, body, receiver_email)
 
-    # Slanje emaila
-    try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(email_sender, email_password)
-            server.sendmail(email_sender, email_receiver, msg.as_string())
-            print("Email sent successfully!")
-    except Exception as e:
-        print(f"Failed to send email: {e}")
+def send_mail_when_blocked(username, receiver_email):
+    subject = f"[BLOCKED] - {username}"
+    body = (f"Hello dear {username}!\n"
+            f"You have been blocked by administration because of three rejected posts.\n"
+            f"Administration will contact you again once the unblocking procedure is complete.\n"
+            f"Thank you for using our app.")
+    send_mail(subject, body, receiver_email)
 
-
-def send_mail_when_post_approved(username, post_content):
-    email_sender = "t9adrs@gmail.com"
-    email_password = "vbnrhybdmzozrcxe"  # Koristite generisanu App Password
-    email_receiver = "t9userdrs@gmail.com"
-
-    # Poruka
-    msg = MIMEText(f"Hello dear {username}!\nYour post with content: {post_content} has been approved.\nThank you for using our app.")
-    msg['Subject'] = f"[POST APPROVED] - {username}"
-    msg['From'] = email_sender
-    msg['To'] = email_receiver
-
-    # Slanje emaila
-    try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(email_sender, email_password)
-            server.sendmail(email_sender, email_receiver, msg.as_string())
-            print("Email sent successfully!")
-    except Exception as e:
-        print(f"Failed to send email: {e}")
-
-
-def send_mail_when_post_rejected(username, post_content):
-    email_sender = "t9adrs@gmail.com"
-    email_password = "vbnrhybdmzozrcxe"  # Koristite generisanu App Password
-    email_receiver = "t9userdrs@gmail.com"
-
-    # Poruka
-    msg = MIMEText(f"Hello dear {username}!\nYour post with content: {post_content} has been rejected.\nThank you for using our app.")
-    msg['Subject'] = f"[POST REJECTED] - {username}"
-    msg['From'] = email_sender
-    msg['To'] = email_receiver
-
-    # Slanje emaila
-    try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(email_sender, email_password)
-            server.sendmail(email_sender, email_receiver, msg.as_string())
-            print("Email sent successfully!")
-    except Exception as e:
-        print(f"Failed to send email: {e}")
-
-
-def send_mail_when_blocked(username):
-    email_sender = "t9adrs@gmail.com"
-    email_password = "vbnrhybdmzozrcxe"  # Koristite generisanu App Password
-    email_receiver = "t9userdrs@gmail.com"
-
-    # Poruka
-    msg = MIMEText(f"Hello dear {username}!\nYou have been blocked by administration, beacuse of the three rejected posts.\nAdministration will contanct you again when they complete the unblocking procedure.\nThank you for using our app.")
-    msg['Subject'] = f"[BLOCKED] - {username}"
-    msg['From'] = email_sender
-    msg['To'] = email_receiver
-
-    # Slanje emaila
-    try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(email_sender, email_password)
-            server.sendmail(email_sender, email_receiver, msg.as_string())
-            print("Email sent successfully!")
-    except Exception as e:
-        print(f"Failed to send email: {e}")
-
-
-def send_mail_when_unblocked(username):
-    email_sender = "t9adrs@gmail.com"
-    email_password = "vbnrhybdmzozrcxe"  # Koristite generisanu App Password
-    email_receiver = "t9userdrs@gmail.com"
-
-    # Poruka
-    msg = MIMEText(f"Hello dear {username}!\nYou have been unblocked by administration\nFeel free to make posts and new friendships again.\nThank you for using our app.")
-    msg['Subject'] = f"Unblocked {username}"
-    msg['From'] = email_sender
-    msg['To'] = email_receiver
-
-    # Slanje emaila
-    try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(email_sender, email_password)
-            server.sendmail(email_sender, email_receiver, msg.as_string())
-            print("Email sent successfully!")
-    except Exception as e:
-        print(f"Failed to send email: {e}")
-    
+def send_mail_when_unblocked(username, receiver_email):
+    subject = f"[UNBLOCKED] - {username}"
+    body = (f"Hello dear {username}!\n"
+            f"You have been unblocked by the administration.\n"
+            f"Feel free to make posts and new friendships again.\n"
+            f"Thank you for using our app.")
+    send_mail(subject, body, receiver_email)
