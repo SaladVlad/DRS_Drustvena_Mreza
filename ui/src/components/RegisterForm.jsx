@@ -2,177 +2,200 @@ import React, { useState } from 'react'
 import { register } from '../services/users'
 
 const RegisterForm = () => {
-  const [name, setName] = useState('')
-  const [surname, setSurname] = useState('')
-  const [address, setAddress] = useState('')
-  const [city, setCity] = useState('')
-  const [country, setCountry] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [username, setUsername] = useState('')
-  const [error, setError] = useState('')
+  const [formData, setFormData] = useState({
+    name: '',
+    surname: '',
+    address: '',
+    city: '',
+    country: '',
+    phoneNumber: '',
+    email: '',
+    password: '',
+    username: ''
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleChange = e => {
+    const { id, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [id]: value
+    }));
+    setErrors(prevState => ({
+      ...prevState,
+      [id]: ''
+    }));
+  };
+
+  const validateInputs = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.surname.trim()) newErrors.surname = 'Surname is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email must be valid (e.g., example@mail.com)';
+    }
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required';
+    } else if (formData.username.length < 4) {
+      newErrors.username = 'Username must be at least 4 characters long';
+    }
+    if (!formData.password.trim()) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters long';
+    } else if (!/\d/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one number';
+    }
+    return newErrors;
+  };
 
   const handleSubmit = e => {
-    e.preventDefault()
+    e.preventDefault();
+    const validationErrors = validateInputs();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     register({
-      first_name: name,
-      last_name: surname,
-      address,
-      city,
-      state: country,
-      phone_number: phoneNumber,
-      email,
-      password,
-      username
+      first_name: formData.name,
+      last_name: formData.surname,
+      address: formData.address,
+      city: formData.city,
+      state: formData.country,
+      phone_number: formData.phoneNumber,
+      email: formData.email,
+      password: formData.password,
+      username: formData.username
     })
       .then(data => {
-        console.log(data)
-        setError('')
+        console.log(data);
+        setErrors({});
       })
       .catch(error => {
-        setError(error.message)
-      })
-  }
+        setErrors({ form: error.message });
+      });
+  };
 
   return (
     <form
       onSubmit={handleSubmit}
       style={{ margin: '0 auto', maxWidth: '600px' }}
     >
-      <div className='container-fluid'>
-        <div className='row'>
-          <div className='col'>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='name' style={{ marginRight: '10px' }}>
-                Name:
-              </label>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col">
+            <div className="form-group" style={{ marginBottom: '10px' }}>
+              <label htmlFor="name">Name:</label>
               <input
-                id='name'
-                type='text'
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder='Enter your name'
-                className='form-control'
+                id="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                className={`form-control ${errors.name ? 'is-invalid' : ''}`}
               />
+              {errors.name && <div className="invalid-feedback">{errors.name}</div>}
             </div>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='surname' style={{ marginRight: '10px' }}>
-                Surname:
-              </label>
+            <div className="form-group" style={{ marginBottom: '10px' }}>
+              <label htmlFor="surname">Surname:</label>
               <input
-                id='surname'
-                type='text'
-                value={surname}
-                onChange={e => setSurname(e.target.value)}
-                placeholder='Enter your surname'
-                className='form-control'
+                id="surname"
+                type="text"
+                value={formData.surname}
+                onChange={handleChange}
+                className={`form-control ${errors.surname ? 'is-invalid' : ''}`}
               />
+              {errors.surname && <div className="invalid-feedback">{errors.surname}</div>}
             </div>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='address' style={{ marginRight: '10px' }}>
-                Address:
-              </label>
+            <div className="form-group" style={{ marginBottom: '10px' }}>
+              <label htmlFor="address">Address:</label>
               <input
-                id='address'
-                type='text'
-                value={address}
-                onChange={e => setAddress(e.target.value)}
-                placeholder='Enter your address'
-                className='form-control'
+                id="address"
+                type="text"
+                value={formData.address}
+                onChange={handleChange}
+                className="form-control"
               />
             </div>
           </div>
-          <div className='col'>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='city' style={{ marginRight: '10px' }}>
-                City:
-              </label>
+          <div className="col">
+            <div className="form-group" style={{ marginBottom: '10px' }}>
+              <label htmlFor="city">City:</label>
               <input
-                id='city'
-                type='text'
-                value={city}
-                onChange={e => setCity(e.target.value)}
-                placeholder='Enter your city'
-                className='form-control'
+                id="city"
+                type="text"
+                value={formData.city}
+                onChange={handleChange}
+                className="form-control"
               />
             </div>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='country' style={{ marginRight: '10px' }}>
-                Country:
-              </label>
+            <div className="form-group" style={{ marginBottom: '10px' }}>
+              <label htmlFor="country">Country:</label>
               <input
-                id='country'
-                type='text'
-                value={country}
-                onChange={e => setCountry(e.target.value)}
-                placeholder='Enter your country'
-                className='form-control'
+                id="country"
+                type="text"
+                value={formData.country}
+                onChange={handleChange}
+                className="form-control"
               />
             </div>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='phoneNumber' style={{ marginRight: '10px' }}>
-                Phone number:
-              </label>
+            <div className="form-group" style={{ marginBottom: '10px' }}>
+              <label htmlFor="phoneNumber">Phone number:</label>
               <input
-                id='phoneNumber'
-                type='text'
-                value={phoneNumber}
-                onChange={e => setPhoneNumber(e.target.value)}
-                placeholder='Enter your phone number'
-                className='form-control'
+                id="phoneNumber"
+                type="text"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                className="form-control"
               />
             </div>
           </div>
         </div>
-        <div className='form-group' style={{ marginBottom: '10px' }}>
-          <label htmlFor='email' style={{ marginRight: '10px' }}>
-            Email:
-          </label>
+        <div className="form-group" style={{ marginBottom: '10px' }}>
+          <label htmlFor="email">Email:</label>
           <input
-            id='email'
-            type='email'
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder='Enter your email'
-            className='form-control'
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
           />
+          {errors.email && <div className="invalid-feedback">{errors.email}</div>}
         </div>
-        <div className='form-group' style={{ marginBottom: '10px' }}>
-          <label htmlFor='password' style={{ marginRight: '10px' }}>
-            Password:
-          </label>
+        <div className="form-group" style={{ marginBottom: '10px' }}>
+          <label htmlFor="password">Password:</label>
           <input
-            id='password'
-            type='password'
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder='Enter your password'
-            className='form-control'
+            id="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            className={`form-control ${errors.password ? 'is-invalid' : ''}`}
           />
+          {errors.password && <div className="invalid-feedback">{errors.password}</div>}
         </div>
-        <div className='form-group' style={{ marginBottom: '10px' }}>
-          <label htmlFor='username' style={{ marginRight: '10px' }}>
-            Username:
-          </label>
+        <div className="form-group" style={{ marginBottom: '10px' }}>
+          <label htmlFor="username">Username:</label>
           <input
-            id='username'
-            type='text'
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            placeholder='Enter your username'
-            className='form-control'
+            id="username"
+            type="text"
+            value={formData.username}
+            onChange={handleChange}
+            className={`form-control ${errors.username ? 'is-invalid' : ''}`}
           />
+          {errors.username && <div className="invalid-feedback">{errors.username}</div>}
         </div>
-        {error && <div className='alert alert-danger'>{error}</div>}
+        {errors.form && <div className="alert alert-danger">{errors.form}</div>}
         <div style={{ textAlign: 'center' }}>
-          <button type='submit' className='btn btn-primary'>
+          <button type="submit" className="btn btn-primary">
             Register
           </button>
         </div>
       </div>
     </form>
-  )
-}
+  );
+};
 
 export default RegisterForm

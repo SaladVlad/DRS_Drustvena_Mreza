@@ -7,6 +7,9 @@ const PostCreationForm = ({ onPostsChange }) => {
     content: '',
     image: null
   })
+  const [imageError, setImageError] = useState('') // State to handle image errors
+  const [formError, setFormError] = useState('') // State to handle form-level errors
+  const [postStatus, setPostStatus] = useState('') // State to handle post status messages
 
   const handleChange = e => {
     const { name, value } = e.target
@@ -14,17 +17,43 @@ const PostCreationForm = ({ onPostsChange }) => {
       ...formData,
       [name]: value
     })
+    setFormError('') // Clear form error when the user types
   }
 
   const handleFileChange = e => {
-    setFormData({
-      ...formData,
-      image: e.target.files[0]
-    })
+    const file = e.target.files[0]
+    if (file) {
+      const validFormats = ['image/jpeg', 'image/jpg', 'image/png']
+      if (validFormats.includes(file.type)) {
+        setFormData({
+          ...formData,
+          image: file
+        })
+        setImageError('') // Clear any previous error
+        setFormError('') // Clear form-level error if an image is added
+      } else {
+        setImageError('Invalid image format. Only .jpg, .jpeg, and .png are allowed.')
+        setFormData({
+          ...formData,
+          image: null
+        })
+      }
+    }
   }
 
   const handleSubmit = async e => {
     e.preventDefault()
+
+    // Check if the post has at least content or an image
+    if (!formData.content.trim() && !formData.image) {
+      setFormError('Post cannot be empty. Please provide content or an image.')
+      return
+    }
+
+    // Prevent submission if there's an image error
+    if (imageError) {
+      return
+    }
 
     const formDataToSend = new FormData()
     formDataToSend.append('user_id', formData.user_id)
@@ -35,21 +64,27 @@ const PostCreationForm = ({ onPostsChange }) => {
       formDataToSend.append('image', formData.image) // Use 'image' key to match backend
     }
 
-    // Debug: Log the FormData before sending
-    console.log([...formDataToSend])
-
     try {
       // Send the form data to the backend
       await createPost(formDataToSend).then(() => onPostsChange())
       console.log('Post created successfully')
-      // Reset form or redirect as needed
+
+      // Set success message
+      setPostStatus('Post created successfully!')
+
+      // Reset form to initial state
       setFormData({
         user_id: '',
         content: '',
         image: null
       })
+      setImageError('') // Clear any image errors
+      setFormError('') // Clear any form-level errors
     } catch (error) {
       console.error('Error creating post:', error)
+
+      // Set error message
+      setPostStatus('An error occurred while creating the post. Please try again.')
     }
   }
 
@@ -86,13 +121,29 @@ const PostCreationForm = ({ onPostsChange }) => {
             id='image'
             name='image'
             onChange={handleFileChange}
-            className='form-control'
+            className={`form-control ${imageError ? 'is-invalid' : ''}`}
           />
+          {imageError && <div className='invalid-feedback'>{imageError}</div>}
         </div>
-        <button type='submit' className='btn btn-primary'>
+        {formError && <div className='alert alert-danger'>{formError}</div>}
+        <button
+          type='submit'
+          className='btn btn-primary'
+          disabled={!!imageError} // Disable submit if there's an image error
+        >
           Submit
         </button>
       </form>
+
+      {/* Display status message */}
+      {postStatus && (
+        <div
+          className={`alert ${postStatus.includes('successfully') ? 'alert-success' : 'alert-danger'}`}
+          style={{ marginTop: '20px' }}
+        >
+          {postStatus}
+        </div>
+      )}
     </div>
   )
 }
