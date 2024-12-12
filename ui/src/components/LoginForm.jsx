@@ -14,9 +14,29 @@ const LoginForm = props => {
     }
   }, [navigate])
 
+  const validateInputs = () => {
+    if (username.trim().length < 4) {
+      return 'Username must be at least 4 characters long';
+    }
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    if (!/\d/.test(password)) {
+      return 'Password must contain at least one number';
+    }
+    return null; // No validation errors
+  };
+
   const handleLogin = async event => {
     event.preventDefault()
     setError('')
+
+        // Validate inputs
+        const validationError = validateInputs();
+        if (validationError) {
+          setError(validationError);
+          return;
+        }
 
     try {
       const response = await login(username, password)
