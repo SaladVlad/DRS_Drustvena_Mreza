@@ -124,7 +124,7 @@ export const fetchBlockedUsers = async () => {
 
 export const unblockUser = async userId => {
   try {
-    const response = await axios.post(
+    const response = await axios.put(
       `http://localhost:5000/api/admin/unblock/${userId}`
     )
     console.log('Unblocked user:', response.data)

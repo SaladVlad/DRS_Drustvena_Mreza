@@ -43,11 +43,17 @@ def get_pending_posts_admin():
 def approve_post_admin(post_id):
     if not check_if_admin():
         return jsonify({"error": "You are not an admin"}), 403
-    return update_post_status_admin(post_id, status="approved")
+    try:
+        print("Idem u admin kontroler...")
+        return update_post_status_admin(post_id, status="approved")
+    except Exception as e:
+        return jsonify({"RUTA ispisivanje errora": str(e)}), 500
 
 @admin_bp.route('/rejectpost/<int:post_id>', methods=['PUT'],endpoint='reject_post_admin')
 @jwt_required()
 def reject_post_admin(post_id):
     if not check_if_admin():
         return jsonify({"error": "You are not an admin"}), 403
+    
+    print("Idem u admin kontroler...")
     return update_post_status_admin(post_id, status="rejected")

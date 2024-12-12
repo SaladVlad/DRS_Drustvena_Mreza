@@ -6,6 +6,10 @@ from sqlalchemy import exc
 import base64
 from .friendships_DAO import *
 import pytz
+from .users_DAO import read_user, update_times_rejected
+from controllers.mail_sending import send_mail_when_new_post
+from controllers.mail_sending import send_mail_when_post_approved
+from controllers.mail_sending import send_mail_when_post_rejected
 
 class Post(Base):
     __tablename__ = 'post'
@@ -36,11 +40,21 @@ def create_post(**kwargs):
     try:
         new_post = Post(**kwargs)
         print(new_post)
+        print("User id novog posta: ", new_post.user_id)
+
+        user = read_user(new_post.user_id) #nadji usera pod tim id-em i izvuci mu username
+
+        print(f"Users username: {user.username}")
+
         session.add(new_post)
         session.commit()
+        print("Dodat u bazu")
+
+        send_mail_when_new_post(user.username)
 
         new_post.image_data = convert_to_base64(new_post.image_data)
         post_dict = {c.name: getattr(new_post, c.name) for c in new_post.__table__.columns}
+
         #convert the raw image_data in new_post to base64
         """
         post_socket_dict = {
@@ -129,9 +143,47 @@ def update_post( post_id, **kwargs):
             if hasattr(post, key):
                 setattr(post, key, value)
         session.commit()
+
         post.image_data = convert_to_base64(post.image_data)
         return {"post": {c.name: getattr(post, c.name) for c in post.__table__.columns}}, None
     except Exception as e:
+        session.rollback()
+        return None, str(e)
+    
+def update_post_status( post_id, **kwargs):
+    session = Session()
+    try:
+        post = session.query(Post).filter_by(post_id=post_id).first()
+        if not post:
+            return None, "Post not found"
+
+        for key, value in kwargs.items():
+            if hasattr(post, key):
+                setattr(post, key, value)
+        session.commit()
+
+        user = read_user(post.user_id)  # nadji usera pod tim id-em i izvuci mu username
+
+        if not user:
+            print("User not found")
+            return None, "User not found"
+
+        print("Users username: ", user.username)
+
+        if post.status == 'approved':
+            print("Post je odobren, ovo je njegov status: ", post.status)
+            send_mail_when_post_approved(user.username, post.content)
+            print("Poslao mail")
+        elif post.status == 'rejected':
+            print("Post je odbijen, ovo je njegov status: ", post.status)
+            send_mail_when_post_rejected(user.username, post.content)
+            print("Poslao mail")
+            update_times_rejected(user.user_id)
+
+        post.image_data = convert_to_base64(post.image_data)
+        return post, None
+    except Exception as e:
+        print("DAO ispisivanje errora: ", e)
         session.rollback()
         return None, str(e)
 

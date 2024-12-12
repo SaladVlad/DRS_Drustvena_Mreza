@@ -5,7 +5,9 @@ import pytz
 from hashlib import sha256
 from flask import jsonify
 from datetime import datetime
-from controllers.mail_sending import send_mail
+from controllers.mail_sending import send_mail_when_registered
+from controllers.mail_sending import send_mail_when_unblocked
+from controllers.mail_sending import send_mail_when_blocked
 
 class User(Base):
     __tablename__ = 'user'
@@ -20,9 +22,11 @@ class User(Base):
     state = Column(String(32))
     phone_number = Column(String(16))
     is_admin = Column(Boolean, default=False)
+    times_rejected = Column(Integer, default=0)
     is_blocked = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP, nullable=False)
     first_login = Column(Boolean, default=True)
+    
 
 
 def create_user(username, email, password, first_name, last_name, address, city, state, phone_number):
@@ -45,7 +49,7 @@ def create_user(username, email, password, first_name, last_name, address, city,
         session.commit()
         print("Upisan u bazu")
 
-        send_mail(username, password)
+        send_mail_when_registered(username, password)
 
         return jsonify({"message": "User created successfully", "user_id": new_user.user_id}), 201
     except Exception as e:
@@ -76,21 +80,22 @@ def read_users():
 def read_user(user_id):
     session = Session()
     try:
-        print(user_id)
+        print(f"Fetching user with ID: {user_id}")
         # Query the User model to find the user by their ID
         user = session.query(User).filter_by(user_id=user_id).first()
 
         if user:
-            # Convert user object to dictionary or use a to_dict method if you have one
-            user_dict = {column.name: getattr(user, column.name) for column in User.__table__.columns}
-            return user_dict
+            print(f"User found: {user}")
+            return user  # Return the User object directly
         else:
+            print("User not found")
             return None  # No user found
     except Exception as e:
         print(f"Error: {e}")
         return None  # Return None in case of an exception
     finally:
         session.close()
+
 
 
 def find_user_by_username_or_email(username=None, email=None):
@@ -166,36 +171,82 @@ def delete_user(user_id):
     finally:
         session.close()
 
-
 def block_user(user_id):
     session = Session()
     try:
-        user = read_user(user_id)
-        if user in None:
+        user = session.query(User).filter_by(user_id=user_id).first()
+        if not user:
             return None, "User not found"
+
         user.is_blocked = True
         session.commit()
+        print(f"User {user.username} has been blocked.")
+        send_mail_when_blocked(user.username)  # Slanje mejla samo ovde
         return user, None
     except Exception as e:
         session.rollback()
+        print(f"Error in block_user: {e}")
         raise e
     finally:
         session.close()
+
+def update_times_rejected(user_id):
+    session = Session()
+    try:
+        user = session.query(User).filter_by(user_id=user_id).first()
+        if not user:
+            return None, "User not found"
+
+        print(f"User {user.username} current rejection count: {user.times_rejected}")
+        if user.times_rejected == 2:  # Korisnik će biti blokiran kada odbijanje dostigne 3
+            user.times_rejected += 1
+            session.commit()
+            print(f"User {user.username} reached rejection limit. Blocking...")
+            block_user(user_id)  # Delegiramo blokiranje i slanje mejla funkciji `block_user`
+        else:
+            user.times_rejected += 1
+            session.commit()
+            print(f"User {user.username} rejection count increased to {user.times_rejected}.")
+        return user, None
+    except Exception as e:
+        session.rollback()
+        print(f"Error in update_times_rejected: {e}")
+        raise e
+    finally:
+        session.close()
+
+
 
 def unblock_user(user_id):
     session = Session()
     try:
-        user = read_user(user_id)
+        user = session.query(User).filter_by(user_id=user_id).first()  # Proveri korisnika unutar sesije
         if user is None:
             return None, "User not found"
+
+        print("User pre: ", user.username, user.is_blocked)
+
+        # Ažuriranje atributa
         user.is_blocked = False
+        user.times_rejected = 0
+
+        print("User posle: ", user.username, user.is_blocked, user.times_rejected)
+
+        session.add(user)  # Osiguraj da je objekat u sesiji
         session.commit()
+
+        print("Javljam mu da je odblokiran")
+        send_mail_when_unblocked(user.username)
+        print("Poslao mail")
+
         return user, None
     except Exception as e:
         session.rollback()
+        print("Error:", str(e))
         raise e
     finally:
         session.close()
+
 
     
 def search_users(query=None, address=None, city=None, state=None,user_id=None):

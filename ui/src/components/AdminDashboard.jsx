@@ -50,7 +50,7 @@ const AdminDashboard = () => {
 
   const onUnblock = async userId => {
     await unblockUser(userId)
-    setBlockedUsers(prev => prev.filter(user => user.id !== userId))
+    setBlockedUsers(prev => prev.filter(user => user.user_id !== userId))
   }
 
   return (
@@ -82,11 +82,11 @@ const AdminDashboard = () => {
           style={{ display: dropdownOpen ? 'block' : 'none' }}
         >
           {blockedUsers.map(user => (
-            <li key={user.id} className='dropdown-item'>
-              ID: {user.id}, Username: {user.username}
+            <li key={user.user_id} className='dropdown-item'>
+              ID: {user.user_id}, Username: {user.username}
               <button
                 className='btn btn-link'
-                onClick={() => onUnblock(user.id)}
+                onClick={() => onUnblock(user.user_id)}
               >
                 Unblock
               </button>

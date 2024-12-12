@@ -75,11 +75,17 @@ def get_all_pending_posts():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-def update_post_status_admin(**kwargs):
-    try:
-        post, error = update_post(**kwargs)
+def update_post_status_admin(post_id, **kwargs):
+    try:    
+        post, error = update_post_status(post_id,**kwargs)
         if post is None:
             return jsonify({"error": error}), 400
-        return jsonify({"post_id": post.post_id, "user_id": post.user_id, "content": post.content, "image_url": post.image_url, "status": post.status, "created_at": post.created_at})
+        return jsonify({
+                        "post_id": post.post_id,
+                        "user_id": post.user_id,
+                        "content": post.content,
+                        "status": post.status
+        })
     except Exception as e:
+        print("KONTROLER ispisivaje errora: " + str(e))
         return jsonify({"error": str(e)}), 500
