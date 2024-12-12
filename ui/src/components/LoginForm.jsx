@@ -15,6 +15,12 @@ const LoginForm = props => {
   }, [navigate])
 
   const validateInputs = () => {
+    if (username.trim() === '') {
+      return 'Username is required';
+    }
+    if (password === '') {
+      return 'Password is required';
+    }
     if (username.trim().length < 4) {
       return 'Username must be at least 4 characters long';
     }
