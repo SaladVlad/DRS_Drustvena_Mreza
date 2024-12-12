@@ -49,7 +49,7 @@ def create_user(username, email, password, first_name, last_name, address, city,
         session.commit()
         print("Upisan u bazu")
 
-        send_mail_when_registered(username, password)
+        send_mail_when_registered(username, password, email)
 
         return jsonify({"message": "User created successfully", "user_id": new_user.user_id}), 201
     except Exception as e:
@@ -83,10 +83,12 @@ def read_user(user_id):
         print(f"Fetching user with ID: {user_id}")
         # Query the User model to find the user by their ID
         user = session.query(User).filter_by(user_id=user_id).first()
-
         if user:
             print(f"User found: {user}")
-            return user  # Return the User object directly
+            # Convert user object to dictionary or use a to_dict method if you have one
+            user_dict = {column.name: getattr(user, column.name) for column in User.__table__.columns}
+            print(f"User dictionary: {user_dict}")
+            return user_dict
         else:
             print("User not found")
             return None  # No user found
@@ -181,7 +183,7 @@ def block_user(user_id):
         user.is_blocked = True
         session.commit()
         print(f"User {user.username} has been blocked.")
-        send_mail_when_blocked(user.username)  # Slanje mejla samo ovde
+        send_mail_when_blocked(user.username,user.email)  # Slanje mejla samo ovde
         return user, None
     except Exception as e:
         session.rollback()
@@ -236,7 +238,7 @@ def unblock_user(user_id):
         session.commit()
 
         print("Javljam mu da je odblokiran")
-        send_mail_when_unblocked(user.username)
+        send_mail_when_unblocked(user.username,user.email)
         print("Poslao mail")
 
         return user, None

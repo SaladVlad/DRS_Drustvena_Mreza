@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS post (
 -- Dodavanje administratora
 INSERT INTO user (username, email, password, first_name, last_name, address, city, state, phone_number, is_admin) 
 VALUES 
-('admin', 'admin@example.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Admin', 'Adminovic', 'Bulevar Evrope 24', 'Novi Sad', 'Serbia', '123456789', 1);
+('admin', 'vladislav.petkovic.02@gmail.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Admin', 'Adminovic', 'Bulevar Evrope 24', 'Novi Sad', 'Serbia', '123456789', 1);
 -- lozinka za admina je admin123
 
 -- Dodavanje običnih korisnika

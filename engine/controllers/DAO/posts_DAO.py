@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, Text, Enum, TIMESTAMP, LargeBinary
 from db import Base, Session, engine
+
 from datetime import datetime
 from flask import jsonify
 from sqlalchemy import exc
@@ -43,14 +44,13 @@ def create_post(**kwargs):
         print("User id novog posta: ", new_post.user_id)
 
         user = read_user(new_post.user_id) #nadji usera pod tim id-em i izvuci mu username
-
-        print(f"Users username: {user.username}")
+        print(f"Users username: {user["username"]}")
 
         session.add(new_post)
         session.commit()
         print("Dodat u bazu")
 
-        send_mail_when_new_post(user.username)
+        send_mail_when_new_post(user["username"])
 
         new_post.image_data = convert_to_base64(new_post.image_data)
         post_dict = {c.name: getattr(new_post, c.name) for c in new_post.__table__.columns}
@@ -168,17 +168,17 @@ def update_post_status( post_id, **kwargs):
             print("User not found")
             return None, "User not found"
 
-        print("Users username: ", user.username)
+        print("Users username: ", user["username"])
 
         if post.status == 'approved':
             print("Post je odobren, ovo je njegov status: ", post.status)
-            send_mail_when_post_approved(user.username, post.content)
+            send_mail_when_post_approved(user["username"], post.content,user["email"])
             print("Poslao mail")
         elif post.status == 'rejected':
             print("Post je odbijen, ovo je njegov status: ", post.status)
-            send_mail_when_post_rejected(user.username, post.content)
+            send_mail_when_post_rejected(user["username"], post.content,user["email"])
             print("Poslao mail")
-            update_times_rejected(user.user_id)
+            update_times_rejected(user["user_id"])
 
         post.image_data = convert_to_base64(post.image_data)
         return post, None
