@@ -73,3 +73,19 @@ export const fetchUserPosts = async () => {
     console.error(error)
   }
 }
+export const deletePost = async (postId) => {
+  if (!token) {
+    console.log('No token found. Redirecting to login...')
+    window.location.href = '/login'
+    return
+  }
+  try {
+    const response = await axios.delete('http://localhost:5000/api/posts', {
+      data: { post_id: postId }, // Only pass the post_id
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    throw error;
+  }
+};

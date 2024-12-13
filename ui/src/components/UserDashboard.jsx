@@ -24,7 +24,9 @@ const UserDashboard = () => {
       <PostCreationForm onPostsChange={fetchAllPosts} />
       <h2>Feed</h2>
       <ul>
-        {posts && posts.map(post => <Post key={post.post_id} post={post} />)}
+        {posts.map(post => (
+          <Post key={post.post_id} post={post} /> 
+        ))}
       </ul>
     </div>
   )
