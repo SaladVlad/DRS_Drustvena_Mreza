@@ -26,10 +26,9 @@ def get_pending_posts_controller():
     print("Postovi sa statusom pending izvuceni iz baze: ", posts)
     return handle_response(posts, error)
 
-def get_posts_from_friends_controller(user_id):
+def get_posts_from_friends_controller(user_id, status=None):
     friend_ids = get_friends(user_id)
-    print(friend_ids)
-    posts, error = get_posts_from_friends(friend_ids)
+    posts, error = get_posts_from_friends(friend_ids, status=status)
     return handle_response(posts, error)
 
 def create_post_controller():

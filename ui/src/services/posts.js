@@ -41,20 +41,19 @@ export const createPost = async formData => {
 }
 
 // i need to get all posts from users friends
-export const fetchUserFeed = async () => {
+export const fetchUserFeed = async (status = null) => {
   if (!token) {
     console.log('No token found. Redirecting to login...')
     window.location.href = '/login'
     return
   }
   try {
-    const user_id = await getUserIdFromToken()
-    const response = await axios.get(
-      `http://localhost:5000/api/posts/friends?user_id=${user_id}`
-    )
-    return response.data.posts
+    const user_id = await getUserIdFromToken();
+    const queryParams = new URLSearchParams({ user_id, ...(status && { status }) });
+    const response = await axios.get(`http://localhost:5000/api/posts/friends?${queryParams}`);
+    return response.data.posts;
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 }
 

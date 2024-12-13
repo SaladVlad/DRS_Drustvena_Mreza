@@ -9,10 +9,10 @@ const UserDashboard = () => {
 
   useEffect(() => {
     const fetchAllPosts = async () => {
-      const fetchedPosts = await fetchUserFeed()
-      if (fetchedPosts) {
-        console.log(fetchedPosts)
-        setPosts(fetchedPosts)
+       const approvedPosts = await fetchUserFeed('approved');
+      if (approvedPosts) {
+        console.log(approvedPosts)
+        setPosts(approvedPosts)
       }
     }
 

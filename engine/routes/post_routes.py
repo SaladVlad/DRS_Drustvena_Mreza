@@ -18,7 +18,8 @@ def get_pending_posts():
 @posts_bp.route("/friends", methods=["GET"])
 def get_friends_posts():
     user_id = request.args.get("user_id")
-    return get_posts_from_friends_controller(user_id)
+    status = request.args.get("status")  
+    return get_posts_from_friends_controller(user_id, status)
 
 @posts_bp.route("", methods=["POST"])
 def create_new_post():

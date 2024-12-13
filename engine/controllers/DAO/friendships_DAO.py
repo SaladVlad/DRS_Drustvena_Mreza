@@ -131,8 +131,6 @@ def get_pending_requests(user_id):
             'initiator_id': friendship.initiator_id,
             'receiver_id': friendship.friend_id if friendship.initiator_id == friendship.user_id else friendship.user_id
         } for friendship in pending_requests]
-        print("OVO JE DEBUG")
-        print(requesters)
         return requesters
     except Exception as e:
         print(e)

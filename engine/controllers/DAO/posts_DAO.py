@@ -121,13 +121,19 @@ def get_post_by_id(post_id):
         session.rollback()
         return None, str(e)
 
-def get_posts_from_friends(friend_ids):
+def get_posts_from_friends(friend_ids, status=None):
     session = Session()
     try:
-        posts = session.query(Post).filter(Post.user_id.in_(friend_ids)).order_by(Post.created_at.desc()).all()
+        query = session.query(Post).filter(Post.user_id.in_(friend_ids))
+        
+        if status:
+            query = query.filter(Post.status == status)
+        
+        posts = query.order_by(Post.created_at.desc()).all()
         
         for post in posts:
             post.image_data = convert_to_base64(post.image_data)
+        
         return {"posts": [{c.name: getattr(post, c.name) for c in post.__table__.columns} for post in posts]}, None
     except Exception as e:
         session.rollback()
