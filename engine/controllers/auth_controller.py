@@ -1,6 +1,8 @@
 from flask_jwt_extended import get_jwt, get_jwt_identity, create_access_token
 from .DAO.users_DAO import read_users
 from hashlib import sha256
+from .logging import create_log
+from datetime import timedelta
 
 def check_if_admin():
     claims = get_jwt()  # Retrieves all claims from the JWT
@@ -30,6 +32,7 @@ def login_user(**kwargs):
         "username": user.username,
         "is_admin": user.is_admin
     }
-    access_token = create_access_token(identity=str(user.user_id), additional_claims=additional_claims)
+    access_token = create_access_token(identity=str(user.user_id), expires_delta=timedelta(minutes=20), additional_claims=additional_claims)
+    create_log(f"User {user.username} logged in and received token", "AUTH_LOGIN")
 
     return {"status": "OK", "token": access_token}, 200

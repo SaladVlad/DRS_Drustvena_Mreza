@@ -1,6 +1,8 @@
 import hashlib
 from .DAO.users_DAO import *
 
+from .logging import create_log
+
 def get_all_users():
     read_users()
 
@@ -8,8 +10,10 @@ def get_user_by_id(user_id):
     user_data = read_user(user_id)
 
     if user_data:
+        create_log("User fetched by id", "GET_USER")
         return jsonify(user_data), 200  # Return the user data as JSON with a 200 OK status
     else:
+        create_log("User not found", "GET_USER")
         return jsonify({"error": "User not found"}), 404
 
 def get_user_by_username_or_email(username,email):
@@ -17,9 +21,11 @@ def get_user_by_username_or_email(username,email):
     print("user data: ",user_data)
     if user_data:
         print("user found")
+        create_log("User fetched by username or email", "GET_USER")
         return jsonify(user_data), 200  # Return the user data as JSON with a 200 OK status
     else:
         print("user not found")
+        create_log("User not found", "GET_USER")
         return jsonify({"error": "User not found"}), 404
 
 def create(username, email, password, first_name, last_name, address, city, state, phone_number):
@@ -38,8 +44,11 @@ def create(username, email, password, first_name, last_name, address, city, stat
     #for each property, check if null and return the appropriate error
     for key, value in create_user_kwargs.items():
         if value is None:
+            create_log("User not created", "BAD_REQUEST_POST_USER")
             return {"error": f"{key} cannot be null"}, 400
-    return create_user(**create_user_kwargs)
+    data = create_user(**create_user_kwargs)
+    create_log("User created", "POST_USER")
+    return data
 
 def update(user_id, username, email, password, first_name, last_name, address, city, state, phone_number):
     update_user_kwargs = {
@@ -58,6 +67,7 @@ def update(user_id, username, email, password, first_name, last_name, address, c
         if value is None:
             return {"error": f"{key} cannot be null"}, 400
     update_user(user_id, update_user_kwargs)
+    create_log("User updated", "PUT_USER")
 
 def generate_password_hash(password):
     return hashlib.sha256(password.encode('utf-8')).hexdigest()

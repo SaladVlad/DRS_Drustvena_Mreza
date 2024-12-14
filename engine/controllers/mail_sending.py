@@ -1,5 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
+from .logging import create_log
+
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -25,6 +27,7 @@ def send_mail(subject, body, receiver_email):
             server.login(email_sender, email_password)
             server.sendmail(email_sender, receiver_email, msg.as_string())
             print(f"Email sent successfully to {receiver_email}!")
+            create_log(f"Email sent to {receiver_email}", "EMAIL_SENT")
     except Exception as e:
         print(f"Failed to send email to {receiver_email}: {e}")
 

@@ -29,19 +29,31 @@ def log_worker():
                 log_file.write(record + "\n")
                 log_file.flush()
 
-def create_log(record,log_type):
-    add_log_record(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  {log_type}: {record}")
+def create_log(record, log_type) -> None:
+    """
+    Adds a log record to the log queue with a timestamp and log type.
+
+    Parameters:
+    - record (str): The log message to be recorded.
+    - log_type (str): The type of log (e.g., INFO, ERROR).
+    """
+    add_log_record(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  [{log_type}]: {record}")
 
 def start_logging():
     """
     Starts a thread to handle all log records in the background. This must be called
     before any log records are added.
     """
-    
     t = threading.Thread(target=log_worker, daemon=True)
     t.start()
     print(f"Started logging to {log_file_name}")
 
-def add_log_record(record):
+def add_log_record(record) -> None:
+    """
+    Puts a log record into the log queue to be processed by the log worker.
+
+    Parameters:
+    - record (str): The log record to be added to the queue.
+    """
     log_queue.put(record)
 
