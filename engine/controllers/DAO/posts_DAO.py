@@ -139,22 +139,29 @@ def get_posts_from_friends(friend_ids, status=None):
         session.rollback()
         return None, str(e)
 
-def update_post( post_id, **kwargs):
+def update_post(post_id, **kwargs):
     session = Session()
     try:
         post = session.query(Post).filter_by(post_id=post_id).first()
         if not post:
             return None, "Post not found"
+        
+        print(f"Updating post with ID {post_id} with data: {kwargs}")  # Log the update
         for key, value in kwargs.items():
             if hasattr(post, key):
                 setattr(post, key, value)
-        session.commit()
+        
+        # Set status to 'pending' if post is updated
+        post.status = 'pending'
 
+        session.commit()
         post.image_data = convert_to_base64(post.image_data)
         return {"post": {c.name: getattr(post, c.name) for c in post.__table__.columns}}, None
     except Exception as e:
         session.rollback()
+        print(f"Error in update_post: {str(e)}")  # Log the error
         return None, str(e)
+
     
 def update_post_status( post_id, **kwargs):
     session = Session()

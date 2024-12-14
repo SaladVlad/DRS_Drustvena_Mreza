@@ -80,14 +80,12 @@ def read_users():
 def read_user(user_id):
     session = Session()
     try:
-        print(f"Fetching user with ID: {user_id}")
         # Query the User model to find the user by their ID
         user = session.query(User).filter_by(user_id=user_id).first()
         if user:
             print(f"User found: {user}")
             # Convert user object to dictionary or use a to_dict method if you have one
             user_dict = {column.name: getattr(user, column.name) for column in User.__table__.columns}
-            print(f"User dictionary: {user_dict}")
             return user_dict
         else:
             print("User not found")

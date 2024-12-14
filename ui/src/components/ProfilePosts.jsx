@@ -3,21 +3,26 @@ import Post from './Post';
 import { fetchUserPosts } from '../services/posts';
 
 const ProfilePosts = () => {
-  const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    const fetchAllUserPosts = async () => {
-      const fetchedPosts = await fetchUserPosts();
-      if (fetchedPosts) {
-        setPosts(fetchedPosts);
-      }
-    };
-    fetchAllUserPosts();
-  }, []);
+    useEffect(() => {
+      const fetchAllUserPosts = async () => {
+        const fetchedPosts = await fetchUserPosts();
+        if (fetchedPosts) {
+          setPosts(fetchedPosts);
+        }
+      };
+      fetchAllUserPosts();
+    }, []);
 
   const handlePostDelete = (postId) => {
-    setPosts(posts.filter(post => post.post_id !== postId)); // Remove the deleted post
+    setPosts(posts.filter(post => post.post_id !== postId));
   };
+
+  const handlePostEdit = (updatedPost) => {
+    setPosts(posts.map(post => post.post_id === updatedPost.post_id ? updatedPost : post));
+  };
+
 
   return (
     <div>
@@ -25,10 +30,12 @@ const ProfilePosts = () => {
       <ul>
         {posts.map(post => (
           <Post
-            key={post.post_id}
-            post={post}
-            onDelete={handlePostDelete}
-            showDeleteButton={true} // Ensure delete button is shown here
+          key={post.post_id}
+          post={post}
+          onDelete={handlePostDelete}
+          onEdit={handlePostEdit} 
+          showDeleteButton={true}
+          showEditButton={true}
           />
         ))}
       </ul>

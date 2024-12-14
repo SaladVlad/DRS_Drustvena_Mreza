@@ -74,12 +74,16 @@ def create_post_controller():
 
 def update_post_controller():
     try:
-        data = request.form.to_dict()
-        post_id = data.pop("post_id", None)
-        post, error = update_post(post_id=post_id, **data)
+        data = request.json  # Use request.json for JSON payloads
+        post_id = data.pop("post_id", None)  # Remove post_id from data and store it separately
+        if not post_id:
+            return jsonify({"error": "post_id is required"}), 400
+        post, error = update_post(post_id=post_id, **data)  # Avoid multiple post_id values
         return handle_response(post, error)
     except Exception as e:
+        print(f"Error in update_post_controller: {str(e)}")  # Log the error
         return jsonify({"error": str(e)}), 500
+
 
 def delete_post_controller():
     try:
