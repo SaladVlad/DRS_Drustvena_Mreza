@@ -13,7 +13,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
   const handleEditSubmit = async () => {
     try {
       // Make the API call to update the post
-      const response = await axios.put('http://localhost:5000/api/posts', {
+       await axios.put('http://localhost:5000/api/posts', {
         post_id: post.post_id,
         content: editedContent,
       });
@@ -24,7 +24,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
         onEdit({ ...post, content: editedContent }); // Pass updated post back to parent
       }
     } catch (error) {
-      console.error('Error updating post:', error.response?.data || error.message);
+      console.error('Error updating post:', error.message);
     }
   };
 
@@ -57,6 +57,21 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
           <>
             <Card.Title>Post by User with ID: {post.user_id}</Card.Title>
             <Card.Text>{post.content}</Card.Text>
+            {imageURL && (
+              <Card.Img
+                variant="bottom"
+                src={imageURL}
+                alt="Post Image"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '300px',
+                  objectFit: 'contain',
+                  margin: 'auto',
+                  display: 'block',
+                }}
+                loading="lazy"
+              />
+            )}
             <Card.Text>
               <small>Posted on: {new Date(post.created_at).toLocaleString()}</small>
             </Card.Text>
@@ -74,7 +89,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
           </>
         )}
       </Card.Body>
-      {imageURL && <Card.Img variant="bottom" src={imageURL} alt="Post Image" />}
+
     </Card>
   );
 };
