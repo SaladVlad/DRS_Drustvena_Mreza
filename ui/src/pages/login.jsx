@@ -5,10 +5,10 @@ const LoginPage = () => {
   return (
     <div
       className='d-flex justify-content-center align-items-center vh-100'
-      style={{ background: 'grey' }}
+      style={{         backgroundColor: '#1fd1f9', 
+        backgroundImage: 'linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%)'  }}
     >
       <div className='w-25 bg-white rounded p-3 m-auto'>
-        <h1 className='text-center'>Login</h1>
         <LoginForm />
       </div>
     </div>
