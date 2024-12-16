@@ -15,6 +15,7 @@ const RegisterForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = e => {
     const { id, value } = e.target;
@@ -52,14 +53,15 @@ const RegisterForm = () => {
     return newErrors;
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+  
     const validationErrors = validateInputs();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
+  
     register({
       first_name: formData.name,
       last_name: formData.surname,
@@ -69,13 +71,28 @@ const RegisterForm = () => {
       phone_number: formData.phoneNumber,
       email: formData.email,
       password: formData.password,
-      username: formData.username
+      username: formData.username,
     })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setErrors({});
+        setFormData({
+          name: '',
+          surname: '',
+          address: '',
+          city: '',
+          country: '',
+          phoneNumber: '',
+          email: '',
+          password: '',
+          username: '',
+        });
+  
+        // Show a success notification
+        
+      setSuccessMessage('Registration successful!');
       })
-      .catch(error => {
+      .catch((error) => {
         setErrors({ form: error.message });
       });
   };
@@ -188,6 +205,9 @@ const RegisterForm = () => {
           {errors.username && <div className="invalid-feedback">{errors.username}</div>}
         </div>
         {errors.form && <div className="alert alert-danger">{errors.form}</div>}
+        {successMessage && (
+          <div className="alert alert-success">{successMessage}</div>
+        )}
         <div style={{ textAlign: 'center' }}>
           <button type="submit" className="btn btn-primary">
             Register
