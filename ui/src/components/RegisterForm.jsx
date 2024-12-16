@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
-import { register } from '../services/users'
+import React, { useState } from 'react';
+import { register } from '../services/users';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faEnvelope, faLock, faPhone, faAddressCard, faCity } from '@fortawesome/free-solid-svg-icons';
+import '../styles/registerform.css'; // Import CSS for styling
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -11,21 +14,21 @@ const RegisterForm = () => {
     phoneNumber: '',
     email: '',
     password: '',
-    username: ''
+    username: '',
   });
 
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [id]: value
+      [id]: value,
     }));
-    setErrors(prevState => ({
+    setErrors((prevState) => ({
       ...prevState,
-      [id]: ''
+      [id]: '',
     }));
   };
 
@@ -52,6 +55,7 @@ const RegisterForm = () => {
     }
     return newErrors;
   };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -87,9 +91,6 @@ const RegisterForm = () => {
           password: '',
           username: '',
         });
-  
-        // Show a success notification
-        
       setSuccessMessage('Registration successful!');
       })
       .catch((error) => {
@@ -98,124 +99,44 @@ const RegisterForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ margin: '0 auto', maxWidth: '600px' }}
-    >
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col">
-            <div className="form-group" style={{ marginBottom: '10px' }}>
-              <label htmlFor="name">Name:</label>
-              <input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={handleChange}
-                className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-              />
-              {errors.name && <div className="invalid-feedback">{errors.name}</div>}
-            </div>
-            <div className="form-group" style={{ marginBottom: '10px' }}>
-              <label htmlFor="surname">Surname:</label>
-              <input
-                id="surname"
-                type="text"
-                value={formData.surname}
-                onChange={handleChange}
-                className={`form-control ${errors.surname ? 'is-invalid' : ''}`}
-              />
-              {errors.surname && <div className="invalid-feedback">{errors.surname}</div>}
-            </div>
-            <div className="form-group" style={{ marginBottom: '10px' }}>
-              <label htmlFor="address">Address:</label>
-              <input
-                id="address"
-                type="text"
-                value={formData.address}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
+    <div className="register-container">
+      {/* Register Label */}
+      <h2 className="form-title">Register</h2>
+      <form onSubmit={handleSubmit} className="register-form">
+        {[
+          { id: 'name', placeholder: 'Name', icon: faUser },
+          { id: 'surname', placeholder: 'Surname', icon: faUser },
+          { id: 'email', placeholder: 'Email', icon: faEnvelope, type: 'email' },
+          { id: 'username', placeholder: 'Username', icon: faUser },
+          { id: 'password', placeholder: 'Password', icon: faLock, type: 'password' },
+          { id: 'phoneNumber', placeholder: 'Phone Number', icon: faPhone },
+          { id: 'address', placeholder: 'Address', icon: faAddressCard },
+          { id: 'city', placeholder: 'City', icon: faCity },
+          { id: 'country', placeholder: 'Country', icon: faCity },
+        ].map(({ id, placeholder, icon, type = 'text' }) => (
+          <div className="form-group" key={id}>
+            <FontAwesomeIcon icon={icon} className="form-icon" />
+            <input
+              id={id}
+              type={type}
+              placeholder={placeholder}
+              value={formData[id]}
+              onChange={handleChange}
+              className={`form-input ${errors[id] ? 'is-invalid' : ''}`}
+            />
+            {errors[id] && <div className="invalid-feedback">{errors[id]}</div>}
           </div>
-          <div className="col">
-            <div className="form-group" style={{ marginBottom: '10px' }}>
-              <label htmlFor="city">City:</label>
-              <input
-                id="city"
-                type="text"
-                value={formData.city}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-            <div className="form-group" style={{ marginBottom: '10px' }}>
-              <label htmlFor="country">Country:</label>
-              <input
-                id="country"
-                type="text"
-                value={formData.country}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-            <div className="form-group" style={{ marginBottom: '10px' }}>
-              <label htmlFor="phoneNumber">Phone number:</label>
-              <input
-                id="phoneNumber"
-                type="text"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                className="form-control"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="form-group" style={{ marginBottom: '10px' }}>
-          <label htmlFor="email">Email:</label>
-          <input
-            id="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-          />
-          {errors.email && <div className="invalid-feedback">{errors.email}</div>}
-        </div>
-        <div className="form-group" style={{ marginBottom: '10px' }}>
-          <label htmlFor="password">Password:</label>
-          <input
-            id="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-          />
-          {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-        </div>
-        <div className="form-group" style={{ marginBottom: '10px' }}>
-          <label htmlFor="username">Username:</label>
-          <input
-            id="username"
-            type="text"
-            value={formData.username}
-            onChange={handleChange}
-            className={`form-control ${errors.username ? 'is-invalid' : ''}`}
-          />
-          {errors.username && <div className="invalid-feedback">{errors.username}</div>}
-        </div>
+        ))}
         {errors.form && <div className="alert alert-danger">{errors.form}</div>}
         {successMessage && (
           <div className="alert alert-success">{successMessage}</div>
         )}
-        <div style={{ textAlign: 'center' }}>
-          <button type="submit" className="btn btn-primary">
-            Register
-          </button>
-        </div>
-      </div>
-    </form>
+        <button type="submit" className="submit-button">
+          Register
+        </button>
+      </form>
+    </div>
   );
 };
 
-export default RegisterForm
+export default RegisterForm;
