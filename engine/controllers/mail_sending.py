@@ -32,6 +32,12 @@ def send_mail(subject, body, receiver_email):
         print(f"Failed to send email to {receiver_email}: {e}")
 
 # Specific use cases
+def send_mail_when_first_login(username):
+    subject = f"[FIRST LOGIN] - {username}"
+    body = (f"Hello dear admin!\n"
+            f"User with username {username} has logged in for the first time.\n")
+    send_mail(subject, body, admin_mail)
+
 def send_mail_when_registered(username, password, receiver_email):
     subject = f"[ACC CREATED] - {username}"
     body = (f"Hello new user!\n"

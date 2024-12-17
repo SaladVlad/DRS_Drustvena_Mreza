@@ -1,8 +1,9 @@
 from flask_jwt_extended import get_jwt, get_jwt_identity, create_access_token
-from .DAO.users_DAO import read_users
+from .DAO.users_DAO import read_users, update_user
 from hashlib import sha256
 from .logging import create_log
 from datetime import timedelta
+from .mail_sending import send_mail_when_first_login
 
 def check_if_admin():
     claims = get_jwt()  # Retrieves all claims from the JWT
@@ -32,6 +33,13 @@ def login_user(**kwargs):
         "username": user.username,
         "is_admin": user.is_admin
     }
+
+    if user.first_login == True:
+        print("saljem mejl za prvo logovanje")
+        send_mail_when_first_login(user.username)
+        print("Poslan mejl, azuriram bazu")
+        update_user(user.user_id, first_login=False)
+
     access_token = create_access_token(identity=str(user.user_id), expires_delta=timedelta(minutes=20), additional_claims=additional_claims)
     create_log(f"User {user.username} logged in and received token", "AUTH_LOGIN")
 
