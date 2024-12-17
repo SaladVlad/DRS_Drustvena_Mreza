@@ -28,8 +28,6 @@ const UserDashboard = () => {
               key={post.post_id}
               post={post}
               onDelete={fetchAllPosts}
-              showDeleteButton={true}
-              showEditButton={true}
               onEdit={(updatedPost) => setPosts(posts.map(p => p.post_id === updatedPost.post_id ? updatedPost : p))}
             />
           ))

@@ -1,15 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createPost } from '../services/posts' // assuming this function exists in your services
+import { getUserIdFromToken } from '../services/users' // Import the function to get user_id from token
 
 const PostCreationForm = ({ onPostsChange }) => {
   const [formData, setFormData] = useState({
-    user_id: '',
+    user_id: '', 
     content: '',
     image: null
   })
   const [imageError, setImageError] = useState('') // State to handle image errors
   const [formError, setFormError] = useState('') // State to handle form-level errors
   const [postStatus, setPostStatus] = useState('') // State to handle post status messages
+
+  // Fetch the user ID from the token when the component mounts
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const userId = await getUserIdFromToken()
+      if (userId) {
+        setFormData((prevData) => ({
+          ...prevData,
+          user_id: userId
+        }))
+      } else {
+        console.error('Unable to fetch user ID from token')
+      }
+    }
+    fetchUserId()
+  }, [])
 
   const handleChange = e => {
     const { name, value } = e.target
@@ -56,7 +73,7 @@ const PostCreationForm = ({ onPostsChange }) => {
     }
 
     const formDataToSend = new FormData()
-    formDataToSend.append('user_id', formData.user_id)
+    formDataToSend.append('user_id', formData.user_id) 
     formDataToSend.append('content', formData.content)
 
     // If an image is selected, append it to FormData
@@ -71,10 +88,10 @@ const PostCreationForm = ({ onPostsChange }) => {
 
       // Set success message
       setPostStatus('Post created successfully!')
-
+      
       // Reset form to initial state
       setFormData({
-        user_id: '',
+        user_id: formData.user_id, // Retain user_id after reset
         content: '',
         image: null
       })
@@ -83,7 +100,7 @@ const PostCreationForm = ({ onPostsChange }) => {
     } catch (error) {
       console.error('Error creating post:', error)
 
-      // Set error message
+            // Set error message
       setPostStatus('An error occurred while creating the post. Please try again.')
     }
   }
@@ -91,18 +108,6 @@ const PostCreationForm = ({ onPostsChange }) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className='form-group'>
-          <label htmlFor='user_id'>User ID</label>
-          <input
-            type='text'
-            id='user_id'
-            name='user_id'
-            value={formData.user_id}
-            onChange={handleChange}
-            placeholder='Enter User ID'
-            className='form-control'
-          />
-        </div>
         <div className='form-group'>
           <label htmlFor='content'>Content</label>
           <textarea
