@@ -319,3 +319,38 @@
 [2024-12-16 18:09:57]  [GET_USER]: User fetched by id
 [2024-12-16 18:09:57]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
 [2024-12-16 18:09:58]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-17 08:39:39]  [SERVER_STARTED]: Server starting
+[2024-12-17 08:39:41]  [SERVER_STARTED]: Server starting
+[2024-12-17 08:40:04]  [EMAIL_SENT]: Email sent to dusantomic905@gmail.com
+[2024-12-17 08:40:04]  [AUTH_LOGIN]: User admin logged in and received token
+[2024-12-17 08:40:05]  [EMAIL_SENT]: Email sent to dusantomic905@gmail.com
+[2024-12-17 08:40:05]  [AUTH_LOGIN]: User admin logged in and received token
+[2024-12-17 08:40:10]  [GET_BLOCKED_USERS_ADMIN]: Users fetched
+[2024-12-17 08:40:10]  [GET_USERS_ADMIN]: Users fetched
+[2024-12-17 08:42:32]  [EMAIL_SENT]: Email sent to dusantomic905@gmail.com
+[2024-12-17 08:42:32]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-17 08:42:33]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-17 08:43:34]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-17 08:43:35]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-17 08:51:35]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-17 08:51:36]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-17 08:52:53]  [EMAIL_SENT]: Email sent to dusantomic905@gmail.com
+[2024-12-17 08:52:53]  [AUTH_LOGIN]: User jovan123 logged in and received token
+[2024-12-17 08:52:54]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 4
+[2024-12-17 08:54:04]  [SERVER_STARTED]: Server starting
+[2024-12-17 11:13:16]  [SERVER_STARTED]: Server starting
+[2024-12-17 11:13:19]  [SERVER_STARTED]: Server starting
+[2024-12-17 11:26:06]  [SERVER_STARTED]: Server starting
+[2024-12-17 11:26:08]  [SERVER_STARTED]: Server starting
+[2024-12-17 11:26:36]  [AUTH_LOGIN]: User admin logged in and received token
+[2024-12-17 11:26:41]  [GET_BLOCKED_USERS_ADMIN]: Users fetched
+[2024-12-17 11:26:41]  [GET_USERS_ADMIN]: Users fetched
+[2024-12-17 11:26:59]  [EMAIL_SENT]: Email sent to t9userdrs@gmail.com
+[2024-12-17 11:26:59]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-17 11:27:00]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-17 11:28:08]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-17 11:28:09]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-17 11:34:08]  [EMAIL_SENT]: Email sent to t9userdrs@gmail.com
+[2024-12-17 11:34:08]  [AUTH_LOGIN]: User jovan123 logged in and received token
+[2024-12-17 11:34:09]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 4
+[2024-12-17 11:35:24]  [SERVER_STARTED]: Server starting
