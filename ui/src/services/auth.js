@@ -68,3 +68,26 @@ export const checkAdminStatus = async () => {
     return false
   }
 }
+
+export const checkIfBlocked = async () => {
+  try {
+    const token = await getToken()
+    const response = await axios.get(
+      'http://localhost:5000/api/auth/isblocked',
+      {
+        headers: {
+          Authorization: `Bearer ${token}` // Include the JWT token in the Authorization header
+        }
+      }
+    )
+    if (response.data.is_blocked) {
+      console.log('User is blocked:', response.data.is_blocked)
+      sessionStorage.removeItem('token')
+      window.location.href = '/login' // redirect to login if the user is blocked (kick him out)
+    }
+    return response.data.is_blocked
+  } catch (error) {
+    console.error('Error checking if blocked:', error)
+    return false
+  }
+}

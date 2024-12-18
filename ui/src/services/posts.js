@@ -1,10 +1,11 @@
 import axios from 'axios'
 import { getUserIdFromToken } from './users.js'
-import { checkAdminStatus } from './auth.js'
+import { checkIfBlocked } from './auth.js'
 const token = sessionStorage.getItem('token')
 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
 export const fetchAllPosts = async () => {
+  checkIfBlocked()
   if (!token) {
     console.log('No token found. Redirecting to login...')
     window.location.href = '/login'
@@ -19,6 +20,7 @@ export const fetchAllPosts = async () => {
 }
 
 export const createPost = async formData => {
+  await checkIfBlocked()
   if (!token) {
     console.log('No token found. Redirecting to login...')
     window.location.href = '/login'
@@ -42,22 +44,29 @@ export const createPost = async formData => {
 
 // i need to get all posts from users friends
 export const fetchUserFeed = async (status = null) => {
+  await checkIfBlocked()
   if (!token) {
     console.log('No token found. Redirecting to login...')
     window.location.href = '/login'
     return
   }
   try {
-    const user_id = await getUserIdFromToken();
-    const queryParams = new URLSearchParams({ user_id, ...(status && { status }) });
-    const response = await axios.get(`http://localhost:5000/api/posts/friends?${queryParams}`);
-    return response.data.posts;
+    const user_id = await getUserIdFromToken()
+    const queryParams = new URLSearchParams({
+      user_id,
+      ...(status && { status })
+    })
+    const response = await axios.get(
+      `http://localhost:5000/api/posts/friends?${queryParams}`
+    )
+    return response.data.posts
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
 }
 
 export const fetchUserPosts = async () => {
+  await checkIfBlocked()
   if (!token) {
     console.log('No token found. Redirecting to login...')
     window.location.href = '/login'
@@ -73,7 +82,8 @@ export const fetchUserPosts = async () => {
     console.error(error)
   }
 }
-export const deletePost = async (postId) => {
+export const deletePost = async postId => {
+  await checkIfBlocked()
   if (!token) {
     console.log('No token found. Redirecting to login...')
     window.location.href = '/login'
@@ -81,11 +91,11 @@ export const deletePost = async (postId) => {
   }
   try {
     const response = await axios.delete('http://localhost:5000/api/posts', {
-      data: { post_id: postId }, // Only pass the post_id
-    });
-    return response.data;
+      data: { post_id: postId } // Only pass the post_id
+    })
+    return response.data
   } catch (error) {
-    console.error('Error deleting post:', error);
-    throw error;
+    console.error('Error deleting post:', error)
+    throw error
   }
-};
+}

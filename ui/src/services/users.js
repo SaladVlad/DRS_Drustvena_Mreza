@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
-import { getToken } from './auth'
+import { getToken, checkIfBlocked } from './auth'
 
 var token = null
 
@@ -62,6 +62,7 @@ export const register = async user => {
 }
 
 export const fetchUserById = async (user_id = null) => {
+  await checkIfBlocked()
   if (!user_id) {
     user_id = await getUserIdFromToken() // Extract the user ID
   }
@@ -87,6 +88,7 @@ export const fetchUserByUsernameOrEmail = async (
   username = null,
   email = null
 ) => {
+  await checkIfBlocked()
   try {
     const response = await axios.get(
       'http://localhost:5000/api/users/findbyusernameandemail',
@@ -134,6 +136,7 @@ export const unblockUser = async userId => {
   }
 }
 export const updateUser = async (userId, updatedData) => {
+  await checkIfBlocked()
   try {
     const response = await axios.put(
       `http://localhost:5000/api/users/${userId}`,
@@ -152,18 +155,19 @@ export const updateUser = async (userId, updatedData) => {
   }
 }
 export const changePassword = async (userId, oldPassword, newPassword) => {
+  await checkIfBlocked()
   try {
     const response = await axios.post(
       `http://localhost:5000/api/users/${userId}/change-password`,
       { oldPassword, newPassword },
       {
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       }
-    );
-    return response.data;
+    )
+    return response.data
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}

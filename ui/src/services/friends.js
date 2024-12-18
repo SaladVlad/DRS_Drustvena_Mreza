@@ -1,7 +1,9 @@
 import { getUserIdFromToken } from './users'
+import { checkIfBlocked } from './auth'
 import axios from 'axios'
 
 export const getFriendsFromCurrentUser = async () => {
+  await checkIfBlocked()
   try {
     const user_id = await getUserIdFromToken()
     if (!user_id) {
@@ -20,6 +22,7 @@ export const getFriendsFromCurrentUser = async () => {
 }
 
 export const addFriend = async friend_id => {
+  await checkIfBlocked()
   try {
     const user_id = await getUserIdFromToken()
     if (!user_id) {
@@ -38,6 +41,7 @@ export const addFriend = async friend_id => {
 }
 
 export const removeFriend = async friend_id => {
+  await checkIfBlocked()
   try {
     const user_id = await getUserIdFromToken()
     if (!user_id) {
@@ -56,6 +60,7 @@ export const removeFriend = async friend_id => {
 }
 
 export const respondToFriendRequest = async (friend_id, status) => {
+  await checkIfBlocked()
   try {
     const user_id = await getUserIdFromToken()
     if (!user_id || !friend_id || !status) {
@@ -73,8 +78,8 @@ export const respondToFriendRequest = async (friend_id, status) => {
   }
 }
 
-
 export const getPendingRequests = async () => {
+  await checkIfBlocked()
   try {
     const user_id = await getUserIdFromToken()
     if (!user_id) {
