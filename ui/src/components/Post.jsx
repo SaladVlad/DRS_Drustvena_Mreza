@@ -13,7 +13,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
   const handleEditSubmit = async () => {
     try {
       // Make the API call to update the post
-       await axios.put('http://localhost:5000/api/posts', {
+      await axios.put('http://localhost:5000/api/posts', {
         post_id: post.post_id,
         content: editedContent,
       });
@@ -33,7 +33,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
     : null;
 
   return (
-    <Card className="mb-3">
+    <Card className="mb-4 shadow-sm rounded-lg">
       <Card.Body>
         {isEditing ? (
           <Form>
@@ -44,18 +44,39 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
                 rows={3}
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
+                style={{ borderRadius: '10px' }}
               />
             </Form.Group>
-            <Button variant="success" onClick={handleEditSubmit}>
-              Save
-            </Button>{' '}
-            <Button variant="secondary" onClick={handleEditToggle}>
-              Cancel
-            </Button>
+            <div className="d-flex justify-content-between mt-2">
+              <Button
+                variant="success"
+                onClick={handleEditSubmit}
+                style={{
+                  borderRadius: '20px',
+                  background: 'linear-gradient(315deg, #6e7dff 0%, #6172f3 74%)',
+                  border: 'none',
+                  fontWeight: 'bold',
+                }}
+              >
+                Save
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={handleEditToggle}
+                style={{
+                  borderRadius: '20px',
+                  background: 'linear-gradient(315deg, #d3d3d3 0%, #a2a2a2 74%)',
+                  border: 'none',
+                  fontWeight: 'bold',
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
           </Form>
         ) : (
           <>
-            <Card.Title>Post by User with ID: {post.user_id}</Card.Title>
+            <Card.Title className="font-weight-bold">{post.user_id ? `Post by User ${post.user_id}` : 'Anonymous Post'}</Card.Title>
             <Card.Text>{post.content}</Card.Text>
             {imageURL && (
               <Card.Img
@@ -68,28 +89,49 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
                   objectFit: 'contain',
                   margin: 'auto',
                   display: 'block',
+                  borderRadius: '8px',
                 }}
                 loading="lazy"
               />
             )}
-            <Card.Text>
+            <Card.Text className="text-muted">
               <small>Posted on: {new Date(post.created_at).toLocaleString()}</small>
             </Card.Text>
             <Card.Text>Status: {post.status}</Card.Text>
-            {showDeleteButton && (
-              <Button variant="danger" onClick={() => onDelete(post.post_id)}>
-                Delete
-              </Button>
-            )}{' '}
-            {showEditButton && (
-              <Button variant="primary" onClick={handleEditToggle}>
-                Edit
-              </Button>
-            )}
+            <div className="d-flex justify-content-end">
+              {showDeleteButton && (
+                <Button
+                  variant="danger"
+                  onClick={() => onDelete(post.post_id)}
+                  className="me-2"
+                  style={{
+                    borderRadius: '20px',
+                    background: 'linear-gradient(315deg, #ff5c8d 0%, #f0599b 74%)',
+                    border: 'none',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Delete
+                </Button>
+              )}
+              {showEditButton && (
+                <Button
+                  variant="primary"
+                  onClick={handleEditToggle}
+                  style={{
+                    borderRadius: '20px',
+                    background: 'linear-gradient(315deg, #4e73df 0%, #2e59d9 74%)',
+                    border: 'none',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Edit
+                </Button>
+              )}
+            </div>
           </>
         )}
       </Card.Body>
-
     </Card>
   );
 };

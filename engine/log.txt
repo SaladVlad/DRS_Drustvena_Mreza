@@ -354,3 +354,110 @@
 [2024-12-17 11:34:08]  [AUTH_LOGIN]: User jovan123 logged in and received token
 [2024-12-17 11:34:09]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 4
 [2024-12-17 11:35:24]  [SERVER_STARTED]: Server starting
+[2024-12-18 12:35:45]  [SERVER_STARTED]: Server starting
+[2024-12-18 12:35:47]  [SERVER_STARTED]: Server starting
+[2024-12-18 12:35:57]  [EMAIL_SENT]: Email sent to t9userdrs@gmail.com
+[2024-12-18 12:35:57]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-18 12:35:58]  [EMAIL_SENT]: Email sent to t9userdrs@gmail.com
+[2024-12-18 12:35:58]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-18 12:35:58]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 12:35:59]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 12:36:13]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-18 12:36:13]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-18 12:36:13]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-18 12:36:13]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-18 12:36:13]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-18 12:36:13]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-18 12:36:14]  [GET_USER]: User fetched by id
+[2024-12-18 12:36:14]  [GET_USER]: User fetched by id
+[2024-12-18 12:36:14]  [GET_USER]: User fetched by id
+[2024-12-18 12:36:14]  [GET_USER]: User fetched by id
+[2024-12-18 12:36:19]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 12:36:19]  [GET_USER]: User fetched by id
+[2024-12-18 12:36:20]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 12:36:20]  [GET_USER]: User fetched by id
+[2024-12-18 12:36:33]  [EMAIL_SENT]: Email sent to t9userdrs@gmail.com
+[2024-12-18 12:36:33]  [AUTH_LOGIN]: User admin logged in and received token
+[2024-12-18 12:36:34]  [GET_USERS_ADMIN]: Users fetched
+[2024-12-18 12:36:34]  [GET_BLOCKED_USERS_ADMIN]: Users fetched
+[2024-12-18 12:36:34]  [GET_USERS_ADMIN]: Users fetched
+[2024-12-18 12:36:34]  [GET_BLOCKED_USERS_ADMIN]: Users fetched
+[2024-12-18 12:36:48]  [GET_PENDING_POSTS]: Retrieved pending posts
+[2024-12-18 12:36:49]  [GET_PENDING_POSTS]: Retrieved pending posts
+[2024-12-18 12:36:52]  [GET_BLOCKED_USERS_ADMIN]: Users fetched
+[2024-12-18 12:36:52]  [GET_USERS_ADMIN]: Users fetched
+[2024-12-18 12:36:52]  [GET_BLOCKED_USERS_ADMIN]: Users fetched
+[2024-12-18 12:36:52]  [GET_USERS_ADMIN]: Users fetched
+[2024-12-18 12:37:03]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-18 12:37:04]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 12:37:05]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 12:37:19]  [GET_USER]: User fetched by id
+[2024-12-18 12:37:19]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 12:37:19]  [GET_USER]: User fetched by id
+[2024-12-18 12:37:19]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 12:40:46]  [GET_USER]: User fetched by id
+[2024-12-18 12:41:26]  [GET_USER]: User fetched by id
+[2024-12-18 12:41:47]  [GET_USER]: User fetched by id
+[2024-12-18 12:41:57]  [GET_USER]: User fetched by id
+[2024-12-18 12:41:57]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 12:41:57]  [GET_USER]: User fetched by id
+[2024-12-18 12:41:57]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 12:42:51]  [GET_USER]: User fetched by id
+[2024-12-18 12:45:53]  [GET_USER]: User fetched by id
+[2024-12-18 12:45:53]  [GET_USER]: User fetched by id
+[2024-12-18 12:46:43]  [GET_USER]: User fetched by id
+[2024-12-18 12:46:43]  [GET_USER]: User fetched by id
+[2024-12-18 12:48:48]  [GET_USER]: User fetched by id
+[2024-12-18 12:48:48]  [GET_USER]: User fetched by id
+[2024-12-18 12:49:31]  [GET_USER]: User fetched by id
+[2024-12-18 12:49:31]  [GET_USER]: User fetched by id
+[2024-12-18 12:50:42]  [GET_USER]: User fetched by id
+[2024-12-18 12:51:45]  [GET_USER]: User fetched by id
+[2024-12-18 12:54:32]  [GET_USER]: User fetched by id
+[2024-12-18 12:54:51]  [GET_USER]: User fetched by id
+[2024-12-18 12:55:07]  [GET_USER]: User fetched by id
+[2024-12-18 13:32:01]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-18 13:32:03]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 13:32:03]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 13:32:04]  [GET_USER]: User fetched by id
+[2024-12-18 13:32:04]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:32:04]  [GET_USER]: User fetched by id
+[2024-12-18 13:32:04]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:32:51]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:32:51]  [GET_USER]: User fetched by id
+[2024-12-18 13:32:51]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:32:51]  [GET_USER]: User fetched by id
+[2024-12-18 13:33:40]  [GET_USER]: User fetched by id
+[2024-12-18 13:36:17]  [GET_USER]: User fetched by id
+[2024-12-18 13:36:50]  [GET_USER]: User fetched by id
+[2024-12-18 13:37:55]  [GET_USER]: User fetched by id
+[2024-12-18 13:37:55]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:37:55]  [GET_USER]: User fetched by id
+[2024-12-18 13:37:56]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:38:18]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:38:18]  [GET_USER]: User fetched by id
+[2024-12-18 13:38:18]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:38:18]  [GET_USER]: User fetched by id
+[2024-12-18 13:39:04]  [GET_USER]: User fetched by id
+[2024-12-18 13:39:04]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:39:04]  [GET_USER]: User fetched by id
+[2024-12-18 13:39:04]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:40:09]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:41:48]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 13:41:48]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 13:41:58]  [GET_USER]: User fetched by id
+[2024-12-18 13:41:58]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:41:58]  [GET_USER]: User fetched by id
+[2024-12-18 13:41:58]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:44:41]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 13:44:41]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 13:44:44]  [GET_USER]: User fetched by id
+[2024-12-18 13:44:45]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:44:45]  [GET_USER]: User fetched by id
+[2024-12-18 13:44:45]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:44:48]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 13:44:48]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-18 13:44:56]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:44:56]  [GET_USER]: User fetched by id
+[2024-12-18 13:44:56]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-18 13:44:56]  [GET_USER]: User fetched by id
