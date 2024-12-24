@@ -43,6 +43,18 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
       console.error('Error updating post:', error.message);
     }
   };
+  const handleDelete = async () => {
+    try {
+      await axios.delete('http://localhost:5000/api/posts', {
+        data: { post_id: post.post_id },
+      });
+      // Assuming `onDelete` is used to remove the post from the parent component's state
+      if (onDelete) onDelete(post.post_id); // Notify parent to update the UI
+    } catch (error) {
+      console.error('Error deleting post:', error.message);
+    }
+  };
+
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -164,7 +176,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
                 {showDeleteButton && (
                   <Button
                     variant="danger"
-                    onClick={() => onDelete(post.post_id)}
+                    onClick={() => handleDelete(post.post_id)} 
                     className="me-2"
                     style={{
                       borderRadius: '20px',

@@ -16,12 +16,13 @@ const ProfilePosts = () => {
   }, []);
 
   const handlePostDelete = (postId) => {
-    setPosts(posts.filter(post => post.post_id !== postId));
+    setPosts((prevPosts) => prevPosts.filter((post) => post.post_id !== postId));
   };
 
   const handlePostEdit = (updatedPost) => {
     setPosts(posts.map(post => post.post_id === updatedPost.post_id ? updatedPost : post));
   };
+
 
   return (
     <div className="profile-posts-container mt-4">
