@@ -145,29 +145,32 @@ def update_post(post_id, **kwargs):
         post = session.query(Post).filter_by(post_id=post_id).first()
         if not post:
             return None, "Post not found"
-        
-        print(f"Updating post with ID {post_id} with data: {kwargs}")  # Log the update
-        
-        # Handle valid fields
-        valid_keys = {"content", "status"}  # Define supported keys
-        for key, value in kwargs.items():
-            if key in valid_keys:
-                setattr(post, key, value)
-        
-        # Handle image deletion
-        if kwargs.get("delete_image", False):
+
+        # Handle delete_image flag
+        if kwargs.get("delete_image"):
             post.image_data = None
             post.image_type = None
-        
-        # Set status to 'pending' if post is updated
-        post.status = 'pending'
 
+        # Handle new image upload
+        if "new_image_data" in kwargs and kwargs["new_image_data"]:
+            post.image_data = kwargs["new_image_data"]  # Update the image data
+            post.image_type = kwargs.get("new_image_type", post.image_type)  # Update the image type if provided
+
+        # Update other post fields
+        for key, value in kwargs.items():
+            if hasattr(post, key) and key not in ["new_image_data", "delete_image"]:
+                setattr(post, key, value)
+
+        post.status = 'pending'  # Mark post as pending if updated
         session.commit()
-        post.image_data = convert_to_base64(post.image_data) if post.image_data else None
+
+        # Convert image to base64 if it exists
+        if post.image_data:
+            post.image_data = convert_to_base64(post.image_data)
+
         return {"post": {c.name: getattr(post, c.name) for c in post.__table__.columns}}, None
     except Exception as e:
         session.rollback()
-        print(f"Error in update_post: {str(e)}")  # Log the error
         return None, str(e)
 
 def update_post_status( post_id, **kwargs):

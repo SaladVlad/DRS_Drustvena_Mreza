@@ -88,21 +88,32 @@ def create_post_controller():
 
 def update_post_controller(): 
     try:
-        data = request.json  # Use request.json for JSON payloads
+        # Use form data for handling updates
+        data = request.form.to_dict()
         post_id = data.pop("post_id", None)  # Remove post_id from data and store it separately
-        delete_image = data.pop("delete_image", False)  # Remove delete_image flag if present
-        
+        delete_image = data.pop("delete_image", "false").lower() == "true"  # Handle delete_image as a boolean
+
         if not post_id:
-            create_log("post_id is required","ERROR_UPDATE_POST")
+            create_log("post_id is required", "ERROR_UPDATE_POST")
             return jsonify({"error": "post_id is required"}), 400
+
+        # Handle uploaded image file if present
+        image_file = request.files.get("new_image")
+        if image_file:
+            data.update({
+                "new_image_name": image_file.filename,
+                "new_image_type": image_file.mimetype,
+                "new_image_data": image_file.read()
+            })
         
-        post, error = update_post(post_id=post_id, delete_image=delete_image, **data)  # Pass delete_image as argument
+        # Call the update_post function with extracted data
+        post, error = update_post(post_id=post_id, delete_image=delete_image, **data)
         if not error: 
             create_log(f"Updated post with ID: {post_id}", "UPDATE_POST")
         
         return handle_response(post, error)
     except Exception as e:
-        print(f"Error in update_post_controller: {str(e)}")  # Log the error
+        create_log(f"Error in update_post_controller: {str(e)}", "ERROR_UPDATE_POST_CONTROLLER")
         return jsonify({"error": str(e)}), 500
 
 
