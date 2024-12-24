@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import { Card, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(post.content);
+  const [imageDeleted, setImageDeleted] = useState(false);
+  const [currentImageData, setCurrentImageData] = useState(post.image_data); // State for image preview
+  const [originalImageData] = useState(post.image_data); // Store the original image data
 
   const handleEditToggle = () => {
+    if (isEditing) {
+      // Reset changes when canceling edit mode
+      setImageDeleted(false);
+      setCurrentImageData(originalImageData); // Reset the image preview
+    }
     setIsEditing(!isEditing);
   };
 
@@ -16,20 +24,31 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
       await axios.put('http://localhost:5000/api/posts', {
         post_id: post.post_id,
         content: editedContent,
+        delete_image: imageDeleted, // Indicate whether to delete the image
       });
 
-      // After a successful update, hide the editing state and notify parent of the change
-      setIsEditing(false);
+      // Notify parent component about the update
       if (onEdit) {
-        onEdit({ ...post, content: editedContent }); // Pass updated post back to parent
+        onEdit({
+          ...post,
+          content: editedContent,
+          image_data: imageDeleted ? null : originalImageData,
+        });
       }
+
+      setIsEditing(false); // Exit edit mode
     } catch (error) {
       console.error('Error updating post:', error.message);
     }
   };
 
-  const imageURL = post.image_data
-    ? `data:${post.image_type};base64,${post.image_data}`
+  const handleDeleteImage = () => {
+    setImageDeleted(true);
+    setCurrentImageData(null); // Remove the image preview immediately
+  };
+
+  const imageURL = currentImageData
+    ? `data:${post.image_type};base64,${currentImageData}`
     : null;
 
   return (
@@ -47,7 +66,40 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
                 style={{ borderRadius: '10px' }}
               />
             </Form.Group>
-            <div className="d-flex justify-content-between mt-2">
+            {imageURL ? (
+              <div className="mt-3">
+                <Card.Img
+                  variant="bottom"
+                  src={imageURL}
+                  alt="Post Image"
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '300px',
+                    objectFit: 'contain',
+                    margin: 'auto',
+                    display: 'block',
+                    borderRadius: '8px',
+                  }}
+                  loading="lazy"
+                />
+                <Button
+                  variant="danger"
+                  onClick={handleDeleteImage}
+                  className="mt-2"
+                  style={{
+                    borderRadius: '20px',
+                    background: 'linear-gradient(315deg, #ff5c8d 0%, #f0599b 74%)',
+                    border: 'none',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Delete Image
+                </Button>
+              </div>
+            ) : (
+              <p className="text-muted mt-3">Image has been deleted.</p>
+            )}
+            <div className="d-flex justify-content-between mt-3">
               <Button
                 variant="success"
                 onClick={handleEditSubmit}

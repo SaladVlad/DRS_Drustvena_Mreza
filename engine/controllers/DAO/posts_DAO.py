@@ -147,22 +147,29 @@ def update_post(post_id, **kwargs):
             return None, "Post not found"
         
         print(f"Updating post with ID {post_id} with data: {kwargs}")  # Log the update
+        
+        # Handle valid fields
+        valid_keys = {"content", "status"}  # Define supported keys
         for key, value in kwargs.items():
-            if hasattr(post, key):
+            if key in valid_keys:
                 setattr(post, key, value)
+        
+        # Handle image deletion
+        if kwargs.get("delete_image", False):
+            post.image_data = None
+            post.image_type = None
         
         # Set status to 'pending' if post is updated
         post.status = 'pending'
 
         session.commit()
-        post.image_data = convert_to_base64(post.image_data)
+        post.image_data = convert_to_base64(post.image_data) if post.image_data else None
         return {"post": {c.name: getattr(post, c.name) for c in post.__table__.columns}}, None
     except Exception as e:
         session.rollback()
         print(f"Error in update_post: {str(e)}")  # Log the error
         return None, str(e)
 
-    
 def update_post_status( post_id, **kwargs):
     session = Session()
     try:

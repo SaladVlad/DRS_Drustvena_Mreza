@@ -86,15 +86,20 @@ def create_post_controller():
         create_log(f"Error in create_post_controller: {str(e)}","SERVER_ERROR_CREATE_POST")
         return jsonify({"error": str(e)}), 500
 
-def update_post_controller():
+def update_post_controller(): 
     try:
         data = request.json  # Use request.json for JSON payloads
         post_id = data.pop("post_id", None)  # Remove post_id from data and store it separately
+        delete_image = data.pop("delete_image", False)  # Remove delete_image flag if present
+        
         if not post_id:
             create_log("post_id is required","ERROR_UPDATE_POST")
             return jsonify({"error": "post_id is required"}), 400
-        post, error = update_post(post_id=post_id, **data)  # Avoid multiple post_id values
-        if not error: create_log(f"Updated post with ID:{post_id}","UPDATE_POST")
+        
+        post, error = update_post(post_id=post_id, delete_image=delete_image, **data)  # Pass delete_image as argument
+        if not error: 
+            create_log(f"Updated post with ID: {post_id}", "UPDATE_POST")
+        
         return handle_response(post, error)
     except Exception as e:
         print(f"Error in update_post_controller: {str(e)}")  # Log the error
