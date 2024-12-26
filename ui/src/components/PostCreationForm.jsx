@@ -132,12 +132,20 @@ const PostCreationForm = ({ onPostsChange }) => {
         </div>
         {formError && <div className='alert alert-danger'>{formError}</div>}
         <button
-          type='submit'
-          className='btn btn-primary'
+          type="submit"
+          className="btn"
+          style={{
+            borderRadius: "20px",
+            background: "linear-gradient(315deg, #ffcc70 0%, #ff8177 74%)",
+            border: "none",
+            color: "#fff",
+            fontWeight: "bold",
+              }}
           disabled={!!imageError} // Disable submit if there's an image error
         >
-          Submit
-        </button>
+  Submit
+</button>
+
       </form>
 
       {/* Display status message */}

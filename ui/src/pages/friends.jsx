@@ -39,7 +39,7 @@ const Friends = () => {
   }
 
   return (
-    <div className='container'>
+    <div className="container-fluid">
       <NavBar />
       <Row>
       <UserSearch onSelectUser={handleSelectUser} />

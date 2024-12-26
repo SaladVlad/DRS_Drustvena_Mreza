@@ -44,21 +44,54 @@ const FriendComponent = ({ friendId, status, onFriendsChange }) => {
   }
 
   return (
-    <Card>
+    <Card
+      style={{
+        background: 'linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%)',
+        border: 'none',
+        borderRadius: '15px',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+        color: '#fff',
+      }}
+    >
       <Card.Body>
         {loading ? (
-          <div className='d-flex justify-content-center'>
-            <Spinner animation='border' />
+          <div className="d-flex justify-content-center">
+            <Spinner animation="border" style={{ color: '#fff' }} />
           </div>
         ) : (
           <>
-            <Card.Title>Username: {friend.username}</Card.Title>
-            <Card.Text>Email: {friend.email}</Card.Text>
+            <Card.Title
+              style={{
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                fontSize: '18px',
+              }}
+            >
+              Username: {friend.username}
+            </Card.Title>
+            <Card.Text
+              style={{
+                fontSize: '16px',
+                marginBottom: '1rem',
+              }}
+            >
+              Email: {friend.email}
+            </Card.Text>
             {status === 'accepted' ? (
               <Button
                 onClick={handleRemoveFriend}
-                className='mb-3 btn-danger'
-                size='sm'
+                style={{
+                  background: 'linear-gradient(315deg, #ff8177 0%, #ffcc70 74%)',
+                  border: 'none',
+                  borderRadius: '20px',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  padding: '8px 16px',
+                  transition: 'transform 0.2s',
+                }}
+                onMouseOver={(e) => (e.target.style.transform = 'scale(1.05)')}
+                onMouseOut={(e) => (e.target.style.transform = 'scale(1)')}
+                size="sm"
               >
                 Remove Friend
               </Button>
@@ -66,15 +99,36 @@ const FriendComponent = ({ friendId, status, onFriendsChange }) => {
               <>
                 <Button
                   onClick={handleAcceptFriend}
-                  className='mb-3 btn-success'
-                  size='sm'
+                  style={{
+                    background: 'linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%)',
+                    border: 'none',
+                    borderRadius: '20px',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    padding: '8px 16px',
+                    marginRight: '10px',
+                    transition: 'transform 0.2s',
+                  }}
+                  onMouseOver={(e) => (e.target.style.transform = 'scale(1.05)')}
+                  onMouseOut={(e) => (e.target.style.transform = 'scale(1)')}
+                  size="sm"
                 >
                   Accept
                 </Button>
                 <Button
                   onClick={handleRejectFriend}
-                  className='mb-3 btn-danger'
-                  size='sm'
+                  style={{
+                    background: 'linear-gradient(315deg, #ff8177 0%, #ffcc70 74%)',
+                    border: 'none',
+                    borderRadius: '20px',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    padding: '8px 16px',
+                    transition: 'transform 0.2s',
+                  }}
+                  onMouseOver={(e) => (e.target.style.transform = 'scale(1.05)')}
+                  onMouseOut={(e) => (e.target.style.transform = 'scale(1)')}
+                  size="sm"
                 >
                   Reject
                 </Button>
@@ -84,7 +138,7 @@ const FriendComponent = ({ friendId, status, onFriendsChange }) => {
         )}
       </Card.Body>
     </Card>
-  )
-}
+  );
+};
 
 export default FriendComponent

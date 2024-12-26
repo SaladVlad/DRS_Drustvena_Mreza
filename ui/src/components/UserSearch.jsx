@@ -143,9 +143,20 @@ const UserSearch = ({ onSelectUser }) => {
           ))}
         </select>
       </div>
-      <button className="btn btn-primary" onClick={handleSearch}>
-        Search
-      </button>
+      <button
+        className="btn"
+        style={{
+          borderRadius: "20px",
+          background: "linear-gradient(315deg, #ffcc70 0%, #ff8177 74%)",
+          border: "none",
+          color: "#fff",
+          fontWeight: "bold",
+        }}
+       onClick={handleSearch}
+    >
+    Search
+</button>
+
       {error && <p className="text-danger">{error}</p>}
       <ul className="list-group">
   {results.map((user) => (

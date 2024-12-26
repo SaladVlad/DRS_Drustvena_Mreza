@@ -461,3 +461,194 @@
 [2024-12-18 13:44:56]  [GET_USER]: User fetched by id
 [2024-12-18 13:44:56]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
 [2024-12-18 13:44:56]  [GET_USER]: User fetched by id
+[2024-12-26 15:54:15]  [SERVER_STARTED]: Server starting
+[2024-12-26 15:54:16]  [SERVER_STARTED]: Server starting
+[2024-12-26 15:54:26]  [AUTH_LOGIN]: User bojana123 logged in and received token
+[2024-12-26 15:54:29]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:54:29]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:54:40]  [GET_USER]: User fetched by id
+[2024-12-26 15:54:40]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:54:40]  [GET_USER]: User fetched by id
+[2024-12-26 15:54:41]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:54:55]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:54:55]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:55:13]  [EMAIL_SENT]: Email sent to t9userdrs@gmail.com
+[2024-12-26 15:55:13]  [CREATE_POST]: Created post with ID:23
+[2024-12-26 15:55:13]  [CREATE_POST]: Sent post with ID:23 through socket
+[2024-12-26 15:55:13]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:55:15]  [EMAIL_SENT]: Email sent to t9userdrs@gmail.com
+[2024-12-26 15:55:15]  [CREATE_POST]: Created post with ID:24
+[2024-12-26 15:55:15]  [CREATE_POST]: Sent post with ID:24 through socket
+[2024-12-26 15:55:15]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:55:21]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:22]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:55:22]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:22]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:55:28]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:55:28]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:55:29]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:55:29]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:55:29]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:55:30]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:55:30]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:30]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:31]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:31]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:48]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:55:48]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:55:50]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:50]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:55:50]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:51]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:55:52]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:55:53]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:55:53]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:55:53]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:55:54]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:55:54]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:55:55]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:55]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:55]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:55]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:56]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:56]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:55:56]  [GET_USER]: User fetched by id
+[2024-12-26 15:55:56]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:56:05]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:56:06]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:56:06]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:56:07]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:56:07]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:56:07]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:56:08]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:08]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:08]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:08]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:11]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:56:11]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:56:23]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:56:24]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:56:24]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:56:25]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:56:25]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:56:25]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:56:26]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:26]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:26]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:26]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:34]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:56:34]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:56:39]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:39]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:56:39]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:40]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:56:42]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:56:42]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:56:50]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:56:51]  [GET_USER]: User fetched by id
+[2024-12-26 15:56:51]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:56:51]  [GET_USER]: User fetched by id
+[2024-12-26 15:57:35]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:57:35]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 15:59:31]  [GET_USER]: User fetched by id
+[2024-12-26 15:59:32]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:59:32]  [GET_USER]: User fetched by id
+[2024-12-26 15:59:32]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 15:59:33]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:59:34]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 15:59:34]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:59:34]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:59:34]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 15:59:34]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 15:59:35]  [GET_USER]: User fetched by id
+[2024-12-26 15:59:35]  [GET_USER]: User fetched by id
+[2024-12-26 15:59:35]  [GET_USER]: User fetched by id
+[2024-12-26 15:59:35]  [GET_USER]: User fetched by id
+[2024-12-26 16:00:40]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:00:40]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:00:41]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:00:41]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:00:41]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:00:41]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:00:41]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:00:42]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:00:42]  [GET_USER]: User fetched by id
+[2024-12-26 16:00:43]  [GET_USER]: User fetched by id
+[2024-12-26 16:00:43]  [GET_USER]: User fetched by id
+[2024-12-26 16:00:43]  [GET_USER]: User fetched by id
+[2024-12-26 16:00:44]  [GET_USER]: User fetched by id
+[2024-12-26 16:00:44]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 16:00:44]  [GET_USER]: User fetched by id
+[2024-12-26 16:00:44]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 16:01:12]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:01:12]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:01:13]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:01:13]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:01:13]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:01:13]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:01:14]  [GET_USER]: User fetched by id
+[2024-12-26 16:01:14]  [GET_USER]: User fetched by id
+[2024-12-26 16:01:14]  [GET_USER]: User fetched by id
+[2024-12-26 16:01:14]  [GET_USER]: User fetched by id
+[2024-12-26 16:01:37]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:01:42]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:04:15]  [GET_USER]: User fetched by id
+[2024-12-26 16:04:15]  [GET_USER]: User fetched by id
+[2024-12-26 16:04:51]  [DELETE_FRIENDS]: Removed friend 
+[2024-12-26 16:04:52]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:04:52]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:05:13]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:05:13]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:05:14]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:05:15]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:05:15]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:05:15]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:05:15]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:05:15]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:05:16]  [GET_USER]: User fetched by id
+[2024-12-26 16:05:16]  [GET_USER]: User fetched by id
+[2024-12-26 16:06:34]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:06:34]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:06:40]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:06:40]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:06:41]  [GET_USER]: User fetched by id
+[2024-12-26 16:06:41]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 16:06:42]  [GET_USER]: User fetched by id
+[2024-12-26 16:06:42]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 16:06:43]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:06:43]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:06:43]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:06:43]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:06:43]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:06:44]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:06:44]  [GET_USER]: User fetched by id
+[2024-12-26 16:06:45]  [GET_USER]: User fetched by id
+[2024-12-26 16:06:45]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:06:45]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:06:47]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:06:47]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:06:47]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:06:47]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:06:48]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:06:48]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:06:48]  [GET_USER]: User fetched by id
+[2024-12-26 16:06:49]  [GET_USER]: User fetched by id
+[2024-12-26 16:06:54]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 16:06:54]  [GET_USER]: User fetched by id
+[2024-12-26 16:06:54]  [GET_USER]: User fetched by id
+[2024-12-26 16:06:54]  [GET_POSTS_BY_USER]: Retrieved posts by user 2
+[2024-12-26 16:07:03]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:07:03]  [GET_POSTS_FROM_FRIENDS]: Retrieved posts from friends of user 2
+[2024-12-26 16:07:05]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:07:05]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:07:05]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:07:05]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:07:05]  [GET_FRIENDS]: Retrieved friends list with status
+[2024-12-26 16:07:06]  [GET_FRIENDS]: Retrieved pending friend requests 
+[2024-12-26 16:07:06]  [GET_USER]: User fetched by id
+[2024-12-26 16:07:07]  [GET_USER]: User fetched by id
+[2024-12-26 16:09:37]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:09:41]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:11:10]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:11:12]  [GET_FRIENDS]: Retrieved friends list 
+[2024-12-26 16:11:49]  [GET_FRIENDS]: Retrieved friends list 
