@@ -69,6 +69,16 @@ export const checkAdminStatus = async () => {
   }
 }
 
+export const setTokenInHeader = async axiosInstance => {
+  axiosInstance.defaults.headers.common = {
+    Authorization: `Bearer ${await getTokenFromStorage()}`
+  }
+}
+
+const getTokenFromStorage = async () => {
+  return sessionStorage.getItem('token')
+}
+
 export const checkIfBlocked = async () => {
   try {
     const token = await getToken()

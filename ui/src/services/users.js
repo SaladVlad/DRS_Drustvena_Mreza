@@ -1,10 +1,11 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
-import { getToken, checkIfBlocked } from './auth'
+import { getToken, checkIfBlocked, setTokenInHeader } from './auth'
 
 var token = null
 
-axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
+//axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
+await setTokenInHeader(axios).then(console.log(axios))
 
 export const getUserIdFromToken = async () => {
   if (!token) {
@@ -29,6 +30,7 @@ export const getUserIdFromToken = async () => {
 
 export const fetchUsers = async () => {
   try {
+    await setTokenInHeader(axios)
     const response = await axios.get('http://localhost:5000/api/admin/allusers')
     //console.log('Fetched users:', response.data)
     return response.data
