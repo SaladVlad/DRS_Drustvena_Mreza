@@ -43,7 +43,7 @@ def create_post(**kwargs):
         print("User id novog posta: ", new_post.user_id)
 
         user = read_user(new_post.user_id) #nadji usera pod tim id-em i izvuci mu username
-        print(f"Users username: {user["username"]}")
+        print(f'Users username: {user["username"]}')
 
         session.add(new_post)
         session.commit()
