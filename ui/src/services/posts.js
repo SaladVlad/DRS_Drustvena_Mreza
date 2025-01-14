@@ -84,6 +84,27 @@ export const fetchUserPosts = async () => {
     console.error(error)
   }
 }
+
+export const updatePost = async formData => {
+  await checkIfBlocked()
+  if (!token) {
+    console.log('No token found. Redirecting to login...')
+    window.location.href = '/login'
+    return
+  }
+  try {
+    const response = await axios.put(`${process.env.REACT_APP_ENGINE_URL}/api/posts`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error updating post:', error)
+    throw error
+  }
+}
+
 export const deletePost = async postId => {
   await checkIfBlocked()
   if (!token) {

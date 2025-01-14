@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
-import axios from 'axios';
+import { updatePost, deletePost } from '../services/posts';
 
 const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -29,11 +29,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
         formData.append('delete_image', true); // Add delete_image flag only if no new image is selected
       }
   
-      await axios.put('http://localhost:5000/api/posts', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await updatePost(formData);
   
       setIsEditing(false);
       if (onEdit) {
@@ -45,9 +41,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
   };
   const handleDelete = async () => {
     try {
-      await axios.delete('http://localhost:5000/api/posts', {
-        data: { post_id: post.post_id },
-      });
+      await deletePost(post.post_id);
       // Assuming `onDelete` is used to remove the post from the parent component's state
       if (onDelete) onDelete(post.post_id); // Notify parent to update the UI
     } catch (error) {
