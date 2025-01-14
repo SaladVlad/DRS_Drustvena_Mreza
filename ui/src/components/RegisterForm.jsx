@@ -1,178 +1,142 @@
-import React, { useState } from 'react'
-import { register } from '../services/users'
+import React, { useState } from 'react';
+import { register } from '../services/users';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faEnvelope, faLock, faPhone, faAddressCard, faCity } from '@fortawesome/free-solid-svg-icons';
+import '../styles/registerform.css'; // Import CSS for styling
 
 const RegisterForm = () => {
-  const [name, setName] = useState('')
-  const [surname, setSurname] = useState('')
-  const [address, setAddress] = useState('')
-  const [city, setCity] = useState('')
-  const [country, setCountry] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [username, setUsername] = useState('')
-  const [error, setError] = useState('')
+  const [formData, setFormData] = useState({
+    name: '',
+    surname: '',
+    address: '',
+    city: '',
+    country: '',
+    phoneNumber: '',
+    email: '',
+    password: '',
+    username: '',
+  });
 
-  const handleSubmit = e => {
-    e.preventDefault()
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
+    setErrors((prevState) => ({
+      ...prevState,
+      [id]: '',
+    }));
+  };
+
+  const validateInputs = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.surname.trim()) newErrors.surname = 'Surname is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email must be valid (e.g., example@mail.com)';
+    }
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required';
+    } else if (formData.username.length < 4) {
+      newErrors.username = 'Username must be at least 4 characters long';
+    }
+    if (!formData.password.trim()) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters long';
+    } else if (!/\d/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one number';
+    }
+    return newErrors;
+  };
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  
+    const validationErrors = validateInputs();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+  
     register({
-      first_name: name,
-      last_name: surname,
-      address,
-      city,
-      state: country,
-      phone_number: phoneNumber,
-      email,
-      password,
-      username
+      first_name: formData.name,
+      last_name: formData.surname,
+      address: formData.address,
+      city: formData.city,
+      state: formData.country,
+      phone_number: formData.phoneNumber,
+      email: formData.email,
+      password: formData.password,
+      username: formData.username,
     })
-      .then(data => {
-        console.log(data)
-        setError('')
+      .then((data) => {
+        console.log(data);
+        setErrors({});
+        setFormData({
+          name: '',
+          surname: '',
+          address: '',
+          city: '',
+          country: '',
+          phoneNumber: '',
+          email: '',
+          password: '',
+          username: '',
+        });
+      setSuccessMessage('Registration successful!');
       })
-      .catch(error => {
-        setError(error.message)
-      })
-  }
+      .catch((error) => {
+        setErrors({ form: error.message });
+      });
+  };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ margin: '0 auto', maxWidth: '600px' }}
-    >
-      <div className='container-fluid'>
-        <div className='row'>
-          <div className='col'>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='name' style={{ marginRight: '10px' }}>
-                Name:
-              </label>
-              <input
-                id='name'
-                type='text'
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder='Enter your name'
-                className='form-control'
-              />
-            </div>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='surname' style={{ marginRight: '10px' }}>
-                Surname:
-              </label>
-              <input
-                id='surname'
-                type='text'
-                value={surname}
-                onChange={e => setSurname(e.target.value)}
-                placeholder='Enter your surname'
-                className='form-control'
-              />
-            </div>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='address' style={{ marginRight: '10px' }}>
-                Address:
-              </label>
-              <input
-                id='address'
-                type='text'
-                value={address}
-                onChange={e => setAddress(e.target.value)}
-                placeholder='Enter your address'
-                className='form-control'
-              />
-            </div>
+    <div className="register-container">
+      {/* Register Label */}
+      <h2 className="form-title">Register</h2>
+      <form onSubmit={handleSubmit} className="register-form">
+        {[
+          { id: 'name', placeholder: 'Name', icon: faUser },
+          { id: 'surname', placeholder: 'Surname', icon: faUser },
+          { id: 'email', placeholder: 'Email', icon: faEnvelope, type: 'email' },
+          { id: 'username', placeholder: 'Username', icon: faUser },
+          { id: 'password', placeholder: 'Password', icon: faLock, type: 'password' },
+          { id: 'phoneNumber', placeholder: 'Phone Number', icon: faPhone },
+          { id: 'address', placeholder: 'Address', icon: faAddressCard },
+          { id: 'city', placeholder: 'City', icon: faCity },
+          { id: 'country', placeholder: 'Country', icon: faCity },
+        ].map(({ id, placeholder, icon, type = 'text' }) => (
+          <div className="form-group" key={id}>
+            <FontAwesomeIcon icon={icon} className="form-icon" />
+            <input
+              id={id}
+              type={type}
+              placeholder={placeholder}
+              value={formData[id]}
+              onChange={handleChange}
+              className={`form-input ${errors[id] ? 'is-invalid' : ''}`}
+            />
+            {errors[id] && <div className="invalid-feedback">{errors[id]}</div>}
           </div>
-          <div className='col'>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='city' style={{ marginRight: '10px' }}>
-                City:
-              </label>
-              <input
-                id='city'
-                type='text'
-                value={city}
-                onChange={e => setCity(e.target.value)}
-                placeholder='Enter your city'
-                className='form-control'
-              />
-            </div>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='country' style={{ marginRight: '10px' }}>
-                Country:
-              </label>
-              <input
-                id='country'
-                type='text'
-                value={country}
-                onChange={e => setCountry(e.target.value)}
-                placeholder='Enter your country'
-                className='form-control'
-              />
-            </div>
-            <div className='form-group' style={{ marginBottom: '10px' }}>
-              <label htmlFor='phoneNumber' style={{ marginRight: '10px' }}>
-                Phone number:
-              </label>
-              <input
-                id='phoneNumber'
-                type='text'
-                value={phoneNumber}
-                onChange={e => setPhoneNumber(e.target.value)}
-                placeholder='Enter your phone number'
-                className='form-control'
-              />
-            </div>
-          </div>
-        </div>
-        <div className='form-group' style={{ marginBottom: '10px' }}>
-          <label htmlFor='email' style={{ marginRight: '10px' }}>
-            Email:
-          </label>
-          <input
-            id='email'
-            type='email'
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder='Enter your email'
-            className='form-control'
-          />
-        </div>
-        <div className='form-group' style={{ marginBottom: '10px' }}>
-          <label htmlFor='password' style={{ marginRight: '10px' }}>
-            Password:
-          </label>
-          <input
-            id='password'
-            type='password'
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder='Enter your password'
-            className='form-control'
-          />
-        </div>
-        <div className='form-group' style={{ marginBottom: '10px' }}>
-          <label htmlFor='username' style={{ marginRight: '10px' }}>
-            Username:
-          </label>
-          <input
-            id='username'
-            type='text'
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            placeholder='Enter your username'
-            className='form-control'
-          />
-        </div>
-        {error && <div className='alert alert-danger'>{error}</div>}
-        <div style={{ textAlign: 'center' }}>
-          <button type='submit' className='btn btn-primary'>
-            Register
-          </button>
-        </div>
-      </div>
-    </form>
-  )
-}
+        ))}
+        {errors.form && <div className="alert alert-danger">{errors.form}</div>}
+        {successMessage && (
+          <div className="alert alert-success">{successMessage}</div>
+        )}
+        <button type="submit" className="submit-button">
+          Register
+        </button>
+      </form>
+    </div>
+  );
+};
 
-export default RegisterForm
+export default RegisterForm;

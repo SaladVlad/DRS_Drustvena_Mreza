@@ -7,6 +7,7 @@ import RegisterPage from './pages/register'
 import FriendsPage from './pages/friends'
 import ProfilePage from './pages/profile'
 import Dashboard from './pages/dashboard'
+import PostRequestsAdminPage from './pages/postrequests'
 
 function App () {
   return (
@@ -19,6 +20,7 @@ function App () {
         <Route exact path='/' element={<LoginPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
+        <Route path='/postrequests' element={<PostRequestsAdminPage />} />  {/*stranica za pracenje zahteva */}
         <Route path='/home' element={<Dashboard />} />
         <Route path='/friends' element={<FriendsPage />} />
         <Route path='/profile' element={<ProfilePage />} />

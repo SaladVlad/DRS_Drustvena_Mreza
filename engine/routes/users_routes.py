@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from controllers.users_controller import *
+from flask_jwt_extended import jwt_required
 import hashlib
 import hmac
 import os
@@ -7,10 +8,12 @@ import os
 users_bp = Blueprint('users', __name__,url_prefix='/api/users')
 
 @users_bp.route('/<int:user_id>', methods=['GET'])
+@jwt_required()
 def get_user(user_id):
     return get_user_by_id(user_id)
 
 @users_bp.route('', methods=['POST'])
+@jwt_required()
 def create_user():
     data = request.get_json()
     if not data:
@@ -30,6 +33,7 @@ def create_user():
 
 
 @users_bp.route('/findbyusernameandemail', methods=['GET'])
+@jwt_required()
 def find_by_username_and_email():
     
     username = request.args.get('username')
@@ -41,6 +45,7 @@ def find_by_username_and_email():
 
 
 @users_bp.route('/<int:user_id>', methods=['PUT'])
+@jwt_required()
 def update_user_endpoint(user_id):
     data = request.get_json()
 
@@ -62,6 +67,7 @@ def update_user_endpoint(user_id):
     }), 200
 
 @users_bp.route('/<int:user_id>/change-password', methods=['POST'])
+@jwt_required()
 def change_password(user_id):
     data = request.get_json()
 
@@ -92,5 +98,28 @@ def change_password(user_id):
         session.rollback()
         print(f"Error changing password: {e}")
         return jsonify({"error": "Internal server error."}), 500
+    finally:
+        session.close()
+
+@users_bp.route('/search', methods=['GET'])
+@jwt_required()
+def search_users_route():
+    query = request.args.get("query")
+    address = request.args.get("address")
+    city = request.args.get("city")
+    state = request.args.get("state")
+    user_id = request.args.get("currentUserId")
+    return search_users_controller(query=query, address=address, city=city, state=state, user_id=user_id)
+
+@users_bp.route('/locations', methods=['GET'])
+@jwt_required()
+def get_locations():
+    session = Session()
+    try:
+        cities = [row[0] for row in session.query(User.city).distinct().all()]
+        states = [row[0] for row in session.query(User.state).distinct().all()]
+        return jsonify({"cities": cities, "states": states}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     finally:
         session.close()

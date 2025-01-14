@@ -1,13 +1,14 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
-import { getToken } from './auth'
+import { getToken, checkIfBlocked, setTokenInHeader } from './auth'
 import dotenv from 'dotenv'
 
 dotenv.config()
 
 var token = null
 
-axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
+//axios.defaults.headers.common = { Authorization: `Bearer ${token}` }
+await setTokenInHeader(axios).then(console.log(axios))
 
 export const getUserIdFromToken = async () => {
   if (!token) {
@@ -32,6 +33,7 @@ export const getUserIdFromToken = async () => {
 
 export const fetchUsers = async () => {
   try {
+    await setTokenInHeader(axios)
     const response = await axios.get(`${process.env.REACT_APP_ENGINE_URL}/api/admin/allusers`)
     //console.log('Fetched users:', response.data)
     return response.data
@@ -69,6 +71,7 @@ export const register = async user => {
 }
 
 export const fetchUserById = async (user_id = null) => {
+  await checkIfBlocked()
   if (!user_id) {
     user_id = await getUserIdFromToken() // Extract the user ID
   }
@@ -94,6 +97,7 @@ export const fetchUserByUsernameOrEmail = async (
   username = null,
   email = null
 ) => {
+  await checkIfBlocked()
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_ENGINE_URL}/api/users/findbyusernameandemail`,
@@ -141,6 +145,7 @@ export const unblockUser = async userId => {
   }
 }
 export const updateUser = async (userId, updatedData) => {
+  await checkIfBlocked()
   try {
     const response = await axios.put(
       `${process.env.REACT_APP_ENGINE_URL}/api/users/${userId}`,
@@ -159,6 +164,7 @@ export const updateUser = async (userId, updatedData) => {
   }
 }
 export const changePassword = async (userId, oldPassword, newPassword) => {
+  await checkIfBlocked()
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_ENGINE_URL}/api/users/${userId}/change-password`,

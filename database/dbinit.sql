@@ -56,16 +56,16 @@ CREATE TABLE IF NOT EXISTS post (
 
 
 -- Dodavanje administratora
-INSERT INTO user (username, email, password, first_name, last_name, address, city, state, phone_number, is_admin) 
+INSERT INTO user (username, email, password, first_name, last_name, address, city, state, phone_number, is_admin, first_login) 
 VALUES 
-('admin', 'admin@example.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Admin', 'Adminovic', 'Bulevar Evrope 24', 'Novi Sad', 'Srbija', '123456789', 1);
+('admin', 't9userdrs@gmail.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Admin', 'Adminovic', 'Bulevar Evrope 24', 'Novi Sad', 'Serbia', '123456789', 1, 0);
 -- lozinka za admina je admin123
 
 -- Dodavanje običnih korisnika
 INSERT INTO user (username, email, password, first_name, last_name, address, city, state, phone_number) 
 VALUES 
-('bojana123', 'bojana123@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Bojana', 'Mihajlovic', 'Marsala Tita 124', 'Lajkovac', 'Srbija', '123123123'),
-('marko_m', 'marko@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Marko', 'Markovic', 'Nemanjina 45', 'Beograd', 'Srbija', '987654321'),
+('bojana123', 'bojana123@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Bojana', 'Mihajlovic', 'Marsala Tita 124', 'Lajkovac', 'Serbia', '123123123'),
+('marko_m', 'marko@gmail.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Marko', 'Markovic', 'Nemanjina 45', 'Beograd', 'Serbia', '987654321'),
 ('jovan123', 'jovan123@example.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Jovan', 'Ivić', '123 Glavna Ulica', 'Beograd', 'Serbia', '0631234567'),
 ('maria456', 'maria456@example.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Marija', 'Petrović', '456 Nova Ulica', 'Novi Sad', 'Serbia', '0642345678'),
 ('ivan789', 'ivan789@example.com', '8d43d8eb44484414d61a18659b443fbfe52399510da4689d5352bd9631c6c51b', 'Ivan', 'Jovanović', '789 Stara Ulica', 'Niš', 'Serbia', '0653456789'),

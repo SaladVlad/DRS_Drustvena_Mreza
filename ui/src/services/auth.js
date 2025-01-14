@@ -75,3 +75,36 @@ export const checkAdminStatus = async () => {
     return false
   }
 }
+
+export const setTokenInHeader = async axiosInstance => {
+  axiosInstance.defaults.headers.common = {
+    Authorization: `Bearer ${await getTokenFromStorage()}`
+  }
+}
+
+const getTokenFromStorage = async () => {
+  return sessionStorage.getItem('token')
+}
+
+export const checkIfBlocked = async () => {
+  try {
+    const token = await getToken()
+    const response = await axios.get(
+      `${process.env.REACT_APP_ENGINE_URL}/api/auth/isblocked`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}` // Include the JWT token in the Authorization header
+        }
+      }
+    )
+    if (response.data.is_blocked) {
+      console.log('User is blocked:', response.data.is_blocked)
+      sessionStorage.removeItem('token')
+      window.location.href = '/login' // redirect to login if the user is blocked (kick him out)
+    }
+    return response.data.is_blocked
+  } catch (error) {
+    console.error('Error checking if blocked:', error)
+    return false
+  }
+}

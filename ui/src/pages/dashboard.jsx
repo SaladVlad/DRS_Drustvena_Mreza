@@ -34,31 +34,50 @@ const Dashboard = () => {
     initializeDashboard()
   }, [])
 
-  // Show loading spinner until admin status is fetched
   if (loading) {
     return (
       <div
-        className='d-flex justify-content-center align-items-center'
-        style={{ minHeight: '100vh' }}
+        className="d-flex justify-content-center align-items-center"
+        style={{
+          minHeight: '100vh',
+          background: 'linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%)',
+        }}
       >
-        <Spinner animation='border' role='status'>
-          <span className='visually-hidden'>Loading...</span>
+        <Spinner animation="border" role="status" style={{ color: '#fff' }}>
+          <span className="visually-hidden">Loading...</span>
         </Spinner>
       </div>
-    )
+    );
   }
 
   return (
-    <div>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%)',
+        color: '#333',
+      }}
+    >
       <NavBar /> {/* Always show NavBar */}
-      {/* Conditionally render the correct dashboard based on the admin status */}
-      {isAdmin ? (
-        <AdminDashboard /> // Show Admin Dashboard for admin users
-      ) : (
-        <UserDashboard /> // Show User Dashboard for non-admin users
-      )}
+      <div
+        style={{
+          padding: '20px',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          boxShadow: '0px 10px 25px rgba(0, 0, 0, 0.1)',
+          backgroundColor: '#fff',
+          borderRadius: '15px',
+        }}
+      >
+        {/* Conditionally render the correct dashboard based on the admin status */}
+        {isAdmin ? (
+          <AdminDashboard /> // Show Admin Dashboard for admin users
+        ) : (
+          <UserDashboard /> // Show User Dashboard for non-admin users
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

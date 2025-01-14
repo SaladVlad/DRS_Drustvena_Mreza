@@ -97,8 +97,14 @@ const ProfileInfo = () => {
 
   return (
     <div className='container mt-5'>
-      <div className='card shadow-lg'>
-        <div className='card-header bg-primary text-white text-center'>
+      <div className='card shadow-lg rounded-lg'>
+        <div className='card-header text-center'
+                  style={{
+            background: "linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%)",
+            color: "#fff",
+            borderTopLeftRadius: "10px",
+            borderTopRightRadius: "10px",
+          }}>
           <h2>Profile Information</h2>
         </div>
         <div className='card-body'>
@@ -258,21 +264,42 @@ const ProfileInfo = () => {
           {editing ? (
             <>
               <button
-                className='btn btn-success me-2'
-                onClick={handleSaveChanges}
-              >
-                Save Changes
-              </button>
-              <button
-                className='btn btn-secondary'
-                onClick={() => setEditing(false)}
-              >
-                Cancel
-              </button>
+  className="btn me-2"
+  style={{
+    borderRadius: "20px",
+    background: "linear-gradient(315deg, #42e695 0%, #3bb2b8 74%)",
+    border: "none",
+    color: "#fff",
+    fontWeight: "bold",
+  }}
+  onClick={handleSaveChanges}
+>
+  Save Changes
+</button>
+<button
+  className="btn"
+  style={{
+    borderRadius: "20px",
+    background: "linear-gradient(315deg, #d7d2cc 0%, #304352 74%)",
+    border: "none",
+    color: "#fff",
+    fontWeight: "bold",
+  }}
+  onClick={() => setEditing(false)}
+>
+  Cancel
+</button>
             </>
           ) : (
             <button
               className='btn btn-primary'
+              style={{
+                borderRadius: "20px",
+                background: "linear-gradient(315deg, #ffcc70 0%, #ff8177 74%)",
+                border: "none",
+                color: "#fff",
+                fontWeight: "bold",
+              }}
               onClick={() => setEditing(true)}
             >
               Edit Profile
@@ -280,39 +307,73 @@ const ProfileInfo = () => {
           )}
         </div>
       </div>
-      <div className='card shadow-lg mt-4'>
-        <div className='card-header bg-secondary text-white text-center'>
-          <h2>Change Password</h2>
-        </div>
-        <div className='card-body'>
-          {passwordError && <div className='alert alert-danger'>{passwordError}</div>}
-          {passwordSuccess && <div className='alert alert-success'>{passwordSuccess}</div>}
-          <div className='mb-3'>
-            <label className='form-label'>Old Password</label>
-            <input
-              type='password'
-              className='form-control'
-              name='oldPassword'
-              value={passwordData.oldPassword}
-              onChange={handlePasswordChange}
-            />
-          </div>
-          <div className='mb-3'>
-            <label className='form-label'>New Password</label>
-            <input
-              type='password'
-              className='form-control'
-              name='newPassword'
-              value={passwordData.newPassword}
-              onChange={handlePasswordChange}
-            />
-          </div>
-          <button className='btn btn-warning' onClick={handleChangePassword}>
-            Change Password
-          </button>
-        </div>
-      </div>
+      <div className="card shadow-lg rounded-lg mt-4">
+  <div
+    className="card-header text-center"
+    style={{
+      background: "linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%)",
+      color: "#fff",
+      borderTopLeftRadius: "10px",
+      borderTopRightRadius: "10px",
+    }}
+  >
+    <h2>Change Password</h2>
+  </div>
+  <div className="card-body">
+    {passwordError && (
+      <div className="alert alert-danger">{passwordError}</div>
+    )}
+    {passwordSuccess && (
+      <div className="alert alert-success">{passwordSuccess}</div>
+    )}
+    <div className="mb-3">
+      <label className="form-label fw-bold" style={{ color: "#6c757d" }}>
+        Old Password
+      </label>
+      <input
+        type="password"
+        className="form-control shadow-sm"
+        name="oldPassword"
+        value={passwordData.oldPassword}
+        onChange={handlePasswordChange}
+        style={{
+          borderRadius: "10px",
+          border: "1px solid #ced4da",
+        }}
+      />
     </div>
+    <div className="mb-3">
+      <label className="form-label fw-bold" style={{ color: "#6c757d" }}>
+        New Password
+      </label>
+      <input
+        type="password"
+        className="form-control shadow-sm"
+        name="newPassword"
+        value={passwordData.newPassword}
+        onChange={handlePasswordChange}
+        style={{
+          borderRadius: "10px",
+          border: "1px solid #ced4da",
+        }}
+      />
+    </div>
+    <button
+      className="btn"
+      style={{
+        borderRadius: "20px",
+        background: "linear-gradient(315deg, #ffcc70 0%, #ff8177 74%)",
+        border: "none",
+        color: "#fff",
+        fontWeight: "bold",
+      }}
+      onClick={handleChangePassword}
+    >
+      Change Password
+    </button>
+  </div>
+</div>
+</div>
   )
 }
 
