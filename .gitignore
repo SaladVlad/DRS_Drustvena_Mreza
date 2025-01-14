@@ -1,2 +1,2 @@
 # before pushing to production, delete this comment
-#.env
+.env
