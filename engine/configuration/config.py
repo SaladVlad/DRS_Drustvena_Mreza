@@ -22,7 +22,7 @@ jwt = JWTManager(app)
 
 CORS(app)
 
-socketio = SocketIO(app, cors_allowed_origins="*")  #za websockets
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="gevent")  #za websockets
 
 db = SQLAlchemy(app)
 

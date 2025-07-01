@@ -16,6 +16,6 @@ RUN ls -R /app
 
 WORKDIR /app
 
-ENV PYTHONPATH /app
+ENV PYTHONPATH=/app
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "run:app"]
+CMD ["gunicorn", "-k", "gevent", "-w", "1", "-b", "0.0.0.0:5000", "-c", "gunicorn_conf.py", "run:app"]
