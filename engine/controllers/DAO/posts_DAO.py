@@ -50,7 +50,7 @@ def create_post(**kwargs):
         session.commit()
         print("Dodat u bazu")
 
-        send_mail_when_new_post(user["username"])
+        send_mail_when_new_post(user["username"], user["user_id"])
 
         new_post.image_data = convert_to_base64(new_post.image_data)
         post_dict = {c.name: getattr(new_post, c.name) for c in new_post.__table__.columns}

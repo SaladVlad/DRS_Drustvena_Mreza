@@ -1,25 +1,22 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { fetchPendingPosts, connectSocket, approvePost, rejectPost } from '../services/adminposts';
-import { createPopper } from '@popperjs/core';
-import NavBar from '../components/NavBar'
+import NavBar from '../components/NavBar';
 
 const PostRequestsAdminPage = () => {
   const [pendingPosts, setPendingPosts] = useState([]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const buttonRef = useRef(null);
-  const listRef = useRef(null);
 
-  // useEffect za fetch podataka sa backend-a
   useEffect(() => {
-    const fetchAllPendingPosts = async () => {
-      const fetchedPendingPosts = await fetchPendingPosts();
-      if (fetchedPendingPosts.posts) {
-        console.log('Fetched pending posts here:', fetchedPendingPosts.posts);
-        setPendingPosts(fetchedPendingPosts.posts);
+    let socket;
 
-        // Nakon što su podaci učitani, uspostavi WebSocket vezu
-        const socket = connectSocket();
-        console.log('Socket connected');
+    const fetchAllPendingPosts = async () => {
+      try {
+        const fetchedPendingPosts = await fetchPendingPosts();
+        if (fetchedPendingPosts.posts) {
+          setPendingPosts(fetchedPendingPosts.posts);
+        }
+
+        // Pokretanje socket konekcije
+        socket = connectSocket();
 
         socket.on('connect', () => {
           console.log('Socket connected');
@@ -37,45 +34,27 @@ const PostRequestsAdminPage = () => {
         socket.on('new_post_pending', (newPost) => {
           console.log('Primljen novi post:', newPost);
           setPendingPosts((prevPosts) => {
-            // Proverite da li već postoji post sa istim post_id
             if (prevPosts.some(post => post.post_id === newPost.post_id)) {
-              return prevPosts; // Ako postoji, ne dodajemo ga ponovo
+              return prevPosts;
             }
-            return [...prevPosts, newPost]; // Ako ne postoji, dodajemo ga
+            return [...prevPosts, newPost];
           });
         });
-        
 
-        // Čišćenje socket konekcije pri unmount-u
-        return () => {
-          socket.disconnect();
-          console.log('Socket disconnected');
-        };
+      } catch (error) {
+        console.error('Error loading pending posts:', error);
       }
     };
 
     fetchAllPendingPosts();
-  }, []); // Ovaj useEffect se pokreće samo pri mount-u komponente
 
-  useEffect(() => {
-    if (buttonRef.current && listRef.current) {
-      const popper = createPopper(buttonRef.current, listRef.current, {
-        placement: 'bottom',
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 8]
-            }
-          }
-        ]
-      });
-
-      return () => {
-        popper.destroy();
-      };
-    }
-  }, [dropdownOpen]);
+    return () => {
+      if (socket) {
+        socket.disconnect();
+        console.log('Socket disconnected');
+      }
+    };
+  }, []);
 
   const onApprove = async (postId) => {
     await approvePost(postId);
@@ -88,41 +67,72 @@ const PostRequestsAdminPage = () => {
   };
 
   return (
-    <div className='container'>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%)',
+        color: '#333',
+      }}
+    >
       <NavBar />
-      <h2 className='text-center'>PENDING POSTS</h2>
+      <div
+        style={{
+          padding: '20px',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          boxShadow: '0px 10px 25px rgba(0, 0, 0, 0.1)',
+          backgroundColor: '#fff',
+          borderRadius: '15px',
+          marginTop: '40px',
+        }}
+      >
+        <h2 className="text-center">PENDING POSTS</h2>
 
-      <div className='my-4'>
-        <button
-          className='btn btn-secondary'
-          ref={buttonRef}
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-        >
-          Toggle Pending Posts
-        </button>
-        <ul
-          ref={listRef}
-          className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`}
-          style={{ display: dropdownOpen ? 'block' : 'none' }}
-        >
-          {pendingPosts.map((post) => (
-            <li key={post.post_id} className='dropdown-item'>
-              ID: {post.post_id}, Content: {post.content}, User ID: {post.user_id}
-              <button
-                className='btn btn-success btn-sm'
-                onClick={() => onApprove(post.post_id)}
+        {pendingPosts.length === 0 ? (
+          <p className="text-center mt-4">No pending posts at the moment.</p>
+        ) : (
+          <ul
+            style={{
+              listStyle: 'none',
+              padding: 0,
+              marginTop: '20px',
+            }}
+          >
+            {pendingPosts.map((post) => (
+              <li
+                key={post.post_id}
+                className="d-flex justify-content-between align-items-center"
+                style={{
+                  marginBottom: '10px',
+                  padding: '15px',
+                  background: '#f9f9f9',
+                  borderRadius: '10px',
+                  border: '1px solid #ddd',
+                }}
               >
-                Approve
-              </button>
-              <button
-                className='btn btn-danger btn-sm'
-                onClick={() => onReject(post.post_id)}
-              >
-                Reject
-              </button>
-            </li>
-          ))}
-        </ul>
+                <span>
+                  <strong>ID:</strong> {post.post_id}, <strong>Content:</strong> {post.content}, <strong>User ID:</strong> {post.user_id}
+                </span>
+                <span>
+                  <button
+                    className="btn btn-success btn-sm me-2"
+                    onClick={() => onApprove(post.post_id)}
+                    style={{ borderRadius: '20px', fontWeight: 'bold' }}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => onReject(post.post_id)}
+                    style={{ borderRadius: '20px', fontWeight: 'bold' }}
+                  >
+                    Reject
+                  </button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
