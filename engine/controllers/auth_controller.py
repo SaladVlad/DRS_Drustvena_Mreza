@@ -47,7 +47,7 @@ def login_user(**kwargs):
 
     if user.first_login == True:
         print("saljem mejl za prvo logovanje")
-        send_mail_when_first_login(user.username)
+        send_mail_when_first_login(user.username, user.user_id)
         print("Poslan mejl, azuriram bazu")
         update_user(user.user_id, first_login=False)
 

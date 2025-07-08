@@ -32,10 +32,10 @@ def send_mail(subject, body, receiver_email):
         print(f"Failed to send email to {receiver_email}: {e}")
 
 # Specific use cases
-def send_mail_when_first_login(username):
-    subject = f"[FIRST LOGIN] - {username}"
+def send_mail_when_first_login(username, userID):
+    subject = f"[FIRST LOGIN] - {username} - ID:{userID}"
     body = (f"Hello dear admin!\n"
-            f"User with username {username} has logged in for the first time.\n")
+            f"User with username: {username} and ID: {userID}  has logged in for the first time.\n")
     send_mail(subject, body, admin_mail)
 
 def send_mail_when_registered(username, password, receiver_email):
@@ -45,10 +45,10 @@ def send_mail_when_registered(username, password, receiver_email):
             f"Thank you for using our app.")
     send_mail(subject, body, receiver_email)
 
-def send_mail_when_new_post(username):
-    subject = f"[PENDING POST] - {username}"
+def send_mail_when_new_post(username, userID):
+    subject = f"[PENDING POST] - {username} - ID:{userID}"
     body = (f"Hello dear admin!\n"
-            f"User with username {username} has created a new post.")
+            f"User with username: {username} and ID: {userID} has created a new post.")
     send_mail(subject, body, admin_mail)
 
 def send_mail_when_post_approved(username, post_content, receiver_email):

@@ -1,6 +1,42 @@
 import React, { useState } from 'react';
-import { Card, Button, Form } from 'react-bootstrap';
-import { updatePost, deletePost } from '../services/posts';
+import { Card, Button, Form, Dropdown, Image } from 'react-bootstrap';
+import { PencilFill, TrashFill, ThreeDotsVertical, Image as ImageIcon, CheckLg, XLg } from 'react-bootstrap-icons';
+import axios from 'axios';
+
+// A simple helper function to format the timestamp
+const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const seconds = Math.floor((now - date) / 1000);
+
+  let interval = seconds / 31536000;
+  if (interval > 1) return `${Math.floor(interval)}y`;
+  interval = seconds / 2592000;
+  if (interval > 1) return `${Math.floor(interval)}mo`;
+  interval = seconds / 86400;
+  if (interval > 1) return `${Math.floor(interval)}d`;
+  interval = seconds / 3600;
+  if (interval > 1) return `${Math.floor(interval)}h`;
+  interval = seconds / 60;
+  if (interval > 1) return `${Math.floor(interval)}m`;
+  return `${Math.floor(seconds)}s`;
+};
+
+// Custom Dropdown Toggle for the "three-dots" icon
+const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+  <Button
+    variant="link"
+    ref={ref}
+    onClick={(e) => {
+      e.preventDefault();
+      onClick(e);
+    }}
+    className="text-secondary p-0"
+  >
+    <ThreeDotsVertical size={20} />
+    {children}
+  </Button>
+));
 
 const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -11,10 +47,11 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
+    // Reset state on toggle
     setEditedContent(post.content);
     setNewImage(null);
     setTempImageURL(null);
-    setDeleteImage(false); // Reset the delete image flag
+    setDeleteImage(false);
   };
 
   const handleEditSubmit = async () => {
@@ -22,186 +59,146 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
       const formData = new FormData();
       formData.append('post_id', post.post_id);
       formData.append('content', editedContent);
-  
+
       if (newImage) {
-        formData.append('new_image', newImage); // Add the new image only if it's selected
+        formData.append('new_image', newImage);
       } else if (deleteImage) {
-        formData.append('delete_image', true); // Add delete_image flag only if no new image is selected
+        formData.append('delete_image', 'true');
       }
-  
-      await updatePost(formData);
-  
+
+      const response = await axios.put('http://localhost:5000/api/posts', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
       setIsEditing(false);
-      if (onEdit) {
-        onEdit({ ...post, content: editedContent }); // Notify parent with updated post
+      // *** IMPORTANT BUG FIX: Use the complete, updated post from the server response ***
+      if (onEdit && response.data.post) {
+        onEdit(response.data.post);
       }
     } catch (error) {
       console.error('Error updating post:', error.message);
     }
   };
+
   const handleDelete = async () => {
     try {
-      await deletePost(post.post_id);
-      // Assuming `onDelete` is used to remove the post from the parent component's state
-      if (onDelete) onDelete(post.post_id); // Notify parent to update the UI
+      await axios.delete('http://localhost:5000/api/posts', {
+        data: { post_id: post.post_id },
+      });
+      // The parent component's `onDelete` will refetch all posts, so we just call it.
+      if (onDelete) onDelete();
     } catch (error) {
       console.error('Error deleting post:', error.message);
     }
   };
-
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setNewImage(file);
       setTempImageURL(URL.createObjectURL(file));
-      setDeleteImage(false); // Reset delete flag if a new image is chosen
+      setDeleteImage(false);
     }
   };
-  
-  const handleDeleteImage = () => {
+
+  const handleRemoveImage = () => {
     setNewImage(null);
     setTempImageURL(null);
-    setDeleteImage(true); // Enable delete flag when deleting image
+    setDeleteImage(true);
   };
-  const imageURL =
-    tempImageURL || (!deleteImage && post.image_data ? `data:${post.image_type};base64,${post.image_data}` : null);
 
-    return (
-      <Card className="mb-4 shadow-sm rounded-lg">
-        <Card.Body>
-          {isEditing ? (
-            <Form>
-              <Form.Group>
-                <Form.Label>Edit Content</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={editedContent}
-                  onChange={(e) => setEditedContent(e.target.value)}
-                  style={{ borderRadius: '10px' }}
-                />
-              </Form.Group>
-              {imageURL && (
-                <div className="mt-3">
-                  <Card.Img
-                    variant="bottom"
-                    src={imageURL}
-                    alt="Post Image"
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: '300px',
-                      objectFit: 'contain',
-                      margin: 'auto',
-                      display: 'block',
-                      borderRadius: '8px',
-                    }}
-                  />
+  const currentImage = tempImageURL || (!deleteImage && post.image_data ? `data:${post.image_type};base64,${post.image_data}` : null);
+
+  return (
+    <Card className="mb-4 shadow-sm">
+      {/* Post Header */}
+      <Card.Header className="d-flex align-items-center bg-white border-bottom-0">
+        <div style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '50%',
+          backgroundColor: '#e9ecef',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 'bold',
+          marginRight: '12px'
+        }}>
+          {post.username ? post.username.charAt(0).toUpperCase() : 'A'}
+        </div>
+        <div className="flex-grow-1">
+          <div className="font-weight-bold">{post.username || 'Anonymous'}</div>
+          <small className="text-muted">{formatTimestamp(post.created_at)} ago</small>
+        </div>
+        {(showEditButton || showDeleteButton) && (
+          <Dropdown align="end">
+            <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components" />
+            <Dropdown.Menu>
+              {showEditButton && <Dropdown.Item onClick={handleEditToggle}><PencilFill className="me-2" /> Edit</Dropdown.Item>}
+              {showDeleteButton && <Dropdown.Item onClick={handleDelete} className="text-danger"><TrashFill className="me-2" /> Delete</Dropdown.Item>}
+            </Dropdown.Menu>
+          </Dropdown>
+        )}
+      </Card.Header>
+
+      {/* Post Body */}
+      <Card.Body className="pt-0">
+        {isEditing ? (
+          <Form>
+            {/* Text Area for Editing */}
+            <Form.Group>
+              <Form.Control
+                as="textarea"
+                rows={4}
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+                className="mb-3"
+              />
+            </Form.Group>
+            
+            {/* Image Preview and Actions */}
+            {currentImage && (
+              <div className="mb-3">
+                <Image src={currentImage} fluid rounded />
+              </div>
+            )}
+            
+            <div className="d-flex justify-content-between">
+                <div>
+                    <Form.Label htmlFor={`image-upload-${post.post_id}`} className="btn btn-sm btn-outline-secondary me-2">
+                        <ImageIcon className="me-1" /> {currentImage ? 'Change' : 'Add'} Image
+                    </Form.Label>
+                    <Form.Control id={`image-upload-${post.post_id}`} type="file" hidden onChange={handleImageChange} />
+                    {currentImage && <Button variant="sm" variant="outline-danger" onClick={handleRemoveImage}>Remove Image</Button>}
                 </div>
-              )}
-              <div className="mt-3">
-                <Button
-                  variant="danger"
-                  onClick={handleDeleteImage}
-                  className="me-2"
-                  style={{
-                    borderRadius: '20px',
-                    background: 'linear-gradient(315deg, #ff5c8d 0%, #f0599b 74%)',
-                    border: 'none',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Delete Image
-                </Button>
-                <label className="btn btn-primary" style={{ borderRadius: '20px' }}>
-                  Choose Image
-                  <input type="file" accept="image/*" hidden onChange={handleImageChange} />
-                </label>
-              </div>
-              <div className="d-flex justify-content-between mt-2">
-                <Button
-                  variant="success"
-                  onClick={handleEditSubmit}
-                  style={{
-                    borderRadius: '20px',
-                    background: 'linear-gradient(315deg, #6e7dff 0%, #6172f3 74%)',
-                    border: 'none',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Save
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={handleEditToggle}
-                  style={{
-                    borderRadius: '20px',
-                    background: 'linear-gradient(315deg, #d3d3d3 0%, #a2a2a2 74%)',
-                    border: 'none',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </Form>
-          ) : (
-            <>
-              <Card.Title className="font-weight-bold">
-                {post.user_id ? `Post by User ${post.user_id}` : 'Anonymous Post'}
-              </Card.Title>
-              <Card.Text>{post.content}</Card.Text>
-              {imageURL && (
-                <Card.Img
-                  variant="bottom"
-                  src={imageURL}
-                  alt="Post Image"
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '300px',
-                    objectFit: 'contain',
-                    margin: 'auto',
-                    display: 'block',
-                    borderRadius: '8px',
-                  }}
-                />
-              )}
-              <div className="d-flex justify-content-end mt-3">
-                {showDeleteButton && (
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDelete(post.post_id)} 
-                    className="me-2"
-                    style={{
-                      borderRadius: '20px',
-                      background: 'linear-gradient(315deg, #ff5c8d 0%, #f0599b 74%)',
-                      border: 'none',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Delete
-                  </Button>
-                )}
-                {showEditButton && (
-                  <Button
-                    variant="primary"
-                    onClick={handleEditToggle}
-                    style={{
-                      borderRadius: '20px',
-                      background: 'linear-gradient(315deg, #4e73df 0%, #2e59d9 74%)',
-                      border: 'none',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Edit
-                  </Button>
-                )}
-              </div>
-            </>
-          )}
-        </Card.Body>
-      </Card>
-    );
-  };
-  
-  export default Post;
+
+                <div>
+                    <Button variant="secondary" onClick={handleEditToggle} className="me-2">
+                        <XLg /> Cancel
+                    </Button>
+                    <Button variant="primary" onClick={handleEditSubmit}>
+                        <CheckLg /> Save
+                    </Button>
+                </div>
+            </div>
+          </Form>
+        ) : (
+          <>
+            {/* Display Content and Image */}
+            <Card.Text style={{ whiteSpace: 'pre-wrap' }}>{post.content}</Card.Text>
+            {currentImage && (
+              <Card.Img
+                variant="bottom"
+                src={currentImage}
+                alt="Post Image"
+                style={{ borderRadius: '15px' }}
+              />
+            )}
+          </>
+        )}
+      </Card.Body>
+    </Card>
+  );
+};
+
+export default Post;
