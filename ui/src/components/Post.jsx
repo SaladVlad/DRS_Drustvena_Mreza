@@ -154,7 +154,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
           ) : (
             <>
               <Card.Title className="font-weight-bold">
-                {post.user_id ? `Post by User ${post.user_id}` : 'Anonymous Post'}
+                {post.user_id ? `Post by User ${post.username}` : 'Anonymous Post'}
               </Card.Title>
               <Card.Text>{post.content}</Card.Text>
               {imageURL && (
