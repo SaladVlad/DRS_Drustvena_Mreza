@@ -1,164 +1,175 @@
-import React, { useState, useEffect } from 'react'
-import { createPost } from '../services/posts' // assuming this function exists in your services
-import { getUserIdFromToken } from '../services/users' // Import the function to get user_id from token
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Card, Image, Alert } from 'react-bootstrap';
+import { createPost } from '../services/posts';
+import { getUserIdFromToken } from '../services/users';
 
 const PostCreationForm = ({ onPostsChange }) => {
-  const [formData, setFormData] = useState({
-    user_id: '', 
-    content: '',
-    image: null
-  })
-  const [imageError, setImageError] = useState('') // State to handle image errors
-  const [formError, setFormError] = useState('') // State to handle form-level errors
-  const [postStatus, setPostStatus] = useState('') // State to handle post status messages
+  const [content, setContent] = useState('');
+  const [image, setImage] = useState(null);
+  const [userId, setUserId] = useState('');
+  
+  // State for UI feedback
+  const [previewURL, setPreviewURL] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch the user ID from the token when the component mounts
   useEffect(() => {
     const fetchUserId = async () => {
-      const userId = await getUserIdFromToken()
-      if (userId) {
-        setFormData((prevData) => ({
-          ...prevData,
-          user_id: userId
-        }))
+      const id = await getUserIdFromToken();
+      if (id) {
+        setUserId(id);
       } else {
-        console.error('Unable to fetch user ID from token')
+        console.error('Unable to fetch user ID from token');
+        setError('Could not authenticate user. Please log in again.');
       }
-    }
-    fetchUserId()
-  }, [])
+    };
+    fetchUserId();
+  }, []);
 
-  const handleChange = e => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value
-    })
-    setFormError('') // Clear form error when the user types
-  }
+  const resetForm = () => {
+    setContent('');
+    setImage(null);
+    setPreviewURL('');
+    setError('');
+    // Do not clear success, so the user can see the message
+  };
 
-  const handleFileChange = e => {
-    const file = e.target.files[0]
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    // Clear previous errors
+    setError('');
+    setSuccess('');
+
     if (file) {
-      const validFormats = ['image/jpeg', 'image/jpg', 'image/png']
+      const validFormats = ['image/jpeg', 'image/jpg', 'image/png'];
       if (validFormats.includes(file.type)) {
-        setFormData({
-          ...formData,
-          image: file
-        })
-        setImageError('') // Clear any previous error
-        setFormError('') // Clear form-level error if an image is added
+        setImage(file);
+        setPreviewURL(URL.createObjectURL(file));
       } else {
-        setImageError('Invalid image format. Only .jpg, .jpeg, and .png are allowed.')
-        setFormData({
-          ...formData,
-          image: null
-        })
+        setError('Invalid format. Please use .jpg, .jpeg, or .png.');
+        setImage(null);
+        setPreviewURL('');
       }
     }
-  }
+  };
 
-  const handleSubmit = async e => {
-    e.preventDefault()
+  const handleRemoveImage = () => {
+    setImage(null);
+    setPreviewURL('');
+    // Also reset the file input field so the same file can be re-selected
+    document.getElementById('image-upload').value = null;
+  };
 
-    // Check if the post has at least content or an image
-    if (!formData.content.trim() && !formData.image) {
-      setFormError('Post cannot be empty. Please provide content or an image.')
-      return
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Clear previous messages
+    setError('');
+    setSuccess('');
+
+    if (!content.trim() && !image) {
+      setError('A post must have either text content or an image.');
+      return;
     }
 
-    // Prevent submission if there's an image error
-    if (imageError) {
-      return
-    }
+    setIsSubmitting(true);
 
-    const formDataToSend = new FormData()
-    formDataToSend.append('user_id', formData.user_id) 
-    formDataToSend.append('content', formData.content)
-
-    // If an image is selected, append it to FormData
-    if (formData.image) {
-      formDataToSend.append('image', formData.image) // Use 'image' key to match backend
+    const formDataToSend = new FormData();
+    formDataToSend.append('user_id', userId);
+    formDataToSend.append('content', content);
+    if (image) {
+      formDataToSend.append('image', image);
     }
 
     try {
-      // Send the form data to the backend
-      await createPost(formDataToSend).then(() => onPostsChange())
-      console.log('Post created successfully')
-
-      // Set success message
-      setPostStatus('Post created successfully!')
-      
-      // Reset form to initial state
-      setFormData({
-        user_id: formData.user_id, // Retain user_id after reset
-        content: '',
-        image: null
-      })
-      setImageError('') // Clear any image errors
-      setFormError('') // Clear any form-level errors
-    } catch (error) {
-      console.error('Error creating post:', error)
-
-            // Set error message
-      setPostStatus('An error occurred while creating the post. Please try again.')
+      await createPost(formDataToSend);
+      setSuccess('Post created successfully and is pending approval!');
+      resetForm();
+      onPostsChange(); // Refresh the post list in the parent dashboard
+    } catch (err) {
+      console.error('Error creating post:', err);
+      setError('Failed to create post. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className='form-group'>
-          <label htmlFor='content'>Content</label>
-          <textarea
-            id='content'
-            name='content'
-            value={formData.content}
-            onChange={handleChange}
-            placeholder='Enter content'
-            className='form-control'
-          />
-        </div>
-        <div className='form-group'>
-          <label htmlFor='image'>Image</label>
-          <input
-            type='file'
-            id='image'
-            name='image'
-            onChange={handleFileChange}
-            className={`form-control ${imageError ? 'is-invalid' : ''}`}
-          />
-          {imageError && <div className='invalid-feedback'>{imageError}</div>}
-        </div>
-        {formError && <div className='alert alert-danger'>{formError}</div>}
-        <button
-          type="submit"
-          className="btn"
-          style={{
-            borderRadius: "20px",
-            background: "linear-gradient(315deg, #ffcc70 0%, #ff8177 74%)",
-            border: "none",
-            color: "#fff",
-            fontWeight: "bold",
+    <Card className="shadow-sm mb-4">
+      <Card.Header as="h5" className="font-weight-bold">
+        Create a New Post
+      </Card.Header>
+      <Card.Body>
+        {error && <Alert variant="danger">{error}</Alert>}
+        {success && <Alert variant="success">{success}</Alert>}
+        
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="postContent">
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder={`What's on your mind?`}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              style={{ borderRadius: '10px' }}
+            />
+          </Form.Group>
+
+          {/* Image Preview Section */}
+          {previewURL && (
+            <div className="mt-3 text-center">
+              <Image 
+                src={previewURL} 
+                thumbnail 
+                style={{ maxHeight: '250px', width: 'auto' }} 
+              />
+              <Button 
+                variant="link" 
+                className="text-danger d-block mx-auto" 
+                onClick={handleRemoveImage}
+              >
+                Remove Image
+              </Button>
+            </div>
+          )}
+
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            {/* Custom File Upload Button */}
+            <Form.Label 
+              htmlFor="image-upload" 
+              className="btn btn-secondary m-0"
+              style={{ borderRadius: '20px' }}
+            >
+              📷 {image ? 'Change Image' : 'Add Image'}
+            </Form.Label>
+            <Form.Control 
+              id="image-upload" 
+              type="file" 
+              accept="image/jpeg,image/png"
+              onChange={handleFileChange} 
+              hidden 
+            />
+            
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={isSubmitting || !userId}
+              style={{
+                borderRadius: "20px",
+                background: "linear-gradient(315deg, #4e73df 0%, #2e59d9 74%)",
+                border: "none",
+                fontWeight: "bold",
+                padding: '10px 25px'
               }}
-          disabled={!!imageError} // Disable submit if there's an image error
-        >
-  Submit
-</button>
+            >
+              {isSubmitting ? 'Posting...' : 'Post'}
+            </Button>
+          </div>
+        </Form>
+      </Card.Body>
+    </Card>
+  );
+};
 
-      </form>
-
-      {/* Display status message */}
-      {postStatus && (
-        <div
-          className={`alert ${postStatus.includes('successfully') ? 'alert-success' : 'alert-danger'}`}
-          style={{ marginTop: '20px' }}
-        >
-          {postStatus}
-        </div>
-      )}
-    </div>
-  )
-}
-
-export default PostCreationForm
+export default PostCreationForm;
