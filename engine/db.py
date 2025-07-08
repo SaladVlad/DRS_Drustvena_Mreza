@@ -7,3 +7,6 @@ from configuration.config import app
 engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
+
+Base.metadata.create_all(engine)
+

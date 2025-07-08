@@ -6,13 +6,20 @@ from flask_jwt_extended import JWTManager
 import os
 from flask_socketio import SocketIO
 
-# Load environment variables from .env file
+# Load getenv(ent variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
 
+
+user = os.getenv("MYSQL_USER")
+password = os.getenv("MYSQL_PASSWORD")
+host = os.getenv("MYSQL_HOST")
+port = os.getenv("MYSQL_PORT")
+dbName = os.getenv("MYSQL_DATABASE")
+
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{os.getenv("MYSQL_USER")}:{os.getenv("MYSQL_PASSWORD")}@{os.getenv("MYSQL_HOST")}:{os.getenv("MYSQL_PORT")}/{os.getenv("MYSQL_DATABASE")}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{user}:{password}@{host}:{port}/{dbName}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECTRET_KEY')
 
@@ -36,6 +43,8 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(users_bp)
 app.register_blueprint(friends_bp)
+
+
 
 
 

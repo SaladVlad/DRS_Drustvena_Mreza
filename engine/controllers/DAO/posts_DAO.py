@@ -23,10 +23,6 @@ class Post(Base):
     image_data = Column(LargeBinary, nullable=True)  # Stores the binary data of the image
     status = Column(Enum('pending', 'approved', 'rejected', name='post_status_enum'), default='pending', nullable=False)
     created_at = Column(TIMESTAMP, nullable=False, default=lambda: datetime.now(pytz.utc))
-# Create all tables in the engine
-Base.metadata.create_all(engine)
-
-# Create a session to the database
 
 def convert_to_base64(image_data):
     if image_data is None:
