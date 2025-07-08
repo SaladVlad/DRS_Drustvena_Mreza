@@ -169,7 +169,7 @@ const Post = ({ post, onDelete, onEdit, showDeleteButton, showEditButton }) => {
                         <ImageIcon className="me-1" /> {currentImage ? 'Change' : 'Add'} Image
                     </Form.Label>
                     <Form.Control id={`image-upload-${post.post_id}`} type="file" hidden onChange={handleImageChange} />
-                    {currentImage && <Button variant="sm" variant="outline-danger" onClick={handleRemoveImage}>Remove Image</Button>}
+                    {currentImage && <Button size="sm" variant="outline-danger" onClick={handleRemoveImage}>Remove Image</Button>}
                 </div>
 
                 <div>
